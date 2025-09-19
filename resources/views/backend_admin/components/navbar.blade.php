@@ -1,0 +1,136 @@
+<div class="nav-container primary-menu">
+    <div class="mobile-topbar-header">
+        <div>
+            <img src="{{ asset('backend/assets/images/logo-icon.png') }}" class="logo-icon" alt="logo icon" />
+        </div>
+        <div>
+            <h4 class="logo-text">Simpasar</h4>
+        </div>
+        <div class="toggle-icon ms-auto">
+            <i class="bx bx-arrow-to-left"></i>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-xl w-100">
+        <ul class="navbar-nav justify-content-start flex-grow-1 gap-1">
+            <li class="nav-item">
+                <a href="{{ route('backend_admin.pages.dashboard') }}" class="nav-link" aria-current="page">
+                    <div class="parent-icon">
+                        <i class="bx bx-home-circle"></i>
+                    </div>
+                    <div class="menu-title">Dashboard</div>
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
+                    data-bs-toggle="dropdown">
+                    <div class="parent-icon"><i class="bx bx-cart"></i></div>
+                    <div class="menu-title">Pasar</div>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.pasar.table') }}"><i
+                                class="bx bx-right-arrow-alt"></i>Detail Pasar</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.pasar.tambah') }}"><i
+                                class="bx bx-right-arrow-alt"></i>Penambahan Pasar</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
+                    data-bs-toggle="dropdown">
+                    <div class="parent-icon"><i class="bx bx-building-house"></i></div>
+                    <div class="menu-title">Kios</div>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.kios.table') }}"><i
+                                class="bx bx-right-arrow-alt"></i>Detail
+                            Kios</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.kios.tambah') }}"><i
+                                class="bx bx-right-arrow-alt"></i>Penambahan Kios</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
+                    data-bs-toggle="dropdown">
+                    <div class="parent-icon"><i class="bx bx-store-alt"></i></div>
+                    <div class="menu-title">Los</div>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.los.table') }}"><i
+                                class="bx bx-right-arrow-alt"></i>Detail
+                            Loss</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.los.tambah') }}"><i
+                                class="bx bx-right-arrow-alt"></i>Penambahan Loss</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;"
+                    data-bs-toggle="dropdown">
+                    <div class="parent-icon">
+                        <i class="bx bx-arch"></i>
+                    </div>
+                    <div class="menu-title">Pelataran</div>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.pelataran.table') }}"><i
+                                class="bx bx-right-arrow-alt"></i>Detail
+                            Pelataran</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.pelataran.tambah') }}"><i
+                                class="bx bx-right-arrow-alt"></i>Penambahan Pelataran</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;"
+                    data-bs-toggle="dropdown">
+                    <div class="parent-icon">
+                        <i class="bx bx-user"></i>
+                    </div>
+                    <div class="menu-title">Pedagang</div>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.pedagang.tabelpermohonan') }}"><i
+                                class="bx bx-right-arrow-alt"></i>
+                            Permohonan</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="component-alerts.html"><i
+                                class="bx bx-right-arrow-alt"></i>Alerts</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;"
+                    data-bs-toggle="dropdown">
+                    <div class="parent-icon"><i class="bx bx-envelope-open"></i></div>
+                    <div class="menu-title">Informasi</div>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="authentication-signin.html" target="_blank"><i
+                                class="bx bx-right-arrow-alt"></i>Pengumuman</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="authentication-signup.html" target="_blank"><i
+                                class="bx bx-right-arrow-alt"></i>Tarif Testribusi</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</div>

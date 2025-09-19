@@ -1,0 +1,90 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Pasar;
+use Illuminate\Support\Facades\DB;
+
+class PasarController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function table()
+    {
+        $pasar = DB::table('pasar')->get();
+        return view('backend_admin.pages.pasar.table', compact('pasar'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('backend_admin.pages.pasar.tambah');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_pasar'   => 'required|string|max:255',
+            'alamat'       => 'required|string',
+            'foto_depan'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_dalam'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'lokasi_peta'    => 'nullable|string', // tambahin validasi lokasi_peta
+        ]);
+
+        // handle file upload
+        $fotoDepan = $request->file('foto_depan') ? $request->file('foto_depan')->store('pasar', 'public') : null;
+        $fotoBelakang = $request->file('foto_belakang') ? $request->file('foto_belakang')->store('pasar', 'public') : null;
+        $fotoDalam = $request->file('foto_dalam') ? $request->file('foto_dalam')->store('pasar', 'public') : null;
+
+        Pasar::create([
+            'nama_pasar'   => $request->nama_pasar,
+            'alamat'       => $request->alamat,
+            'foto_depan'   => $fotoDepan,
+            'foto_belakang' => $fotoBelakang,
+            'foto_dalam'   => $fotoDalam,
+            'lokasi_peta'    => $request->lokasi_peta, // simpan embed/link peta
+        ]);
+
+        return redirect()->route('backend_admin.pages.pasar.table')->with('success', 'Pasar berhasil ditambahkan!');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}
