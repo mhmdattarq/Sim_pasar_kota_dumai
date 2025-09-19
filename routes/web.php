@@ -93,6 +93,7 @@ Route::middleware(['auth', 'role:pedagang'])->group(function () {
     Route::get('/get-tempat/{pasarId}', [PermohonanController::class, 'getTempatByPasar']);
     Route::get('/get-luas/{tipe}/{id}', [PermohonanController::class, 'getLuas']);
     Route::post('/permohonan', [PermohonanController::class, 'store'])->name('permohonan.store');
+    Route::get('/preview-surat', [PermohonanController::class, 'previewSurat'])->name('preview.surat');
     Route::get('/pedagang/permohonan/success/{id}', [PermohonanController::class, 'success'])
         ->name('pedagang.permohonan.success');
     Route::get('/permohonan/download/{id}', [\App\Http\Controllers\Pedagang\PermohonanController::class, 'download'])

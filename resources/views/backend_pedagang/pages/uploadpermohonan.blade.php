@@ -59,7 +59,7 @@
                                         <td>{{ $p->nama }}</td>
                                         <td>
                                             @if ($p->status == 'draft')
-                                                <span class="badge bg-danger">Draft</span>
+                                                <span class="badge bg-warning">Draft</span>
                                             @elseif ($p->status == 'lengkap')
                                                 <span class="badge bg-success">Uploaded, Terkirim</span>
                                             @elseif ($p->status == 'disetujui')

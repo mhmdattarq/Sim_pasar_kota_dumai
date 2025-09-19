@@ -560,93 +560,154 @@
 
                 // inject ke HTML surat
                 suratPreview.innerHTML = `
-<div style="font-family:'Times New Roman',serif; font-size:12pt; line-height:1.5;">
-    <div style="text-align:right; font-size:11pt;">
+<style>
+/* Default PC/Laptop */
+.surat-container {
+  font-family: 'Times New Roman', serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  margin: 20px 60px;
+  text-align: justify;
+}
+
+.surat-header {
+  text-align: right;
+  font-size: 11pt;
+}
+
+.surat-title {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.surat-table td {
+  padding: 2px 5px;
+  vertical-align: top;
+  font-size: 11pt;
+}
+
+.surat-table td:first-child {
+  width: 200px;
+}
+
+/* Responsif Tablet */
+@media (max-width: 768px) {
+  .surat-container {
+    margin: 15px 20px;
+    font-size: 11pt;
+  }
+  .surat-table td:first-child {
+    width: 140px;
+  }
+}
+
+/* Responsif HP */
+@media (max-width: 480px) {
+  .surat-container {
+    margin: 10px;
+    font-size: 10.5pt;
+  }
+  .surat-table td {
+    display: block;
+    width: 100% !important;
+  }
+  .surat-table td:first-child {
+    font-weight: bold;
+    margin-top: 5px;
+  }
+}
+</style>
+
+<div class="surat-container">
+    <!-- Header Kanan -->
+    <div class="surat-header">
         <p style="margin:0;">LAMPIRAN I</p>
         <p style="margin:0;">PERATURAN WALI KOTA DUMAI</p>
         <p style="margin:0;">NOMOR .... TAHUN 2025</p>
         <p style="margin:0;">TENTANG PASAR RAKYAT</p>
     </div>
 
-    <div style="text-align:center; font-weight:bold; margin-top:20px;">
+    <!-- Judul Tengah -->
+    <div class="surat-title">
         <p style="margin:0;">SURAT PERMOHONAN MENJADI PEDAGANG</p>
     </div>
 
     <hr style="border:1px solid #000; margin:15px 0;">
 
-    <div style="margin:20px 50px;">
-        <p style="margin-bottom:0;">Kepada</p>
-        <p style="margin:0;">Yth. ..............................................</p>
-        <p style="margin:0;">Di-</p>
-        <p style="margin:0;">................................................</p>
+    <!-- Isi Surat -->
+    <p>Kepada</p>
+    <p>Yth. ..................................................</p>
+    <p>Di-</p>
+    <p>..................................................</p>
 
-        <p style="margin-top:15px;"><strong>Hal</strong> : Permohonan menjadi Pedagang</p>
-        <p>Yang bertanda tangan di bawah ini :</p>
+    <p style="margin-top:15px;"><strong>Hal :</strong> Permohonan menjadi Pedagang</p>
+    <p>Yang bertanda tangan di bawah ini :</p>
 
-        <table style="border-collapse:collapse; margin-left:20px;">
-            <tr>
-                <td style="width:180px;">Nama</td>
-                <td>: ${nama} (${jk})</td>
-            </tr>
-            <tr>
-                <td>Tempat, tanggal lahir</td>
-                <td>: ${tempat_lahir}, ${tgl_lahir}</td>
-            </tr>
-            <tr>
-                <td>No. NIK/KTP</td>
-                <td>: ${nik}</td>
-            </tr>
-            <tr>
-                <td>No. Telpon yang bisa dihubungi</td>
-                <td>: ${no_telp}</td>
-            </tr>
-            <tr>
-                <td>Alamat</td>
-                <td>: ${alamat}</td>
-            </tr>
-        </table>
+    <table class="surat-table">
+        <tr>
+            <td>Nama</td>
+            <td>: ${nama} (${jk})</td>
+        </tr>
+        <tr>
+            <td>Tempat, tanggal lahir</td>
+            <td>: ${tempat_lahir}, ${tgl_lahir}</td>
+        </tr>
+        <tr>
+            <td>No. NIK/KTP</td>
+            <td>: ${nik}</td>
+        </tr>
+        <tr>
+            <td>No. Telpon yang bisa dihubungi</td>
+            <td>: ${no_telp}</td>
+        </tr>
+        <tr>
+            <td>Alamat</td>
+            <td>: ${alamat}</td>
+        </tr>
+    </table>
 
-        <p style="margin-top:15px;">Mengajukan permohonan menjadi Pedagang:</p>
+    <p style="margin-top:15px;">Mengajukan permohonan menjadi Pedagang:</p>
 
-        <table style="border-collapse:collapse; margin-left:20px;">
-            <tr>
-                <td style="width:180px;">a. Nama pasar</td>
-                <td>: ${pasar}</td>
-            </tr>
-            <tr>
-                <td>b. Lahan/tempat dasaran</td>
-                <td>: ${tipe}, ${lokasi}</td>
-            </tr>
-            <tr>
-                <td>c. Luas</td>
-                <td>: ${luas} m<sup>2</sup></td>
-            </tr>
-            <tr>
-                <td>d. Jenis dagangan/golongan</td>
-                <td>: ${dagangan}</td>
-            </tr>
-            <tr>
-                <td>e. Jam Buka</td>
-                <td>: ${buka} s.d ${tutup} WIB</td>
-            </tr>
-        </table>
+    <table class="surat-table">
+        <tr>
+            <td>a. Nama pasar</td>
+            <td>: ${pasar}</td>
+        </tr>
+        <tr>
+            <td>b. Lahan/tempat dasaran</td>
+            <td>: ${tipe}, ${lokasi}</td>
+        </tr>
+        <tr>
+            <td>c. Luas</td>
+            <td>: ${luas} m<sup>2</sup></td>
+        </tr>
+        <tr>
+            <td>d. Jenis dagangan/golongan</td>
+            <td>: ${dagangan}</td>
+        </tr>
+        <tr>
+            <td>e. Jam Buka</td>
+            <td>: ${buka} s.d ${tutup} WIB</td>
+        </tr>
+    </table>
 
-        <p style="margin-top:15px;">Sebagai kelengkapan persyaratan kami lampirkan :</p>
-        <ol style="margin-left:30px;">
-            <li>Berusaha (NIB);</li>
-            <li>Fotokopi Nomor Pokok Wajib Pajak (NPWP);</li>
-            <li>Fotokopi Kartu Tanda Penduduk (KTP);</li>
-            <li>Fotokopi Kartu Keluarga (KK);</li>
-            <li>Pas Photo terbaru ukuran 3x4 berwarna sebanyak 4 lembar;</li>
-        </ol>
+    <p style="margin-top:15px;">Sebagai kelengkapan persyaratan kami lampirkan :</p>
+    <ol style="margin-left:30px;">
+        <li>Berusaha (NIB);</li>
+        <li>Fotokopi Nomor Pokok Wajib Pajak (NPWP);</li>
+        <li>Fotokopi Kartu Tanda Penduduk (KTP);</li>
+        <li>Fotokopi Kartu Keluarga (KK);</li>
+        <li>Pas Photo terbaru ukuran 3x4 berwarna sebanyak 4 lembar;</li>
+    </ol>
 
-        <p>Demikian atas permohonan ini kami ucapkan terima kasih.</p>
+    <p>Demikian atas permohonan ini kami ucapkan terima kasih.</p>
 
-        <div style="margin-top:50px; text-align:right; margin-right:60px;">
-            Dumai, ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}<br><br><br><br>
-            Pemohon,<br><br><br><br>
-            (${nama})
-        </div>
+    <!-- Penutup -->
+    <div style="text-align:right; margin-top:50px;">
+        Dumai, ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}<br><br>
+        Pemohon,<br><br><br><br>
+        (${nama})
     </div>
 </div>
 `;
