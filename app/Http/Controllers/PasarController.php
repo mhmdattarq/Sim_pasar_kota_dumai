@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Pasar;
 use Illuminate\Support\Facades\DB;
 
 class PasarController extends Controller
@@ -36,21 +35,24 @@ class PasarController extends Controller
             'foto_depan'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'foto_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'foto_dalam'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'lokasi_peta'    => 'nullable|string', // tambahin validasi lokasi_peta
+            'lokasi_peta'  => 'nullable|string',
         ]);
 
         // handle file upload
-        $fotoDepan = $request->file('foto_depan') ? $request->file('foto_depan')->store('pasar', 'public') : null;
-        $fotoBelakang = $request->file('foto_belakang') ? $request->file('foto_belakang')->store('pasar', 'public') : null;
-        $fotoDalam = $request->file('foto_dalam') ? $request->file('foto_dalam')->store('pasar', 'public') : null;
+        $fotoDepan     = $request->file('foto_depan') ? $request->file('foto_depan')->store('pasar', 'public') : null;
+        $fotoBelakang  = $request->file('foto_belakang') ? $request->file('foto_belakang')->store('pasar', 'public') : null;
+        $fotoDalam     = $request->file('foto_dalam') ? $request->file('foto_dalam')->store('pasar', 'public') : null;
 
-        Pasar::create([
-            'nama_pasar'   => $request->nama_pasar,
-            'alamat'       => $request->alamat,
-            'foto_depan'   => $fotoDepan,
+        // insert ke database dengan query builder
+        DB::table('pasar')->insert([
+            'nama_pasar'    => $request->nama_pasar,
+            'alamat'        => $request->alamat,
+            'foto_depan'    => $fotoDepan,
             'foto_belakang' => $fotoBelakang,
-            'foto_dalam'   => $fotoDalam,
-            'lokasi_peta'    => $request->lokasi_peta, // simpan embed/link peta
+            'foto_dalam'    => $fotoDalam,
+            'lokasi_peta'   => $request->lokasi_peta,
+            'created_at'    => now(),
+            'updated_at'    => now(),
         ]);
 
         return redirect()->route('backend_admin.pages.pasar.table')->with('success', 'Pasar berhasil ditambahkan!');
