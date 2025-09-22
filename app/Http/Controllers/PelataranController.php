@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Pelataran;
-use App\Models\Pasar;
 use Illuminate\Support\Facades\DB;
 
 class PelataranController extends Controller
