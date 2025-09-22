@@ -86,14 +86,6 @@
                     <td>Jl. Pangeran Diponegoro, Rimba Sekampung, Dumai Kota</td>
                 </tr>
                 <tr>
-                    <td>Titik koordinat Pasar</td>
-                    <td>3.9073° S, 101.4524° E</td>
-                </tr>
-                <tr>
-                    <td>Tahun Berdiri</td>
-                    <td>1980-an</td>
-                </tr>
-                <tr>
                     <td>Luas Lahan Pasar</td>
                     <td>± 3.577 m²</td>
                 </tr>
