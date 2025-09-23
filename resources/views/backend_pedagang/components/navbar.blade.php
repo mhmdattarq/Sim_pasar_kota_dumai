@@ -1,10 +1,10 @@
 <div class="nav-container primary-menu">
     <div class="mobile-topbar-header">
         <div>
-            <img src="{{ asset('backend/assets/images/logo-icon.png') }}" class="logo-icon" alt="logo icon" />
+            <img src="{{ asset('backend/assets/images/logo_kota_dumai.png') }}" class="logo-icon" alt="logo icon" />
         </div>
         <div>
-            <h4 class="logo-text">Rukada</h4>
+            <h4 class="logo-text">Sim-pasar</h4>
         </div>
         <div class="toggle-icon ms-auto">
             <i class="bx bx-arrow-to-left"></i>
