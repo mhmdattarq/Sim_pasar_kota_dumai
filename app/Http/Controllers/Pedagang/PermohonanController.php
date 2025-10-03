@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class PermohonanController extends Controller
@@ -242,7 +243,39 @@ class PermohonanController extends Controller
         return view('backend_pedagang.pages.downloadpermohonan', compact('permohonan', 'downloadUrl'));
     }
 
-    //download surat permohonan
+    // preview surat (dipanggil pas modal preview)
+    public function preview(Request $request)
+    {
+        // ambil data dari form (belum masuk DB)
+        $data = $request->all();
+
+        // generate PDF dari view
+        $pdf = Pdf::loadView(
+            'backend_pedagang.surat.permohonan',
+            ['pedagang' => (object) $data] // pake object biar mirip model
+        )->setPaper('A4', 'portrait');
+
+        // nama file unik per user biar ga tabrakan
+        $userId = Auth::id() ?? 'guest';
+        $fileName = "surat_preview_user{$userId}.pdf";
+
+        // simpan ke storage/app/public/uploads/dokumen/
+        Storage::disk('public')->put("uploads/dokumen/{$fileName}", $pdf->output());
+
+        // pastikan URL yang dikirim HTTPS (Adobe ga mau kalau mixed content)
+        $fileUrl = asset("storage/uploads/dokumen/{$fileName}");
+        if (app()->environment('production')) {
+            $fileUrl = str_replace('http://', 'https://', $fileUrl);
+        }
+
+        return response()->json([
+            'fileUrl'  => $fileUrl,
+            'fileName' => $fileName,
+        ]);
+    }
+
+
+    // download surat permohonan resmi (setelah data masuk DB)
     public function download($id)
     {
         $permohonan = DB::table('permohonan')
@@ -255,17 +288,21 @@ class PermohonanController extends Controller
             abort(404, 'Data permohonan tidak ditemukan');
         }
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
-            'backend_pedagang.surat.permohonan',
-            ['pedagang' => $permohonan] // aliasin jadi $pedagang
-        )->setPaper('A4', 'portrait');
-
-        // simpan file ke storage
+        // nama file final berdasarkan NIK
         $fileName = "surat_permohonan_{$permohonan->nik}.pdf";
-        Storage::disk('public')->put("uploads/dokumen/{$fileName}", $pdf->output());
+        $path = "uploads/dokumen/{$fileName}";
 
+        // kalau file belum ada di storage → generate sekali
+        if (!Storage::disk('public')->exists($path)) {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+                'backend_pedagang.surat.permohonan',
+                ['pedagang' => $permohonan]
+            )->setPaper('A4', 'portrait');
 
-        // tetap kembalikan file untuk di-download
-        return $pdf->download($fileName);
+            Storage::disk('public')->put($path, $pdf->output());
+        }
+
+        // ambil file dari storage untuk di-download
+        return response()->download(storage_path("app/public/{$path}"), $fileName);
     }
 }

@@ -61,6 +61,36 @@
                                         </div>
                                     </div>
                                     <div class="row mb-3">
+                                        <label for="total_kios" class="col-sm-3 col-form-label">Total Kios</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" name="total_kios" class="form-control" id="total_kios"
+                                                placeholder="Masukkan Total Kios..">
+                                            @error('total_kios')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="total_los" class="col-sm-3 col-form-label">Total Los</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" name="total_los" class="form-control" id="total_los"
+                                                placeholder="Masukkan Total Los..">
+                                            @error('total_los')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="total_pelataran" class="col-sm-3 col-form-label">Total Pelataran</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" name="total_pelataran" class="form-control"
+                                                id="total_pelataran" placeholder="Masukkan Total Pelataran..">
+                                            @error('total_pelataran')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
                                         <label for="foto_depan" class="col-sm-3 col-form-label">Foto Tampak Depan</label>
                                         <div class="col-sm-9">
                                             <input type="file" name="foto_depan" class="form-control" id="foto_depan"

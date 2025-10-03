@@ -9,10 +9,11 @@
 
             <div class="topbar-logo-header">
                 <div class="">
-                    <img src="{{ asset('backend/assets/images/logo-icon.png') }}" class="logo-icon" alt="logo icon" />
+                    <img src="{{ asset('backend/assets/images/logo_kota_dumai.png') }}" class="logo-icon"
+                        alt="logo icon" />
                 </div>
                 <div class="">
-                    <h4 class="logo-text">Sim-pasar</h4>
+                    <h4 class="logo-text">Admin Center</h4>
                 </div>
             </div>
             <div class="top-menu ms-auto">

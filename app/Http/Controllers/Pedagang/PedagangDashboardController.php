@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class PedagangDashboardController extends Controller
 {
@@ -27,7 +28,10 @@ class PedagangDashboardController extends Controller
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->first();
+            
+        // Ambil dan hapus flag modal dari session
+        $showModal = session()->pull('show_welcome_modal', false);
 
-        return view('backend_pedagang.pages.dashboard', compact('user', 'permohonan', 'displayName'));
+        return view('backend_pedagang.pages.dashboard', compact('user', 'permohonan', 'displayName', 'showModal'));
     }
 }

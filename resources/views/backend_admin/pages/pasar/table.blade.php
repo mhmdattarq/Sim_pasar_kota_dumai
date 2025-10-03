@@ -35,6 +35,9 @@
                                     <th>No</th>
                                     <th>Nama Pasar</th>
                                     <th>alamat</th>
+                                    <th>Total Kios</th>
+                                    <th>Total Los</th>
+                                    <th>Total Pelataran</th>
                                     <th>Foto Tampak Depan</th>
                                     <th>Foto Tampak Dalam</th>
                                     <th>Foto Tampak Belakang</th>
@@ -47,6 +50,9 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $data->nama_pasar }}</td>
                                         <td>{{ $data->alamat }}</td>
+                                        <td>{{ $data->total_kios }}</td>
+                                        <td>{{ $data->total_los }}</td>
+                                        <td>{{ $data->total_pelataran }}</td>
                                         <td>
                                             <img src="{{ asset('storage/' . $data->foto_depan) }}" alt="Foto Tampak Depan"
                                                 width="150">

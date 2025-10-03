@@ -25,8 +25,6 @@
     </div>
     <a href="{{ route('backend_pedagang.auth.register') }}"
         class="btn btn-primary rounded-pill py-2 px-4 ms-lg-4">Registrasi</a>
-    <a href="{{ route('backend_admin.auth.register') }}"
-        class="btn btn-primary rounded-pill py-2 px-4 ms-lg-4">Admin</a>
 
     @auth
         {{-- Sudah login → tombol dashboard sesuai role --}}

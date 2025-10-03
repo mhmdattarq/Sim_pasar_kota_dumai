@@ -19,6 +19,8 @@ use App\Http\Controllers\Auth\PedagangRegistrasiController; // routing menuju pe
 use App\Http\Controllers\Pedagang\PedagangDashboardController; // routing menuju dashboard pedagang
 use App\Http\Controllers\Pedagang\PermohonanController; //proses permohonan
 use App\Http\Controllers\Pedagang\UploadpermohonanController; //proses upload permohonan
+use App\Http\Controllers\Pedagang\PemberitahuanController; // proses download pemberitahuan
+use App\Http\Controllers\Pedagang\PernyataanController; // proses download pernyataan
 
 
 // Route backend admin
@@ -29,6 +31,7 @@ use App\Http\Controllers\LosController; // menuju loss admin
 use App\Http\Controllers\PelataranController; // menuju pelataran admin
 use App\Http\Controllers\Admin\AccPermohonanController; // menuju pedagang admin
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Response;
 
 
 
@@ -82,6 +85,19 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/detail_pelataran', [PelataranController::class, 'table'])->name('backend_admin.pages.pelataran.table');
     //pedagang
     Route::get('/list/permohonan', [AccPermohonanController::class, 'showTable'])->name('backend_admin.pages.pedagang.tabelpermohonan');
+    Route::get('/admin/permohonan/{nik}/review', [AccPermohonanController::class, 'reviewPdf'])->name('admin.permohonan.review');
+    Route::get('/admin/permohonan/{nik}/document/{docType}', [AccPermohonanController::class, 'getDocument'])->name('admin.permohonan.document');
+    Route::get('/proxy-storage/{path}', function ($path) {
+        $fullPath = storage_path('app/public/' . $path);
+        if (file_exists($fullPath)) {
+            return Response::file($fullPath, [
+                'Content-Type' => 'application/pdf',
+                'Access-Control-Allow-Origin' => '*'
+            ]);
+        }
+        abort(404);
+    })->where('path', '.*');
+    Route::post('/admin/permohonan/{nik}/approve', [AccPermohonanController::class, 'approve'])->name('permohonan.approve');
 });
 
 // middleware dan seluruh fungsi dan tampilan backend pedagang
@@ -93,13 +109,34 @@ Route::middleware(['auth', 'role:pedagang'])->group(function () {
     Route::get('/get-tempat/{pasarId}', [PermohonanController::class, 'getTempatByPasar']);
     Route::get('/get-luas/{tipe}/{id}', [PermohonanController::class, 'getLuas']);
     Route::post('/permohonan', [PermohonanController::class, 'store'])->name('permohonan.store');
-    Route::get('/preview-surat', [PermohonanController::class, 'previewSurat'])->name('preview.surat');
+    Route::post('/permohonan/preview', [PermohonanController::class, 'preview'])
+        ->name('pedagang.permohonan.preview');
     Route::get('/pedagang/permohonan/success/{id}', [PermohonanController::class, 'success'])
         ->name('pedagang.permohonan.success');
     Route::get('/permohonan/download/{id}', [\App\Http\Controllers\Pedagang\PermohonanController::class, 'download'])
         ->name('pedagang.permohonan.download');
-
     //upload surat permohonan
     Route::get('/upload/permohonan', [UploadpermohonanController::class, 'showTable'])->name('backend_pedagang.pages.uploadpermohonan');
     Route::post('/upload-permohonan', [UploadpermohonanController::class, 'store'])->name('uploadpermohonan.store');
+    Route::get('/user-proxy-storage/{path}', function ($path) {
+        $fullPath = storage_path('app/public/' . $path);
+        if (!file_exists($fullPath)) {
+            \Log::error('User proxy storage file not found: ' . $fullPath);
+            abort(404, 'File not found');
+        }
+        if (!is_readable($fullPath)) {
+            \Log::error('User proxy storage file not readable: ' . $fullPath);
+            abort(403, 'File not readable');
+        }
+        return response()->file($fullPath, [
+            'Content-Type' => 'application/pdf',
+            'Access-Control-Allow-Origin' => '*'
+        ]);
+    })->where('path', '.*')->name('user.proxy.storage');
+    Route::get('/get-document-url/{id}', [UploadpermohonanController::class, 'getDocumentUrl'])->name('get.document.url');
+
+    //download surat pemberitahuan
+    Route::get('/pedagang/pemberitahuan/download', [PemberitahuanController::class, 'download'])->name('pedagang.pemberitahuan.download')->middleware('auth');
+    Route::get('/pedagang/pernyataan/download', [PernyataanController::class, 'download'])->name('pedagang.pernyataan.download')->middleware('auth');
+    Route::post('/pedagang/upload-signed-pernyataan', [PernyataanController::class, 'uploadSigned'])->name('pedagang.uploadSigned');
 });

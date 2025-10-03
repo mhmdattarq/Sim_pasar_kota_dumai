@@ -21,6 +21,26 @@
                 </a>
             </li>
             <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;"
+                    data-bs-toggle="dropdown">
+                    <div class="parent-icon">
+                        <i class="bx bx-user"></i>
+                    </div>
+                    <div class="menu-title">Pedagang</div>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('backend_admin.pages.pedagang.tabelpermohonan') }}"><i
+                                class="bx bx-right-arrow-alt"></i>
+                            Permohonan</a>
+                    </li>
+                    <!--<li>
+                        <a class="dropdown-item" href="component-alerts.html"><i
+                                class="bx bx-right-arrow-alt"></i>Alerts</a>
+                    </li>-->
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
                 <a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
                     data-bs-toggle="dropdown">
                     <div class="parent-icon"><i class="bx bx-cart"></i></div>
@@ -91,26 +111,6 @@
                     <li>
                         <a class="dropdown-item" href="{{ route('backend_admin.pages.pelataran.tambah') }}"><i
                                 class="bx bx-right-arrow-alt"></i>Penambahan Pelataran</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;"
-                    data-bs-toggle="dropdown">
-                    <div class="parent-icon">
-                        <i class="bx bx-user"></i>
-                    </div>
-                    <div class="menu-title">Pedagang</div>
-                </a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" href="{{ route('backend_admin.pages.pedagang.tabelpermohonan') }}"><i
-                                class="bx bx-right-arrow-alt"></i>
-                            Permohonan</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="component-alerts.html"><i
-                                class="bx bx-right-arrow-alt"></i>Alerts</a>
                     </li>
                 </ul>
             </li>

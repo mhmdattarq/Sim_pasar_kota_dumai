@@ -1,8 +1,9 @@
 <!-- Required meta tags -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <!--favicon-->
-<link rel="icon" href="{{ asset('backend/assets/images/favicon-32x32.png') }}" type="image/png" />
+<link rel="icon" href="{{ asset('backend/assets/images/logo_kota_dumai.png') }}" type="image/png" />
 <!--plugins-->
 <link href="{{ asset('backend/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css') }}" rel="stylesheet" />
 <link href="{{ asset('backend/assets/plugins/simplebar/css/simplebar.css') }}" rel="stylesheet" />
@@ -25,4 +26,4 @@
 <link rel="stylesheet" href="{{ asset('backend/assets/css/dark-theme.css') }}" />
 <link rel="stylesheet" href="{{ asset('backend/assets/css/semi-dark.css') }}" />
 <link rel="stylesheet" href="{{ asset('backend/assets/css/header-colors.css') }}" />
-<title>sim-pasar-dumai</title>
+<title>Admin Center Sim-pasar Dumai</title>

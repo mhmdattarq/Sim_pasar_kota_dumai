@@ -38,3 +38,6 @@
 <!-- DataTables CSS -->
 <link href="{{ asset('backend/assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
 <link href="{{ asset('backend/assets/plugins/datatable/css/buttons.bootstrap5.min.css') }}" rel="stylesheet" />
+
+<!-- favicon -->
+<link rel="icon" type="image/png" href="{{ asset('frontend/assets/img/logodumai.png') }}">

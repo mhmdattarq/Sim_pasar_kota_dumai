@@ -363,8 +363,9 @@
                                                     <button type="button" class="btn-close"
                                                         data-bs-dismiss="modal"></button>
                                                 </div>
-                                                <div class="modal-body" id="suratPreview">
+                                                <div class="modal-body">
                                                     <!-- Isi surat permohonan akan ditampilkan disini -->
+                                                    <div id="adobe-dc-view" style="height:600px;"></div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
@@ -530,188 +531,39 @@
         });
     </script>
 
+    <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const previewBtn = document.querySelector('[data-bs-target="#previewModal"]');
-            const suratPreview = document.getElementById('suratPreview');
+        document.addEventListener("adobe_dc_view_sdk.ready", function() {
+            var adobeDCView;
 
-            previewBtn.addEventListener('click', function() {
-                // ambil nilai form
-                let nik = document.getElementById('nik').value;
-                let nama = document.getElementById('nama').value;
-                let tempat_lahir = document.getElementById('tempat_lahir').value;
-                let tgl_lahir = document.getElementById('tanggal_lahir').value;
-                let jk = document.getElementById('jenis_kelamin').value;
-                let no_telp = document.getElementById('no_telp').value;
-                let alamat = document.getElementById('alamat').value;
-                let pasar = document.querySelector('#pasar_id option:checked').text;
-                let tipe = document.querySelector('#tipe_tempat option:checked').text;
-                let lokasi = '';
-                if (document.getElementById('kios_id').value) lokasi = document.querySelector(
-                    '#kios_id option:checked').text;
-                if (document.getElementById('los_id').value) lokasi = document.querySelector(
-                    '#los_id option:checked').text;
-                if (document.getElementById('pelataran_id').value) lokasi = document.querySelector(
-                    '#pelataran_id option:checked').text;
-                let luas = document.getElementById('luas').value;
-                let dagangan = document.getElementById('jenis_dagangan').value;
-                let buka = document.getElementById('jam_buka').value;
-                let tutup = document.getElementById('jam_tutup').value;
+            // event ketika modal dibuka
+            $('#previewModal').on('shown.bs.modal', function() {
+                $.ajax({
+                    url: "{{ route('pedagang.permohonan.preview') }}",
+                    method: "POST",
+                    data: $('#formPermohonan').serialize(),
+                    success: function(res) {
+                        if (!adobeDCView) {
+                            adobeDCView = new AdobeDC.View({
+                                clientId: "d74201ec391f4e5dbe13f29b3674ce19",
+                                divId: "adobe-dc-view"
+                            });
+                        }
 
-                // inject ke HTML surat
-                suratPreview.innerHTML = `
-<style>
-/* Default PC/Laptop */
-.surat-container {
-  font-family: 'Times New Roman', serif;
-  font-size: 12pt;
-  line-height: 1.5;
-  margin: 20px 60px;
-  text-align: justify;
-}
-
-.surat-header {
-  text-align: right;
-  font-size: 11pt;
-}
-
-.surat-title {
-  text-align: center;
-  font-weight: bold;
-  margin-top: 20px;
-}
-
-.surat-table td {
-  padding: 2px 5px;
-  vertical-align: top;
-  font-size: 11pt;
-}
-
-.surat-table td:first-child {
-  width: 200px;
-}
-
-/* Responsif Tablet */
-@media (max-width: 768px) {
-  .surat-container {
-    margin: 15px 20px;
-    font-size: 11pt;
-  }
-  .surat-table td:first-child {
-    width: 140px;
-  }
-}
-
-/* Responsif HP */
-@media (max-width: 480px) {
-  .surat-container {
-    margin: 10px;
-    font-size: 10.5pt;
-  }
-  .surat-table td {
-    display: block;
-    width: 100% !important;
-  }
-  .surat-table td:first-child {
-    font-weight: bold;
-    margin-top: 5px;
-  }
-}
-</style>
-
-<div class="surat-container">
-    <!-- Header Kanan -->
-    <div class="surat-header">
-        <p style="margin:0;">LAMPIRAN I</p>
-        <p style="margin:0;">PERATURAN WALI KOTA DUMAI</p>
-        <p style="margin:0;">NOMOR .... TAHUN 2025</p>
-        <p style="margin:0;">TENTANG PASAR RAKYAT</p>
-    </div>
-
-    <!-- Judul Tengah -->
-    <div class="surat-title">
-        <p style="margin:0;">SURAT PERMOHONAN MENJADI PEDAGANG</p>
-    </div>
-
-    <hr style="border:1px solid #000; margin:15px 0;">
-
-    <!-- Isi Surat -->
-    <p>Kepada</p>
-    <p>Yth. ..................................................</p>
-    <p>Di-</p>
-    <p>..................................................</p>
-
-    <p style="margin-top:15px;"><strong>Hal :</strong> Permohonan menjadi Pedagang</p>
-    <p>Yang bertanda tangan di bawah ini :</p>
-
-    <table class="surat-table">
-        <tr>
-            <td>Nama</td>
-            <td>: ${nama} (${jk})</td>
-        </tr>
-        <tr>
-            <td>Tempat, tanggal lahir</td>
-            <td>: ${tempat_lahir}, ${tgl_lahir}</td>
-        </tr>
-        <tr>
-            <td>No. NIK/KTP</td>
-            <td>: ${nik}</td>
-        </tr>
-        <tr>
-            <td>No. Telpon yang bisa dihubungi</td>
-            <td>: ${no_telp}</td>
-        </tr>
-        <tr>
-            <td>Alamat</td>
-            <td>: ${alamat}</td>
-        </tr>
-    </table>
-
-    <p style="margin-top:15px;">Mengajukan permohonan menjadi Pedagang:</p>
-
-    <table class="surat-table">
-        <tr>
-            <td>a. Nama pasar</td>
-            <td>: ${pasar}</td>
-        </tr>
-        <tr>
-            <td>b. Lahan/tempat dasaran</td>
-            <td>: ${tipe}, ${lokasi}</td>
-        </tr>
-        <tr>
-            <td>c. Luas</td>
-            <td>: ${luas} m<sup>2</sup></td>
-        </tr>
-        <tr>
-            <td>d. Jenis dagangan/golongan</td>
-            <td>: ${dagangan}</td>
-        </tr>
-        <tr>
-            <td>e. Jam Buka</td>
-            <td>: ${buka} s.d ${tutup} WIB</td>
-        </tr>
-    </table>
-
-    <p style="margin-top:15px;">Sebagai kelengkapan persyaratan kami lampirkan :</p>
-    <ol style="margin-left:30px;">
-        <li>Berusaha (NIB);</li>
-        <li>Fotokopi Nomor Pokok Wajib Pajak (NPWP);</li>
-        <li>Fotokopi Kartu Tanda Penduduk (KTP);</li>
-        <li>Fotokopi Kartu Keluarga (KK);</li>
-        <li>Pas Photo terbaru ukuran 3x4 berwarna sebanyak 4 lembar;</li>
-    </ol>
-
-    <p>Demikian atas permohonan ini kami ucapkan terima kasih.</p>
-
-    <!-- Penutup -->
-    <div style="text-align:right; margin-top:50px;">
-        Dumai, ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}<br><br>
-        Pemohon,<br><br><br><br>
-        (${nama})
-    </div>
-</div>
-`;
-
+                        adobeDCView.previewFile({
+                            content: {
+                                location: {
+                                    url: res.fileUrl
+                                }
+                            },
+                            metaData: {
+                                fileName: res.fileName
+                            }
+                        }, {
+                            embedMode: "SIZED_CONTAINER"
+                        });
+                    }
+                });
             });
         });
     </script>

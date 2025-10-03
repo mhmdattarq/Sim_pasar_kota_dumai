@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--favicon-->
-    <link rel="icon" href="{{ asset('backend/assets/images/favicon-32x32.png') }}" type="image/png" />
+    <link rel="icon" href="{{ asset('backend/assets/images/logo_kota_dumai.png') }}" type="image/png" />
     <!--plugins-->
     <link href="{{ asset('backend/assets/plugins/simplebar/css/simplebar.css') }}" rel="stylesheet" />
     <link href="{{ asset('backend/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css') }}" rel="stylesheet" />
@@ -39,14 +39,34 @@
                                         <p class="mb-4">Pendaftaran Akun Pedagang</p>
                                     </div>
                                     <div class="alert alert-info mb-3" style="font-size: 14px;">
-                                        Silakan lengkapi data diri Anda sesuai dengan identitas resmi.
-                                        Pastikan informasi yang dimasukkan benar dan dapat dipertanggungjawabkan.
+                                        <span style="animation: blink 1.5s infinite;">Silahkan lengkapi data diri Anda
+                                            sesuai dengan identitas resmi.
+                                            Pastikan informasi yang dimasukkan benar dan dapat
+                                            dipertanggungjawabkan.</span>
                                         <ul class="mt-2 mb-0">
-                                            <li>NIK digunakan sebagai identitas utama.</li>
-                                            <li>Nomor handphone aktif.</li>
-                                            <li>Simpan password Anda dengan baik untuk login ke aplikasi.</li>
+                                            <li><span style="animation: blink 1.5s infinite;">NIK digunakan sebagai
+                                                    identitas utama.</span></li>
+                                            <li><span style="animation: blink 1.5s infinite;">Nomor handphone
+                                                    aktif.</span></li>
+                                            <li><span style="animation: blink 1.5s infinite;">Simpan password Anda
+                                                    dengan baik untuk login ke aplikasi.</span></li>
                                         </ul>
                                     </div>
+                                    <style>
+                                        @keyframes blink {
+                                            0% {
+                                                opacity: 1;
+                                            }
+
+                                            50% {
+                                                opacity: 0.3;
+                                            }
+
+                                            100% {
+                                                opacity: 1;
+                                            }
+                                        }
+                                    </style>
                                     @if ($errors->any())
                                         <div class="alert alert-danger" role="alert">
                                             {{ $errors->first() }}

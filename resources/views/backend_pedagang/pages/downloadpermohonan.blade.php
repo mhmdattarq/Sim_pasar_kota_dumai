@@ -10,16 +10,17 @@
                     <h2 class="fw-bold mb-3">Permohonan Berhasil Dibuat!</h2>
                     <p>
                         Selamat! <strong>{{ $permohonan->nama }}</strong>, permohonan Anda sudah berhasil dibuat.
-                        Silahkan download Surat permohonan dan tanda tangan lalu unggah kembali untuk melanjutkan.
+                        Silahkan download surat permohonan <strong>lalu di</strong> tanda tangani lalu unggah kembali untuk
+                        melanjutkan.
                     </p>
 
                     <div class="mt-4 d-flex flex-column flex-md-row justify-content-center justify-content-xl-start gap-3">
-                        <a href="{{ $downloadUrl }}" class="btn btn-success px-4 py-2 rounded-pill">
-                            Download Surat Permohonan
+                        <a href="{{ $downloadUrl }}" class="btn btn-success px-4 py-2 rounded-pill text-nowrap">
+                            <i class="bx bx-download me-2"></i>Download Surat Permohonan
                         </a>
                         <a href="{{ route('backend_pedagang.pages.dashboard') }}"
-                            class="btn btn-outline-dark px-4 py-2 rounded-pill">
-                            Kembali ke Dashboard
+                            class="btn btn-outline-dark px-4 py-2 rounded-pill text-nowrap">
+                            <i class="bx bx-home me-2"></i>Kembali ke Dashboard
                         </a>
                     </div>
                 </div>
