@@ -30,9 +30,10 @@
             </div>
 
             <!-- Login form di kanan -->
-            <div class="col-lg-6 mb-3 d-flex align-items-center justify-content-center mt-3">
-                <div class="card shadow-lg p-4 rounded-4" style="width: 400px; background: rgba(255,255,255,0.9);">
-                    <div class="text-center mb-3">
+            <div class="col-lg-6 mb-3 d-flex align-items-center justify-content-center mt-5">
+                <div class="card shadow-lg p-4 rounded-4"
+                    style="width: 660px; min-height: 403px; background: rgba(255,255,255,0.9);">
+                    <div class="text-center mb-5">
                         <h5 class="mt-2 fw-bold">LOGIN SIMPASAR</h5>
                     </div>
 
@@ -62,7 +63,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-
+                        <br>
                         <div class="d-flex justify-content-center">
                             <button type="submit" class="btn btn-primary w-50">
                                 Login
