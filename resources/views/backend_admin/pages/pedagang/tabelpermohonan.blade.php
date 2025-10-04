@@ -59,7 +59,7 @@
                                             @elseif ($p->status == 'ditolak')
                                                 <span class="badge bg-danger">Ditolak</span>
                                             @elseif ($p->status == 'selesai')
-                                                <span class="badge bg-danger">Disetujui, Sudah Terverifikasi</span>
+                                                <span class="badge bg-success">Selesai</span>
                                             @else
                                                 <span class="badge bg-secondary">Unknown</span>
                                             @endif
@@ -73,11 +73,19 @@
                                                 @if ($p->status == 'disetujui' || $p->status == 'ditolak') disabled @endif>
                                                 Review
                                             </button>
+                                            |
                                             <button type="button" class="btn btn-success btn-sm approve-pdf"
                                                 data-bs-toggle="modal" data-bs-target="#approveModal{{ $p->id }}"
                                                 data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}"
-                                                @if ($p->status == 'disetujui' || $p->status == 'ditolak') disabled @endif>
+                                                @if ($p->status == 'disetujui' || $p->status == 'ditolak' || $p->status == 'selesai') disabled @endif>
                                                 Persetujuan
+                                            </button>
+                                            |
+                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#approveModal{{ $p->id }}"
+                                                data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}"
+                                                @if ($p->status == 'selesai' || $p->status == 'ditolak' || $p->status == 'draft' || $p->status == 'lengkap') disabled @endif>
+                                                Verifikasi
                                             </button>
                                             <!-- Modal Preview Surat -->
                                             <div class="modal fade" id="reviewModal{{ $p->id }}" tabindex="-1"
