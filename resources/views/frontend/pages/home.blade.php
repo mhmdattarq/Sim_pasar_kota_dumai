@@ -12,12 +12,13 @@
                         <div class="d-flex align-items-center mb-3">
                             <h6 class="mb-0">Monthly Orders</h6>
                             <div class="dropdown ms-auto">
-                                <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown">
+                                <a class="dropdown-toggle dropdown-toggle-nocaret" href="#togglebutton"
+                                    data-bs-toggle="dropdown">
                                     <i class="bx bx-dots-horizontal-rounded font-22 text-option"></i>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                                    <li><a class="dropdown-item" href="#togglebutton">Action</a></li>
+                                    <li><a class="dropdown-item" href="#togglebutton">Another action</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -29,7 +30,7 @@
             </div>
 
             <!-- Login form di kanan -->
-            <div class="col-lg-6 mb-3 d-flex align-items-center justify-content-center mt-3 ">
+            <div class="col-lg-6 mb-3 d-flex align-items-center justify-content-center mt-3">
                 <div class="card shadow-lg p-4 rounded-4" style="width: 400px; background: rgba(255,255,255,0.9);">
                     <div class="text-center mb-3">
                         <h5 class="mt-2 fw-bold">LOGIN SIMPASAR</h5>
