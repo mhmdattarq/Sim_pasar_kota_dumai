@@ -116,15 +116,7 @@
                 </div>
             </div>
         </div>
-
     </div>
-    @if (session('download_surat'))
-        <script>
-            window.onload = function() {
-                window.location.href = "{{ route('surat.download', ['nik' => session('download_surat')]) }}";
-            }
-        </script>
-    @endif
 @endsection
 
 @push('scripts')
