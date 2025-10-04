@@ -28,7 +28,7 @@ class PedagangDashboardController extends Controller
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->first();
-            
+
         // Ambil dan hapus flag modal dari session
         $showModal = session()->pull('show_welcome_modal', false);
 

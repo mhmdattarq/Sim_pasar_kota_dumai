@@ -1,7 +1,7 @@
 @extends('frontend.app')
 
 @section('content')
-    <div class="container-fluid pt-5 pt-md-7 pt-lg-9"
+    <div class="container-fluid pt-5 pt-md-7 pt-lg-9 min-height: 500px;"
         style="background: url('{{ asset('frontend/assets/img/bannerhome.jpeg') }}') no-repeat center center; background-size: cover;">
 
         <div class="row mt-4">

@@ -96,12 +96,12 @@
                 <div class="col">
                     <div class="card rounded-4 bg-gradient-danger">
                         <div class="card-body text-center">
-                            <h3 class="text-white">Belum Ada Permohonan</h3>
+                            <h3 class="text-white">Belum Ada Permohonan Menjadi Pedagang!</h3>
                             <div class="widgets-icons-2 mx-auto my-4 bg-white rounded-circle text-dark">
                                 <i class='bx bx-window-close'></i>
                             </div>
                             <p class="mb-0 text-white">Anda belum memiliki surat permohonan, Klik tombol di bawah ini untuk
-                                membuat surat permohonan baru.</p>
+                                membuat surat permohonan menjadi pedagang baru.</p>
                             <a href="{{ route('backend_pedagang.pages.permohonan') }}"
                                 class="btn btn-white px-4 rounded-5 mt-4"><i class='bx bx-highlight'></i>Buat
                                 Permohonan</a>
@@ -114,7 +114,7 @@
                     <div class="col">
                         <div class="card rounded-4 bg-gradient-warning">
                             <div class="card-body text-center">
-                                <h3 class="text-white">Permohonan Sudah Berhasil Dibuat</h3>
+                                <h3 class="text-white">Permohonan Sudah Berhasil Dibuat!</h3>
                                 <div class="widgets-icons-2 mx-auto my-4 bg-white rounded-circle text-dark">
                                     <i class='bx bx-upload'></i>
                                 </div>
@@ -132,7 +132,7 @@
                     <div class="col">
                         <div class="card rounded-4 bg-gradient-success">
                             <div class="card-body text-center">
-                                <h3 class="text-white">Permohonan Sudah Berhasil Diunggah/Dikirim</h3>
+                                <h3 class="text-white">Permohonan Sudah Berhasil Diunggah/Dikirim!</h3>
                                 <div class="widgets-icons-2 mx-auto my-4 bg-white rounded-circle text-dark">
                                     <i class='bx bx-check-circle'></i>
                                 </div>
@@ -145,6 +145,37 @@
                             </div>
                         </div>
                     </div>
+                @elseif($permohonan->status == 'disetujui')
+                    <div class="col">
+                        <div class="card rounded-4 bg-gradient-warning">
+                            <div class="card-body text-center">
+                                <h3 class="text-white">Permohonan Sudah Berhasil Disetujui, Belum Terverifikasi!</h3>
+                                <div class="widgets-icons-2 mx-auto my-4 bg-white rounded-circle text-dark">
+                                    <i class='bx bx-check-circle'></i>
+                                </div>
+                                <p class="mb-0 text-white">Surat permohonan Anda telah berhasil disetujui. <br>Silahkan
+                                    unduh surat pemberitahuan dan surat pernyataan menjadi pedagang,
+                                    lalu tanda tangani Surat pernyataan untuk menyelesaikan verifikasi.</p>
+                                <a href="{{ route('backend_pedagang.pages.uploadpermohonan') }}"
+                                    class="btn btn-white px-4 rounded-5 mt-4"><i class='bx bx-check'></i>Verifikasi</a>
+                            </div>
+                        </div>
+                    </div>
+                @elseif($permohonan->status == 'selesai')
+                    <div class="col">
+                        <div class="card rounded-4 bg-gradient-success">
+                            <div class="card-body text-center">
+                                <h3 class="text-white">Permohonan Sudah Berhasil Disetujui, Terverifikasi!</h3>
+                                <div class="widgets-icons-2 mx-auto my-4 bg-white rounded-circle text-dark">
+                                    <i class='bx bx-check-circle'></i>
+                                </div>
+                                <p class="mb-0 text-white">Surat permohonan Anda telah berhasil disetujui. Selamat Anda
+                                    sudah berhasil terverifikasi menjadi pedagang!</p>
+                                <!--<a href="{{ route('backend_pedagang.pages.uploadpermohonan') }}"
+                                        class="btn btn-white px-4 rounded-5 mt-4"><i class='bx bx-check'></i>Verifikasi</a>-->
+                            </div>
+                        </div>
+                    </div>
                 @endif
             @endif
         </div>
@@ -152,7 +183,12 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
-            welcomeModal.show();
+            @if ($showModal)
+                console.log('Modal triggered');
+                welcomeModal.show();
+            @else
+                console.log('No trigger for modal');
+            @endif
         });
     </script>
 @endsection
