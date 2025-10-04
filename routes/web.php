@@ -87,6 +87,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/list/permohonan', [AccPermohonanController::class, 'showTable'])->name('backend_admin.pages.pedagang.tabelpermohonan');
     Route::get('/admin/permohonan/{nik}/review', [AccPermohonanController::class, 'reviewPdf'])->name('admin.permohonan.review');
     Route::get('/admin/permohonan/{nik}/document/{docType}', [AccPermohonanController::class, 'getDocument'])->name('admin.permohonan.document');
+    Route::post('/admin/permohonan/{nik}/verify', [AccPermohonanController::class, 'verify'])->name('admin.permohonan.verify'); // Route baru untuk verifikasi
     Route::get('/proxy-storage/{path}', function ($path) {
         $fullPath = storage_path('app/public/' . $path);
         if (file_exists($fullPath)) {

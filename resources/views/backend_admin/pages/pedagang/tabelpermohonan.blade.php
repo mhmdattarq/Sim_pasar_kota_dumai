@@ -69,8 +69,7 @@
                                             <!-- Tombol Review -->
                                             <button type="button" class="btn btn-gradient-warning btn-sm view-pdf"
                                                 data-bs-toggle="modal" data-bs-target="#reviewModal{{ $p->id }}"
-                                                data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}"
-                                                @if ($p->status == 'disetujui' || $p->status == 'ditolak') disabled @endif>
+                                                data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}">
                                                 Review
                                             </button>
                                             |
@@ -81,9 +80,8 @@
                                                 Persetujuan
                                             </button>
                                             |
-                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#approveModal{{ $p->id }}"
-                                                data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}"
+                                            <button type="button" class="btn btn-warning btn-sm verify-btn"
+                                                data-nik="{{ $p->nik }}"
                                                 @if ($p->status == 'selesai' || $p->status == 'ditolak' || $p->status == 'draft' || $p->status == 'lengkap') disabled @endif>
                                                 Verifikasi
                                             </button>
@@ -469,6 +467,33 @@
                     if (reasonContainer) reasonContainer.style.display = 'none';
                     if (reasonText) reasonText.value = '';
                     if (adobeEl) adobeEl.style.display = 'none';
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('.verify-btn').on('click', function() {
+                var nik = $(this).data('nik');
+
+                $.ajax({
+                    url: '/admin/permohonan/verify/' + nik,
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Permohonan berhasil diverifikasi!');
+                            location.reload(); // Refresh halaman untuk update tabel
+                        } else {
+                            alert('Gagal: ' + response.error);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan: ' + xhr.responseJSON.error);
+                    }
                 });
             });
         });

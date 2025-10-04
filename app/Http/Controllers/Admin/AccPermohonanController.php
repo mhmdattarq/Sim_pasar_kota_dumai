@@ -300,4 +300,33 @@ class AccPermohonanController extends Controller
             throw $e; // Re-throw agar ditangkap di approve
         }
     }
+    public function verify($nik)
+    {
+        try {
+            $nik = str_replace('.', '', $nik);
+            $nama = DB::table('permohonan')->where('nik', $nik)->value('nama');
+
+            // Cek apakah permohonan ada
+            $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
+            if (!$permohonan) {
+                return response()->json(['error' => 'Permohonan tidak ditemukan'], 404);
+            }
+
+            // Update status jadi 'selesai'
+            DB::table('permohonan')
+                ->where('nik', $nik)
+                ->update([
+                    'status' => 'selesai',
+                    'keterangan' => 'Permohonan telah diverifikasi'
+                ]);
+
+            // Set session untuk alert
+            session()->flash('success', "Permohonan dari {$nama} telah diverifikasi");
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            Log::error('Error verifikasi untuk NIK: ' . $nik . ', Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Gagal verifikasi: ' . $e->getMessage()], 500);
+        }
+    }
 }

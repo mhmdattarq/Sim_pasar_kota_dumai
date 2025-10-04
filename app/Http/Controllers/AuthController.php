@@ -35,6 +35,9 @@ class AuthController extends Controller
 
         // login pakai Auth
         Auth::loginUsingId($user->id);
+        
+        // Set flash session untuk menampilkan modal welcome setelah login
+        $request->session()->put('show_welcome_modal', true);
 
         // redirect berdasarkan role
         if ($user->role === 'admin') {

@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class PermohonanController extends Controller
@@ -243,66 +242,109 @@ class PermohonanController extends Controller
         return view('backend_pedagang.pages.downloadpermohonan', compact('permohonan', 'downloadUrl'));
     }
 
-    // preview surat (dipanggil pas modal preview)
     public function preview(Request $request)
-    {
-        // ambil data dari form (belum masuk DB)
-        $data = $request->all();
-
-        // generate PDF dari view
-        $pdf = Pdf::loadView(
-            'backend_pedagang.surat.permohonan',
-            ['pedagang' => (object) $data] // pake object biar mirip model
-        )->setPaper('A4', 'portrait');
-
-        // nama file unik per user biar ga tabrakan
-        $userId = Auth::id() ?? 'guest';
-        $fileName = "surat_preview_user{$userId}.pdf";
-
-        // simpan ke storage/app/public/uploads/dokumen/
-        Storage::disk('public')->put("uploads/dokumen/{$fileName}", $pdf->output());
-
-        // pastikan URL yang dikirim HTTPS (Adobe ga mau kalau mixed content)
-        $fileUrl = asset("storage/uploads/dokumen/{$fileName}");
-        if (app()->environment('production')) {
-            $fileUrl = str_replace('http://', 'https://', $fileUrl);
+        {
+            try {
+                $data = $request->all();
+        
+                // Validasi minimal, tambah tipe_tempat dan ID-nya
+                $request->validate([
+                    'nik' => 'required',
+                    'nama' => 'required|string',
+                    'pasar_id' => 'required|integer',
+                    'tipe_tempat' => 'required|string|in:kios,los,pelataran', // Tambah validasi
+                    'kios_id' => 'required_if:tipe_tempat,kios', // Opsional berdasarkan tipe
+                    'los_id' => 'required_if:tipe_tempat,los',
+                    'pelataran_id' => 'required_if:tipe_tempat,pelataran',
+                    'jenis_dagangan' => 'required|string|max:255',
+                ]);
+        
+                // Ambil nama pasar
+                $pasar = DB::table('pasar')->where('id', $data['pasar_id'])->first();
+                $data['nama_pasar'] = $pasar ? $pasar->nama_pasar : '';
+        
+                // Ambil lokasi berdasarkan tipe tempat (seperti di store)
+                $lokasi = null;
+                if ($data['tipe_tempat'] == 'kios' && isset($data['kios_id'])) {
+                    $dataKios = DB::table('kios')->where('id', $data['kios_id'])->first();
+                    $lokasi = $dataKios->lokasi_kios ?? null;
+                } elseif ($data['tipe_tempat'] == 'los' && isset($data['los_id'])) {
+                    $dataLos = DB::table('loss')->where('id', $data['los_id'])->first();
+                    $lokasi = $dataLos->lokasi_los ?? null;
+                } elseif ($data['tipe_tempat'] == 'pelataran' && isset($data['pelataran_id'])) {
+                    $dataPelataran = DB::table('pelatarans')->where('id', $data['pelataran_id'])->first();
+                    $lokasi = $dataPelataran->lokasi_pelataran ?? null;
+                }
+                $data['lokasi'] = $lokasi; // Tambah lokasi ke data
+        
+                // Generate PDF dengan watermark draft
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+                    'backend_pedagang.surat.permohonan',
+                    ['pedagang' => (object) $data, 'isDraft' => true] // Tambah isDraft true untuk watermark
+                )->setPaper('A4', 'portrait');
+        
+                // Nama file statis berdasarkan userId
+                $userId = Auth::id();
+                $fileName = "preview_user{$userId}.pdf";
+                $filePath = "uploads/dokumen/{$fileName}";
+        
+                // Hapus file lama jika ada
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
+        
+                // Simpan file baru (overwrite)
+                Storage::disk('public')->put($filePath, $pdf->output());
+        
+                if (!Storage::disk('public')->exists($filePath)) {
+                    throw new \Exception('Gagal menyimpan file PDF.');
+                }
+        
+                // Pakai path absolut langsung
+                $fileUrl = 'https://dev-simpasar.dumaikota.go.id/storage/app/public/uploads/dokumen/' . $fileName;
+                \Log::info('Generated PDF URL: ' . $fileUrl . ' | Lokasi: ' . ($lokasi ?? 'null')); // Debug lokasi
+        
+                return response()->json([
+                    'fileUrl' => $fileUrl,
+                    'fileName' => $fileName,
+                ]);
+            } catch (\Exception $e) {
+                \Log::error('Error generating PDF: ' . $e->getMessage());
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
         }
 
-        return response()->json([
-            'fileUrl'  => $fileUrl,
-            'fileName' => $fileName,
-        ]);
-    }
-
-
-    // download surat permohonan resmi (setelah data masuk DB)
-    public function download($id)
-    {
-        $permohonan = DB::table('permohonan')
-            ->join('pasar', 'pasar.id', '=', 'permohonan.pasar_id')
-            ->where('permohonan.id', $id)
-            ->select('permohonan.*', 'pasar.nama_pasar')
-            ->first();
-
-        if (!$permohonan) {
-            abort(404, 'Data permohonan tidak ditemukan');
+        // download surat permohonan resmi (setelah data masuk DB)
+        public function download($id)
+        {
+                $permohonan = DB::table('permohonan')
+                    ->join('pasar', 'pasar.id', '=', 'permohonan.pasar_id')
+                    ->where('permohonan.id', $id)
+                    ->select('permohonan.*', 'pasar.nama_pasar')
+                    ->first();
+            
+                if (!$permohonan) {
+                    abort(404, 'Data permohonan tidak ditemukan');
+                }
+            
+                // nama file final berdasarkan NIK
+                $fileName = "surat_permohonan_{$permohonan->nik}.pdf";
+                $path = "uploads/dokumen/{$fileName}";
+            
+                // Generate PDF setiap kali dengan data terbaru
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+                    'backend_pedagang.surat.permohonan',
+                    ['pedagang' => $permohonan, 'isDraft' => false]
+                )->setPaper('A4', 'portrait');
+            
+                // Simpan file baru (overwrite)
+                Storage::disk('public')->put($path, $pdf->output());
+            
+                if (!Storage::disk('public')->exists($path)) {
+                    throw new \Exception('Gagal menyimpan file PDF.');
+                }
+            
+                // Ambil file dari storage untuk di-download
+                return response()->download(storage_path("app/public/{$path}"), $fileName);
         }
-
-        // nama file final berdasarkan NIK
-        $fileName = "surat_permohonan_{$permohonan->nik}.pdf";
-        $path = "uploads/dokumen/{$fileName}";
-
-        // kalau file belum ada di storage → generate sekali
-        if (!Storage::disk('public')->exists($path)) {
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
-                'backend_pedagang.surat.permohonan',
-                ['pedagang' => $permohonan]
-            )->setPaper('A4', 'portrait');
-
-            Storage::disk('public')->put($path, $pdf->output());
-        }
-
-        // ambil file dari storage untuk di-download
-        return response()->download(storage_path("app/public/{$path}"), $fileName);
-    }
 }
