@@ -10,20 +10,43 @@
 
 <div class="collapse navbar-collapse" id="navbarCollapse">
     <div class="navbar-nav ms-auto py-0">
-        <a href="{{ route('frontend.pages.home') }}" class="nav-item nav-link active">Home</a>
+        <a href="{{ route('frontend.pages.home') }}" 
+            class="nav-item nav-link {{ request()->routeIs('frontend.pages.home') ? 'active' : '' }}">
+            Home
+        </a>
         <div class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pasar Daerah</a>
+            <a href="#" 
+                class="nav-link dropdown-toggle {{ request()->routeIs('frontend.pages.pulaupayung','frontend.pages.tamanlepin','frontend.pages.kelakap','frontend.pages.senggol') ? 'active' : '' }}" 
+                data-bs-toggle="dropdown">
+                Pasar Daerah
+            </a>
             <div class="dropdown-menu m-0">
-                <a href="{{ route('frontend.pages.pulaupayung') }}" class="dropdown-item">Pasar Pulau Payung</a>
-                <a href="{{ route('frontend.pages.tamanlepin') }}" class="dropdown-item">Pasar Taman Lepin</a>
-                <a href="{{ route('frontend.pages.kelakap') }}" class="dropdown-item">Pasar Kelakap Tujuh</a>
-                <a href="{{ route('frontend.pages.senggol') }}" class="dropdown-item">Pasar Senggol</a>
-                <a href="#" class="dropdown-item">Pasar JayaMukti</a>
-                <a href="#" class="dropdown-item">Pasar Bundaran</a>
-            </div>
+                <a href="{{ route('frontend.pages.pulaupayung') }}" 
+               class="dropdown-item {{ request()->routeIs('frontend.pages.pulaupayung') ? 'active' : '' }}">
+               Pasar Pulau Payung
+            </a>
+            <a href="{{ route('frontend.pages.tamanlepin') }}" 
+               class="dropdown-item {{ request()->routeIs('frontend.pages.tamanlepin') ? 'active' : '' }}">
+               Pasar Taman Lepin
+            </a>
+            <a href="{{ route('frontend.pages.kelakap') }}" 
+               class="dropdown-item {{ request()->routeIs('frontend.pages.kelakap') ? 'active' : '' }}">
+               Pasar Kelakap Tujuh
+            </a>
+            <a href="{{ route('frontend.pages.senggol') }}" 
+               class="dropdown-item {{ request()->routeIs('frontend.pages.senggol') ? 'active' : '' }}">
+               Pasar Senggol
+            </a>
         </div>
-        <a href="{{ route('frontend.pages.tarif') }}" class="nav-item nav-link">Tarif Restribusi</a>
-        <a href="{{ route('frontend.pages.regulasi') }}" class="nav-item nav-link">Regulasi</a>
+    </div>
+        <a href="{{ route('frontend.pages.tarif') }}" 
+            class="nav-item nav-link {{ request()->routeIs('frontend.pages.tarif') ? 'active' : '' }}">
+            Tarif Restribusi
+        </a>
+        <a href="{{ route('frontend.pages.regulasi') }}" 
+            class="nav-item nav-link {{ request()->routeIs('frontend.pages.regulasi') ? 'active' : '' }}">
+            Regulasi
+        </a>
     </div>
     <a href="{{ route('backend_pedagang.auth.register') }}"
         class="btn btn-primary rounded-pill py-2 px-4 ms-lg-4">Registrasi</a>

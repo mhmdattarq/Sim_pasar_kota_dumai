@@ -4,57 +4,68 @@
             <img src="{{ asset('backend/assets/images/logo_kota_dumai.png') }}" class="logo-icon" alt="logo icon" />
         </div>
         <div>
-            <h4 class="logo-text">Sim-pasar</h4>
-        </div>
-        <div class="toggle-icon ms-auto">
-            <i class="bx bx-arrow-to-left"></i>
+            <h4 class="logo-text">PORTAL PEDAGANG</h4>
         </div>
     </div>
     <nav class="navbar navbar-expand-xl w-100">
         <ul class="navbar-nav justify-content-start flex-grow-1 gap-1">
+            <!-- Dashboard -->
             <li class="nav-item">
-                <a href="{{ route('backend_pedagang.pages.dashboard') }}" class="nav-link" aria-current="page">
+                <a href="{{ route('backend_pedagang.pages.dashboard') }}" 
+                   class="nav-link {{ request()->routeIs('backend_pedagang.pages.dashboard') ? 'active text-white' : '' }}">
                     <div class="parent-icon">
                         <i class="bx bx-home-circle"></i>
                     </div>
                     <div class="menu-title">Dashboard</div>
                 </a>
             </li>
+
+            <!-- Permohonan -->
             <li class="nav-item dropdown">
-                <a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
-                    data-bs-toggle="dropdown">
+                <a href="javascript:;" 
+                   class="nav-link dropdown-toggle dropdown-toggle-nocaret {{ request()->routeIs('backend_pedagang.pages.permohonan','backend_pedagang.pages.uploadpermohonan') ? 'active text-white' : '' }}"
+                   data-bs-toggle="dropdown">
                     <div class="parent-icon"><i class="bx bx-building-house"></i></div>
                     <div class="menu-title">Permohonan</div>
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item" href="{{ route('backend_pedagang.pages.permohonan') }}"><i
-                                class="bx bx-right-arrow-alt"></i>Buat Permohonan</a>
+                        <a class="dropdown-item {{ request()->routeIs('backend_pedagang.pages.permohonan') ? 'active text-white' : '' }}" 
+                           href="{{ route('backend_pedagang.pages.permohonan') }}">
+                            <i class="bx bx-right-arrow-alt"></i>Buat Permohonan
+                        </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="{{ route('backend_pedagang.pages.uploadpermohonan') }}"><i
-                                class="bx bx-right-arrow-alt"></i>Unggah Surat Permohonan</a>
+                        <a class="dropdown-item {{ request()->routeIs('backend_pedagang.pages.uploadpermohonan') ? 'active text-white' : '' }}" 
+                           href="{{ route('backend_pedagang.pages.uploadpermohonan') }}">
+                            <i class="bx bx-right-arrow-alt"></i>Unggah Surat Permohonan
+                        </a>
                     </li>
                 </ul>
             </li>
+
+            <!-- Inbox -->
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;"
-                    data-bs-toggle="dropdown">
+                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret {{ request()->is('inbox/*') ? 'active text-white' : '' }}" 
+                   href="javascript:;" data-bs-toggle="dropdown">
                     <div class="parent-icon"><i class="bx bx-envelope-open"></i></div>
                     <div class="menu-title">Inbox</div>
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item" href="authentication-signin.html" target="_blank"><i
-                                class="bx bx-right-arrow-alt"></i>Pengumuman</a>
+                        <a class="dropdown-item" href="authentication-signin.html" target="_blank">
+                            <i class="bx bx-right-arrow-alt"></i>Pengumuman
+                        </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="authentication-signup.html" target="_blank"><i
-                                class="bx bx-right-arrow-alt"></i>Dokumen</a>
+                        <a class="dropdown-item" href="authentication-signup.html" target="_blank">
+                            <i class="bx bx-right-arrow-alt"></i>Dokumen
+                        </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="authentication-signup.html" target="_blank"><i
-                                class="bx bx-right-arrow-alt"></i>Tarif Testribusi</a>
+                        <a class="dropdown-item" href="authentication-signup.html" target="_blank">
+                            <i class="bx bx-right-arrow-alt"></i>Tarif Retribusi
+                        </a>
                     </li>
                 </ul>
             </li>
