@@ -129,6 +129,15 @@
                                                     Lihat Permohonan Anda
                                                 </a>
                                             @elseif ($p->status == 'lengkap')
+                                                <a href="{{ route('pedagang.permohonan.download', $p->id) }}"
+                                                    class="btn btn-sm btn-primary">
+                                                    Download Dokumen Permohonan Anda
+                                                </a>
+                                                |
+                                                <a href="{{ route('pedagang.pernyataan.download') }}"
+                                                    class="btn btn-sm btn-success">
+                                                    Download Surat <b>Pernyataan</b>
+                                                </a>
                                             @else
                                                 -
                                             @endif
