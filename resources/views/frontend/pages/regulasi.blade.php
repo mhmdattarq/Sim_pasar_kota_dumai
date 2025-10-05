@@ -16,32 +16,55 @@
 
     <!-- Header End -->
     <!-- Destination Start -->
-    <div class="container-fluid destination py-5">
+<div class="container-fluid destination py-5">
         <div class="container py-5">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Nomor</th>
-                        <th>Nama Regulasi</th>
-                        <th>Tentang Regulasi</th>
-                        <th>No</th>
-                        <th>Tahun Regulasi</th>
-                        <th>Dokumen Regulasi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Peraturan Bupati</td>
-                        <td>PERDA NO 17 TAHUN 2020 TENTANG PERUBAHAN KEDUA ATAS PERATURAN DAERAH KABUPATEN TEMANGGUNG NOMOR
-                            1 TH 2013 TENTANG RETRIBUSI PEMAKAIAN KEKAYAAN DAERAH</td>
-                        <td>12</td>
-                        <td>2020</td>
-                        <td>Tombol aksi</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle text-center" id="regulasiTable">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Nomor</th>
+                            <th>Nama Regulasi</th>
+                            <th>Tentang Regulasi</th>
+                            <th>No</th>
+                            <th>Tahun Regulasi</th>
+                            <th>Dokumen Regulasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Peraturan Bupati</td>
+                            <td>
+                                PERDA NO 17 TAHUN 2020 <br>
+                                Tentang Perubahan Kedua Atas Peraturan Daerah Kabupaten Temanggung Nomor 1 Tahun 2013
+                                Tentang Retribusi Pemakaian Kekayaan Daerah
+                            </td>
+                            <td>12</td>
+                            <td>2020</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-file-pdf"></i> Lihat
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <!-- Destination End -->
+    <script>
+    $(document).ready(function() {
+        $('#regulasiTable').DataTable({
+            responsive: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json"
+            }
+        });
+    });
+</script>
 @endsection

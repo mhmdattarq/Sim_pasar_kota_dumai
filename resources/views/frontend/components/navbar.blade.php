@@ -1,11 +1,13 @@
 <a href="" class="navbar-brand p-0">
-    <h1 class="m-0"><img src="{{ asset('frontend/assets/img/logodumai.png') }}" alt="Logo"> SIM-PASAR DUMAI
+    <h1 class="m-0"><img src="{{ asset('frontend/assets/img/logodumai.png') }}" alt="Logo"> SIM-PASAR
     </h1>
     <!-- <img src="img/logo.png" alt="Logo"> -->
 </a>
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-    <span class="fa fa-bars"></span>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
 </button>
+
 <div class="collapse navbar-collapse" id="navbarCollapse">
     <div class="navbar-nav ms-auto py-0">
         <a href="{{ route('frontend.pages.home') }}" class="nav-item nav-link active">Home</a>

@@ -1,8 +1,8 @@
 @extends('frontend.app')
 
 @section('content')
-    <div class="container-fluid pt-5 pt-md-7 pt-lg-9 min-height: 500px;"
-        style="background: url('{{ asset('frontend/assets/img/bannerhome.jpeg') }}') no-repeat center center; background-size: cover;">
+    <div class="container-fluid pt-5"
+        style="background: url('{{ asset('frontend/assets/img/bannerhome.jpeg') }}') no-repeat center center; background-size: cover; padding-bottom: 100px;">
 
         <div class="row mt-4">
             <!-- Chart di kiri -->
@@ -73,10 +73,9 @@
                 </div>
             </div>
         </div>
-
         <!-- Table di bawah -->
-        <div class="row mt-5">
-            <div class="col-12">
+        <div class="row mt-5 mb-5">
+            <div class="col-12 mb-5">
                 <div class="card rounded-4 shadow">
                     <div class="card-body">
                         <h6 class="mb-3">Data Kios, Los, dan Pelataran</h6>
