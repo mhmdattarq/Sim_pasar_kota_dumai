@@ -161,6 +161,20 @@
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
+                                                                    <hr>
+                                                                    <table class="table table-borderless">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td style="width: 100px;">Surat Pernyataan</td>
+                                                                                <td style="width: 500px; text-align: left;">:</td>
+                                                                                <td class="text-right" style="width: 150px;">
+                                                                                    <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/nib') }}"
+                                                                                        class="btn btn-sm btn-warning"
+                                                                                        target="_blank">Lihat Dokumen</a>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
                                                                 </div>
                                                             </div>
                                                             <!-- End Dokumen Tambahan -->
