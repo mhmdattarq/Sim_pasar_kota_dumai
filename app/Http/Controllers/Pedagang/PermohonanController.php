@@ -67,12 +67,16 @@ class PermohonanController extends Controller
             }
 
             // cek apakah user sudah pernah buat permohonan
-            $sudahAda = DB::table('permohonan')
+            $permohonan = DB::table('permohonan')
                 ->where('user_id', $user->id)
-                ->exists();
+                ->latest('created_at') // Ambil permohonan terbaru
+                ->first();
+
+            $sudahAda = !is_null($permohonan);
+            $status = $permohonan ? $permohonan->status : null;
         }
 
-        return view('backend_pedagang.pages.permohonan', compact('pasar', 'kios', 'los', 'pelataran', 'userData', 'sudahAda'));
+        return view('backend_pedagang.pages.permohonan', compact('pasar', 'kios', 'los', 'pelataran', 'userData', 'sudahAda', 'status'));
     }
 
 

@@ -476,6 +476,7 @@
         $(document).ready(function() {
             $('.verify-btn').on('click', function() {
                 var nik = $(this).data('nik');
+                console.log('Verify button clicked for NIK:', nik); // Debug
 
                 $.ajax({
                     url: '/admin/permohonan/verify/' + nik,
@@ -483,16 +484,36 @@
                     data: {
                         _token: '{{ csrf_token() }}'
                     },
+                    beforeSend: function() {
+                        console.log('Sending AJAX request to /admin/permohonan/verify/' +
+                            nik); // Debug
+                    },
                     success: function(response) {
+                        console.log('AJAX success response:', response); // Debug
                         if (response.success) {
-                            alert('Permohonan berhasil diverifikasi!');
-                            location.reload(); // Refresh halaman untuk update tabel
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sukses',
+                                text: 'Permohonan berhasil diverifikasi!'
+                            }).then(() => {
+                                location.reload(); // Refresh halaman untuk update tabel
+                            });
                         } else {
-                            alert('Gagal: ' + response.error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: 'Gagal: ' + response.error
+                            });
                         }
                     },
                     error: function(xhr) {
-                        alert('Terjadi kesalahan: ' + xhr.responseJSON.error);
+                        console.error('AJAX error:', xhr.responseJSON); // Debug
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Terjadi kesalahan: ' + (xhr.responseJSON?.error ||
+                                'Server error')
+                        });
                     }
                 });
             });

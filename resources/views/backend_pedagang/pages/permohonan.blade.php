@@ -38,19 +38,42 @@
                                 </div>
                                 <hr />
                                 <div class="alert alert-info mb-3" style="font-size: 14px;">
-                                    @if ($sudahAda)
-                                        Anda sudah mengajukan surat permohonan, Silakan cek status <b><a
-                                                href="{{ route('backend_pedagang.pages.uploadpermohonan') }}">unggahan surat
-                                                permohonan</a></b>
-                                        Anda.
-                                    @else
-                                        Sebelum Mengisi Form Surat Permohonan.
-                                        Pastikan data sudah benar dan sudah menyiapkan berkas:
-                                        <b>NIB, Fotokopi KTP, Fotokopi KK, Fotokopi NPWP, dan Pas Foto terbaru.</b>
+                                    @if ($sudahAda && $status !== 'selesai')
+                                        <span style="animation: blink 1.5s infinite;">Anda sudah pernah mengajukan surat
+                                            permohonan, Silakan cek status <b><a
+                                                    href="{{ route('backend_pedagang.pages.uploadpermohonan') }}">unggahan
+                                                    surat
+                                                    permohonan</a></b>
+                                            Anda.</span>
+                                    @endif
+                                    @if(!$sudahAda || ($sudahAda && $status === 'selesai'))
+                                    <span style="animation: blink 1.5s infinite;">Sebelum Mengisi Form Surat Permohonan.
+                                        Pastikan data sudah benar dan sudah menyiapkan berkas:</span>
+                                    <ul class="mt-2 mb-0">
+                                        <li><span style="animation: blink 1.5s infinite;">NIB.</span></li>
+                                        <li><span style="animation: blink 1.5s infinite;">Fotokopi KK.</span></li>
+                                        <li><span style="animation: blink 1.5s infinite;">Fotokopi NPWP.</span></li>
+                                        <li><span style="animation: blink 1.5s infinite;">Pas foto terbaru.</span></li>
+                                    </ul>
                                     @endif
                                 </div>
+                                <style>
+                                    @keyframes blink {
+                                        0% {
+                                            opacity: 1;
+                                        }
+
+                                        50% {
+                                            opacity: 0.3;
+                                        }
+
+                                        100% {
+                                            opacity: 1;
+                                        }
+                                    }
+                                </style>
                                 <form action="{{ route('permohonan.store') }}" method="POST" class="user"
-                                    enctype="multipart/form-data">
+                                    enctype="multipart/form-data" id="formPermohonan">
                                     @csrf
                                     <div class="row mb-3">
                                         <label for="nik" class="col-sm-3 col-form-label"><span
@@ -171,7 +194,7 @@
                                                 style="color: red">*</span>Tipe Tempat</label>
                                         <div class="col-sm-9">
                                             <select class="form-select mb-3" id="tipe_tempat" name="tipe_tempat">
-                                                <option value="" selected hidden>-- Masukkan Tipe Tempat --</option>
+                                                <option value="" selected hidden>Masukkan Tipe Tempat</option>
                                                 <option value="kios">Kios</option>
                                                 <option value="los">Los</option>
                                                 <option value="pelataran">Pelataran</option>
@@ -187,7 +210,7 @@
                                             Kios</label>
                                         <div class="col-sm-9">
                                             <select class="form-select" id="kios_id" name="kios_id">
-                                                <option selected>-- Pilih Lokasi --</option>
+                                                <option selected>Pilih Lokasi</option>
                                                 @foreach ($kios as $k)
                                                     <option value="{{ $k->id }}">Nomor:
                                                         {{ $k->nomor_kios }} | Lokasi:
@@ -204,7 +227,7 @@
                                         <label for="los_id" class="col-sm-3 col-form-label">Lokasi Los</label>
                                         <div class="col-sm-9">
                                             <select class="form-select" id="los_id" name="los_id">
-                                                <option value="" selected>-- Lokasi Los --</option>
+                                                <option value="" selected>Lokasi Los</option>
                                                 @foreach ($los as $l)
                                                     <option value="{{ $l->id }}">Nama:
                                                         {{ $l->nomor_los }} | Lokasi: {{ $l->lokasi_los }}
@@ -220,7 +243,7 @@
                                         <label for="pelataran_id" class="col-sm-3 col-form-label">Lokasi Pelataran</label>
                                         <div class="col-sm-9">
                                             <select class="form-select" id="pelataran_id" name="pelataran_id">
-                                                <option value="" selected>-- Lokasi Pelataran --</option>
+                                                <option value="" selected>Lokasi Pelataran</option>
                                                 @foreach ($pelataran as $p)
                                                     <option value="{{ $p->id }}">Nama:
                                                         {{ $p->nomor_pelataran }} | Lokasi:
@@ -359,25 +382,27 @@
                                         <div class="modal-dialog modal-dialog-scrollable modal-xl">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Preview Surat Permohonan</h5>
+                                                    <h5 class="modal-title">Preview Draft Surat Permohonan</h5>
                                                     <button type="button" class="btn-close"
                                                         data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <!-- Isi surat permohonan akan ditampilkan disini -->
+                                                    <!-- Adobe viewer -->
                                                     <div id="adobe-dc-view" style="height:600px;"></div>
+                                                    <!-- Fallback iframe -->
+                                                    <iframe id="fallback-pdf" src="" width="100%"
+                                                        height="600px" style="border:none; display:none;"></iframe>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Kembali</button>
-                                                    <!-- ini tombol submit beneran -->
-                                                    <button type="submit" class="btn btn-success "><i
-                                                            class='bx bx-highlight'></i>Ajukan Surat</button>
+                                                    <button type="submit" class="btn btn-success"><i
+                                                            class="bx bx-highlight"></i> Ajukan Surat</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
+                                    <!-- End Modal Preview -->
                                 </form>
                             </div>
                         </div>
@@ -440,9 +465,9 @@
                 let pasarId = $(this).val();
 
                 // reset isi option
-                kiosSelect.html('<option value="">-- Pilih Lokasi --</option>');
-                losSelect.html('<option value="">-- Pilih Los --</option>');
-                pelSelect.html('<option value="">-- Pilih Pelataran --</option>');
+                kiosSelect.html('<option value="">Pilih Lokasi</option>');
+                losSelect.html('<option value="">Pilih Los</option>');
+                pelSelect.html('<option value="">Pilih Pelataran</option>');
 
                 hideAll(); // sembunyiin kios/los/pelataran
                 luasWrap.addClass('d-none'); // luas sembunyi lagi
@@ -531,39 +556,120 @@
         });
     </script>
 
+    <!-- Adobe SDK -->
     <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+
     <script>
         document.addEventListener("adobe_dc_view_sdk.ready", function() {
-            var adobeDCView;
+            let adobeDCView = null;
+            let lastFileUrl = null;
 
-            // event ketika modal dibuka
             $('#previewModal').on('shown.bs.modal', function() {
-                $.ajax({
-                    url: "{{ route('pedagang.permohonan.preview') }}",
-                    method: "POST",
-                    data: $('#formPermohonan').serialize(),
-                    success: function(res) {
-                        if (!adobeDCView) {
-                            adobeDCView = new AdobeDC.View({
-                                clientId: "d74201ec391f4e5dbe13f29b3674ce19",
-                                divId: "adobe-dc-view"
-                            });
-                        }
+                const fallbackIframe = document.getElementById('fallback-pdf');
+                if (fallbackIframe) {
+                    fallbackIframe.style.display = 'none';
+                    fallbackIframe.src = '';
+                }
 
-                        adobeDCView.previewFile({
-                            content: {
-                                location: {
-                                    url: res.fileUrl
+                const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const form = document.getElementById('formPermohonan');
+                const formData = new FormData(form);
+
+                // Log data form untuk debug
+                console.log('Form data:');
+                for (let pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+
+                fetch("{{ route('pedagang.permohonan.preview') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": csrf,
+                            "Accept": "application/json"
+                        },
+                        body: formData,
+                        credentials: "same-origin"
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error(`Server error: ${res.status} - ${res.statusText}`);
+                        return res.json();
+                    })
+                    .then(data => {
+                        console.log('Preview response:', data);
+                        if (data.error) throw new Error(data.error);
+                        if (!data.fileUrl) throw new Error('No fileUrl');
+
+                        // Tambah cache-buster untuk hindari caching lama
+                        lastFileUrl = `${data.fileUrl}?v=${new Date().getTime()}`;
+
+                        // Fetch PDF sebagai ArrayBuffer
+                        return fetch(lastFileUrl, {
+                                method: 'GET',
+                                credentials: "same-origin",
+                                cache: "no-store"
+                            })
+                            .then(pdfRes => {
+                                if (!pdfRes.ok) {
+                                    throw new Error(
+                                        `PDF fetch failed: ${pdfRes.status} - ${pdfRes.statusText}`
+                                    );
                                 }
-                            },
-                            metaData: {
-                                fileName: res.fileName
-                            }
-                        }, {
-                            embedMode: "SIZED_CONTAINER"
-                        });
-                    }
-                });
+                                return pdfRes.arrayBuffer();
+                            })
+                            .then(arrayBuffer => {
+                                if (!adobeDCView) {
+                                    adobeDCView = new AdobeDC.View({
+                                        clientId: "d74201ec391f4e5dbe13f29b3674ce19",
+                                        divId: "adobe-dc-view"
+                                    });
+                                } else {
+                                    // Reset view jika sudah ada
+                                    document.getElementById('adobe-dc-view').innerHTML = '';
+                                    adobeDCView = new AdobeDC.View({
+                                        clientId: "d74201ec391f4e5dbe13f29b3674ce19",
+                                        divId: "adobe-dc-view"
+                                    });
+                                }
+                                // Pass sebagai promise
+                                return adobeDCView.previewFile({
+                                    content: {
+                                        promise: Promise.resolve(new Uint8Array(
+                                            arrayBuffer))
+                                    },
+                                    metaData: {
+                                        fileName: data.fileName || 'surat_preview.pdf'
+                                    }
+                                }, {
+                                    embedMode: "SIZED_CONTAINER",
+                                    enableDownload: false,
+                                    enablePrint: false
+                                });
+                            });
+                    })
+                    .then(adobeViewer => {
+                        console.log('Adobe preview success');
+                    })
+                    .catch(err => {
+                        console.error('Full error:', err);
+                        alert('Gagal memuat preview: ' + err.message + '. Cek console.');
+                        // Fallback iframe
+                        if (fallbackIframe && lastFileUrl) {
+                            fallbackIframe.src = lastFileUrl;
+                            fallbackIframe.style.display = 'block';
+                            document.getElementById('adobe-dc-view').style.display = 'none';
+                        }
+                    });
+            });
+
+            // Reset saat modal tutup
+            $('#previewModal').on('hidden.bs.modal', function() {
+                document.getElementById('adobe-dc-view').innerHTML = '';
+                adobeDCView = null;
+                const fallbackIframe = document.getElementById('fallback-pdf');
+                if (fallbackIframe) {
+                    fallbackIframe.src = '';
+                    fallbackIframe.style.display = 'none';
+                }
             });
         });
     </script>

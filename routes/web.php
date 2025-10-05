@@ -98,7 +98,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         }
         abort(404);
     })->where('path', '.*');
-    Route::post('/admin/permohonan/{nik}/approve', [AccPermohonanController::class, 'approve'])->name('permohonan.approve');
+    Route::post('/admin/permohonan/{nik}/verify', [AccPermohonanController::class, 'verify'])->name('admin.permohonan.verify');
 });
 
 // middleware dan seluruh fungsi dan tampilan backend pedagang

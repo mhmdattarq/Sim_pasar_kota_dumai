@@ -304,12 +304,20 @@ class AccPermohonanController extends Controller
     {
         try {
             $nik = str_replace('.', '', $nik);
+            Log::info('Starting verification for NIK: ' . $nik); // Debug
             $nama = DB::table('permohonan')->where('nik', $nik)->value('nama');
 
             // Cek apakah permohonan ada
             $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
             if (!$permohonan) {
+                Log::warning('Permohonan tidak ditemukan untuk NIK: ' . $nik); // Debug
                 return response()->json(['error' => 'Permohonan tidak ditemukan'], 404);
+            }
+
+            // Cek apakah status sudah disetujui
+            if ($permohonan->status !== 'disetujui') {
+                Log::warning('Status tidak valid untuk verifikasi, NIK: ' . $nik . ', Status: ' . $permohonan->status); // Debug
+                return response()->json(['error' => 'Status permohonan tidak valid untuk verifikasi'], 400);
             }
 
             // Update status jadi 'selesai'
@@ -317,15 +325,16 @@ class AccPermohonanController extends Controller
                 ->where('nik', $nik)
                 ->update([
                     'status' => 'selesai',
-                    'keterangan' => 'Permohonan telah diverifikasi'
+                    'keterangan' => 'Permohonan telah diverifikasi',
+                    'updated_at' => now() // Tambahkan timestamp
                 ]);
 
-            // Set session untuk alert
+            Log::info('Verification successful for NIK: ' . $nik); // Debug
             session()->flash('success', "Permohonan dari {$nama} telah diverifikasi");
 
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
-            Log::error('Error verifikasi untuk NIK: ' . $nik . ', Error: ' . $e->getMessage());
+            Log::error('Error verifikasi untuk NIK: ' . $nik . ', Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return response()->json(['error' => 'Gagal verifikasi: ' . $e->getMessage()], 500);
         }
     }
