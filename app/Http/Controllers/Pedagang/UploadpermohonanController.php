@@ -15,7 +15,7 @@ class UploadpermohonanController extends Controller
         // cek apakah user sudah punya permohonan
         $permohonans = DB::table('permohonan')
             ->where('user_id', Auth::id())
-            ->select('id', 'nama', 'status', 'keterangan', 'dokumen_path')
+            ->select('id', 'nama', 'status', 'keterangan', 'dokumen_path', 'created_at')
             ->get();
 
         // kalau belum ada permohonan
@@ -54,11 +54,11 @@ class UploadpermohonanController extends Controller
             ->update([
                 'dokumen_path' => $path,
                 'status' => 'lengkap',
-                'keterangan' => 'Dokumen Berhasil Terkirim, Silahkan tunggu verifikasi dari Admin!',
+                'keterangan' => 'Dokumen Berhasil Terkirim, Silahkan tunggu persetujuan dari Admin!',
                 'updated_at' => now(),
             ]);
     
-        return redirect()->back()->with('success', 'Dokumen Berhasil Terkirim, Silahkan tunggu verifikasi dari Admin!');
+        return redirect()->back()->with('success', 'Dokumen Berhasil Terkirim, Silahkan tunggu persetujuan dari Admin!');
     }
     
     public function getDocumentUrl($id)

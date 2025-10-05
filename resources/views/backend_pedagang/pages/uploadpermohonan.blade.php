@@ -49,12 +49,12 @@
                 @elseif($permohonan->status == 'draft')
                     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
                         data-bs-target="#uploadModal">
-                        Unggah Dokumen
+                        Unggah Surat Permohonan
                     </button>
                 @elseif ($permohonan->status == 'disetujui')
                     <button type="button" class="btn btn-warning mb-3" data-bs-toggle="modal"
                         data-bs-target="#VerifikasiModal">
-                        Verifikasi!
+                        Unggah Surat Pernyataan
                     </button>
                 @endif
             @endforeach
@@ -67,6 +67,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama</th>
+                                    <th>Tanggal</th>
                                     <th>Status</th>
                                     <th>Keterangan</th>
                                     <th>Aksi</th>
@@ -77,6 +78,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $p->nama }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($p->created_at)->format('d-m-Y') }}</td>
                                         <td>
                                             @if ($p->status == 'draft')
                                                 <span class="badge bg-warning">Draft</span>
@@ -87,7 +89,9 @@
                                             @elseif ($p->status == 'ditolak')
                                                 <span class="badge bg-danger">Ditolak</span>
                                             @elseif ($p->status == 'selesai')
-                                                <span class="badge bg-success">selesai</span>
+                                                <span class="badge bg-success">Selesai</span>
+                                            @elseif ($p->status == 'verifikasi')
+                                                <span class="badge bg-info">Menunggu Verifikasi</span>
                                             @else
                                                 <span class="badge bg-secondary">Unknown</span>
                                             @endif
@@ -103,12 +107,14 @@
                                                 {{ $p->keterangan ?? '' }}
                                             @elseif($p->status === 'selesai')
                                                 {{ $p->keterangan ?? '' }}
+                                            @elseif($p->status === 'verifikasi')
+                                                {{ $p->keterangan ?? '' }}
                                             @else
                                                 {{ $p->keterangan ?? '-' }}
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($p->status == 'disetujui')
+                                            @if ($p->status == 'disetujui' || $p->status == 'verifikasi')
                                                 <a href="{{ route('pedagang.pemberitahuan.download') }}"
                                                     class="btn btn-sm btn-success">
                                                     Download Surat <b>Pemberitahuan</b>
@@ -120,23 +126,28 @@
                                                 </a>
                                             @elseif ($p->status == 'draft')
                                                 <a href="{{ route('pedagang.permohonan.download', $p->id) }}"
-                                                    class="btn btn-sm btn-primary">
-                                                    Download Dokumen Permohonan Anda
+                                                    class="btn btn-sm btn-success">
+                                                    Download Dokumen <b>Permohonan</b> Anda
                                                 </a>
                                             @elseif ($p->status == 'lengkap')
                                                 <a href="#" class="btn btn-sm btn-info" data-bs-toggle="modal"
                                                     data-bs-target="#viewDocumentModal" data-id="{{ $p->id }}">
                                                     Lihat Permohonan Anda
                                                 </a>
-                                            @elseif ($p->status == 'lengkap')
+                                            @elseif ($p->status == 'selesai')
                                                 <a href="{{ route('pedagang.permohonan.download', $p->id) }}"
-                                                    class="btn btn-sm btn-primary">
-                                                    Download Dokumen Permohonan Anda
+                                                    class="btn btn-sm btn-info">
+                                                    Download Dokumen <b>Permohonan</b>
                                                 </a>
                                                 |
                                                 <a href="{{ route('pedagang.pernyataan.download') }}"
-                                                    class="btn btn-sm btn-success">
+                                                    class="btn btn-sm btn-info">
                                                     Download Surat <b>Pernyataan</b>
+                                                </a>
+                                                |
+                                                <a href="{{ route('pedagang.pemberitahuan.download') }}"
+                                                    class="btn btn-sm btn-info">
+                                                    Download Surat <b>Pemberitahuan</b>
                                                 </a>
                                             @else
                                                 -

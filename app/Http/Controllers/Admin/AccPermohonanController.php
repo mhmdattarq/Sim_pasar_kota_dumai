@@ -11,78 +11,78 @@ use Illuminate\Support\Facades\DB;
 class AccPermohonanController extends Controller
 {
     public function showTable()
-    {
-        $permohonans = DB::table('permohonan')
-            ->join('pasar', 'permohonan.pasar_id', '=', 'pasar.id')
-            ->select('permohonan.*', 'pasar.nama_pasar')
-            ->get();
+      {
+          $permohonans = DB::table('permohonan')
+              ->join('pasar', 'permohonan.pasar_id', '=', 'pasar.id')
+              ->select('permohonan.*', 'pasar.nama_pasar')
+              ->get();
 
-        return view('backend_admin.pages.pedagang.tabelpermohonan', compact('permohonans'));
-    }
+          return view('backend_admin.pages.pedagang.tabelpermohonan', compact('permohonans'));
+      }
 
-    public function reviewPdf($nik)
-    {
-        try {
-            $nik = str_replace('.', '', $nik);
+      public function reviewPdf($nik)
+      {
+          try {
+              $nik = str_replace('.', '', $nik);
 
-            // Ambil data permohonan berdasarkan nik
-            $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
-            if (!$permohonan) {
-                return response()->json([
-                    'error' => 'Permohonan tidak ditemukan',
-                    'debug' => ['nik' => $nik]
-                ], 404);
-            }
+              // Ambil data permohonan berdasarkan nik
+              $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
+              if (!$permohonan) {
+                  return response()->json([
+                      'error' => 'Permohonan tidak ditemukan',
+                      'debug' => ['nik' => $nik]
+                  ], 404);
+              }
 
-            // Cek dokumen_path
-            $filePath = $permohonan->dokumen_path;
-            if (!$filePath) {
-                return response()->json([
-                    'error' => 'Dokumen path tidak tersedia',
-                    'debug' => ['nik' => $nik, 'id' => $permohonan->id]
-                ], 404);
-            }
+              // Cek dokumen_path
+              $filePath = $permohonan->dokumen_path;
+              if (!$filePath) {
+                  return response()->json([
+                      'error' => 'Dokumen path tidak tersedia',
+                      'debug' => ['nik' => $nik, 'id' => $permohonan->id]
+                  ], 404);
+              }
 
-            // Cek apakah file ada di storage
-            $fullPath = storage_path('app/public/' . $filePath);
-            if (!file_exists($fullPath)) {
-                return response()->json([
-                    'error' => 'File PDF tidak ditemukan di storage',
-                    'debug' => [
-                        'nik' => $nik,
-                        'id' => $permohonan->id,
-                        'filePath' => $filePath,
-                        'fullPath' => $fullPath,
-                        'url' => asset('storage/' . $filePath)
-                    ]
-                ], 404);
-            }
+              // Cek apakah file ada di storage
+              $fullPath = storage_path('app/public/' . $filePath);
+              if (!file_exists($fullPath)) {
+                  return response()->json([
+                      'error' => 'File PDF tidak ditemukan di storage',
+                      'debug' => [
+                          'nik' => $nik,
+                          'id' => $permohonan->id,
+                          'filePath' => $filePath,
+                          'fullPath' => $fullPath,
+                          'url' => asset('storage/' . $filePath)
+                      ]
+                  ], 404);
+              }
 
-            $fileUrl = url('/proxy-storage/' . $filePath);
-            $fileName = basename($filePath);
+              $fileUrl = url('/proxy-storage/' . $filePath);
+              $fileName = basename($filePath);
 
-            return response()->json([
-                'fileUrl' => $fileUrl,
-                'fileName' => $fileName,
-                'debug' => [
-                    'nik' => $nik,
-                    'id' => $permohonan->id,
-                    'filePath' => $filePath,
-                    'fullPath' => $fullPath
-                ]
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Terjadi error server: ' . $e->getMessage(),
-                'debug' => [
-                    'nik' => $nik,
-                    'trace' => $e->getTraceAsString()
-                ]
-            ], 500);
-        }
-    }
-
-    public function getDocument($nik, $docType)
+              return response()->json([
+                  'fileUrl' => $fileUrl,
+                  'fileName' => $fileName,
+                  'debug' => [
+                      'nik' => $nik,
+                      'id' => $permohonan->id,
+                      'filePath' => $filePath,
+                      'fullPath' => $fullPath
+                  ]
+              ]);
+          } catch (\Exception $e) {
+              return response()->json([
+                  'error' => 'Terjadi error server: ' . $e->getMessage(),
+                  'debug' => [
+                      'nik' => $nik,
+                      'trace' => $e->getTraceAsString()
+                  ]
+              ], 500);
+          }
+      }
+      
+      public function getDocument($nik, $docType)
     {
         try {
             $nik = str_replace('.', '', $nik);
@@ -118,8 +118,8 @@ class AccPermohonanController extends Controller
             return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
         }
     }
-
-    public function approve(Request $request, $nik)
+      
+     public function approve(Request $request, $nik)
     {
         try {
             $status = $request->input('status');
@@ -176,8 +176,8 @@ class AccPermohonanController extends Controller
             }
 
             $data = [
-                'permohonan' => $permohonan, // Mengirim objek permohonan utuh
-                'tanggal' => now()->format('d F Y'), // Tanggal TTD
+            'permohonan' => $permohonan, // Mengirim objek permohonan utuh
+            'tanggal' => now()->format('d F Y'), // Tanggal TTD
             ];
 
             // Cek apakah view ada sebelum generate
@@ -230,7 +230,7 @@ class AccPermohonanController extends Controller
             throw $e; // Re-throw agar ditangkap di approve
         }
     }
-
+    
     public function generatePernyataan($nik)
     {
         try {
@@ -300,42 +300,49 @@ class AccPermohonanController extends Controller
             throw $e; // Re-throw agar ditangkap di approve
         }
     }
-    public function verify($nik)
+
+    public function verify(Request $request, $id)
     {
         try {
-            $nik = str_replace('.', '', $nik);
-            Log::info('Starting verification for NIK: ' . $nik); // Debug
-            $nama = DB::table('permohonan')->where('nik', $nik)->value('nama');
+            $status = $request->input('status');
+            $nama = DB::table('permohonan')->where('id', $id)->value('nama');
 
-            // Cek apakah permohonan ada
-            $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
+            Log::info('Verify request for ID: ' . $id, ['status' => $status]);
+
+            if ($status !== 'selesai') {
+                return response()->json(['error' => 'Status tidak valid'], 400);
+            }
+
+            $permohonan = DB::table('permohonan')->where('id', $id)->first();
             if (!$permohonan) {
-                Log::warning('Permohonan tidak ditemukan untuk NIK: ' . $nik); // Debug
+                Log::error('Permohonan tidak ditemukan untuk ID: ' . $id);
                 return response()->json(['error' => 'Permohonan tidak ditemukan'], 404);
             }
 
-            // Cek apakah status sudah disetujui
-            if ($permohonan->status !== 'disetujui') {
-                Log::warning('Status tidak valid untuk verifikasi, NIK: ' . $nik . ', Status: ' . $permohonan->status); // Debug
-                return response()->json(['error' => 'Status permohonan tidak valid untuk verifikasi'], 400);
+            Log::info('Status permohonan untuk ID: ' . $id, ['status' => $permohonan->status]);
+
+            if ($permohonan->status !== 'verifikasi') {
+                Log::error('Status tidak valid untuk verifikasi', [
+                    'id' => $id,
+                    'current_status' => $permohonan->status
+                ]);
+                return response()->json(['error' => 'Permohonan tidak dapat diverifikasi, status tidak valid: ' . $permohonan->status], 400);
             }
 
-            // Update status jadi 'selesai'
             DB::table('permohonan')
-                ->where('nik', $nik)
+                ->where('id', $id)
                 ->update([
                     'status' => 'selesai',
-                    'keterangan' => 'Permohonan telah diverifikasi',
-                    'updated_at' => now() // Tambahkan timestamp
+                    'keterangan' => 'Permohonan telah diverifikasi dan selesai'
                 ]);
 
-            Log::info('Verification successful for NIK: ' . $nik); // Debug
-            session()->flash('success', "Permohonan dari {$nama} telah diverifikasi");
+            session()->flash('success', "Permohonan dari {$nama} telah diverifikasi dan selesai");
 
+            Log::info('Verify successful for ID: ' . $id, ['status' => 'selesai']);
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
-            Log::error('Error verifikasi untuk NIK: ' . $nik . ', Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            return response()->json(['error' => 'Gagal verifikasi: ' . $e->getMessage()], 500);
+            Log::error('Error in verify for ID: ' . $id . ', Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response()->json(['error' => 'Terjadi kesalahan saat memverifikasi: ' . $e->getMessage()], 500);
         }
     }
 }

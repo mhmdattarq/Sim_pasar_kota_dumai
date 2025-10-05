@@ -17,6 +17,7 @@
             line-height: 1.3;
             margin: 0;
             padding: 0;
+            position: relative; /* Untuk watermark */
         }
 
         table {
@@ -36,24 +37,16 @@
             font-weight: bold;
             margin-top: 20px;
         }
-
-        .kop-surat {
-            margin-bottom: 10px;
-        }
-
-        .kop-surat img {
+        
+        .judul::after {
+            content: '';
             display: block;
-            margin: auto;
-        }
-
-        .garis-kop {
             border-bottom: 2px solid black;
-            border-top: 1px solid black;
-            margin-top: 4px;
-            margin-bottom: 10px;
+            width: calc(100% - 100px); /* Sesuai margin kiri-kanan isi (50px per sisi) */
+            margin-left: auto;
+            margin-right: auto;
         }
-
-
+        
         .isi {
             margin: 20px 50px;
         }
@@ -74,7 +67,7 @@
         .ttd .kanan {
             text-align: right;
             float: right;
-            margin-right: 60px;
+            margin-right: 20px;
         }
 
         .syarat {
@@ -99,39 +92,29 @@
             font-size: 10pt;
             /* supaya footer lebih kecil */
         }
+
+        /* Tambahan CSS untuk Watermark */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px; /* Ukuran besar untuk watermark */
+            font-weight: bold;
+            color: rgba(255, 0, 0, 0.7); /* Merah transparan */
+            z-index: -1; /* Di belakang konten */
+            pointer-events: none; /* Tidak bisa diklik */
+            text-align: center;
+            width: 100%;
+            opacity: 0.5; /* Efek transparan */
+        }
     </style>
 </head>
 
 <body>
-
-    {{-- Bagian Lampiran --}}
-    <div class="kop-surat">
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-                <!-- Kolom kiri (logo) -->
-                <td style="width: 90px; text-align: center; vertical-align: middle;">
-                    <img src="{{ public_path('backend/assets/images/logo_kota_dumai.png') }}" alt="Logo"
-                        style="width:70px; height:auto;">
-                </td>
-
-                <!-- Kolom tengah (teks) -->
-                <td style="text-align: center; line-height: 1.2; padding-left: 20px;">
-                    <span style="font-size: 12pt;">PEMERINTAH KOTA DUMAI</span><br>
-                    <span style="font-size: 14pt; font-weight: bold;">DINAS PERDAGANGAN</span><br>
-                    <span style="font-size: 10pt;">
-                        Jl. Sultan Syarif Kasim No. 16 Telp (0765) 35760 Fax. (0765) 439750 Kode Pos 28815
-                    </span><br>
-                    <span style="font-size: 11pt; font-weight: bold;">D U M A I</span>
-                </td>
-
-                <!-- Kolom kanan (kosong untuk keseimbangan) -->
-                <td style="width: 70px;"></td>
-            </tr>
-        </table>
-        <div class="garis-kop"></div>
-    </div>
-
-
+    @if (isset($isDraft) && $isDraft)
+        <div class="watermark">[DRAFT]</div>
+    @endif
 
     {{-- Judul --}}
     <div class="judul">
@@ -150,7 +133,6 @@
                 </p>
             </div>
         </div>
-
 
         {{-- Hal --}}
         <p><strong>Hal:</strong> Permohonan menjadi Pedagang</p>
@@ -190,7 +172,6 @@
                 <td>{{ $pedagang->alamat ?? '...................................................' }}</td>
             </tr>
         </table>
-
 
         {{-- Permohonan --}}
         <p>Mengajukan permohonan menjadi Pedagang:</p>
@@ -239,7 +220,6 @@
             </tr>
         </table>
 
-
         {{-- Syarat --}}
         <p>Sebagai kelengkapan persyaratan kami lampirkan :</p>
         <ol class="syarat">
@@ -256,7 +236,7 @@
         <div class="ttd">
             <div class="kanan">
                 Dumai, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }} <br><br><br><br>
-                Pemohon, <br><br><br><br>
+                Pemohon, <br><br><br><br><br>
                 ( {{ $pedagang->nama ?? '...................................' }} )
             </div>
         </div>
@@ -264,7 +244,6 @@
         <br><br>
         <p><i>*) Coret yang tidak perlu</i></p>
     </div>
-
 </body>
 
 </html>

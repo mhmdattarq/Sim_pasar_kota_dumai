@@ -85,14 +85,14 @@ class PernyataanController extends Controller
 
             // Update database dengan path baru dan status serta keterangan
             DB::table('permohonan')
-                ->where('nik', $nik)
+                ->where('id', $permohonan->id)
                 ->update([
                     'dokumen_path_pernyataan' => $filePath,
-                    'status' => 'selesai',
-                    'keterangan' => 'Anda sudah berhasil terverifikasi menjadi pedagang!'
+                    'status' => 'verifikasi',
+                    'keterangan' => 'Surat Pernyataan menjadi pedagang berhasil di unggah, Silahkan tunggu verifikasi dari Admin!'
                 ]);
         }
 
-        return redirect()->back()->with('success', 'Surat pernyataan yang ditandatangani berhasil diupload dan berhasil terverifikasi.');
+        return redirect()->back()->with('success', 'Surat pernyataan yang ditandatangani berhasil diunggah, Silahkan tunggu verifikasi dari Admin.');
     }
 }

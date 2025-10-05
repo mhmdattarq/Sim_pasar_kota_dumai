@@ -39,6 +39,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama</th>
+                                    <th>Tanggal</th>
                                     <th>Status</th>
                                     <th>Keterangan</th>
                                     <th>Aksi</th>
@@ -49,6 +50,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $p->nama }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($p->created_at)->format('d-m-Y') }}</td>
                                         <th>
                                             @if ($p->status == 'draft')
                                                 <span class="badge bg-danger">Draft</span>
@@ -60,6 +62,8 @@
                                                 <span class="badge bg-danger">Ditolak</span>
                                             @elseif ($p->status == 'selesai')
                                                 <span class="badge bg-success">Selesai</span>
+                                            @elseif ($p->status == 'verifikasi')
+                                                <span class="badge bg-info">Menunggu Verifikasi</span>
                                             @else
                                                 <span class="badge bg-secondary">Unknown</span>
                                             @endif
@@ -72,17 +76,15 @@
                                                 data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}">
                                                 Review
                                             </button>
-                                            |
                                             <button type="button" class="btn btn-success btn-sm approve-pdf"
                                                 data-bs-toggle="modal" data-bs-target="#approveModal{{ $p->id }}"
                                                 data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}"
-                                                @if ($p->status == 'disetujui' || $p->status == 'ditolak' || $p->status == 'selesai') disabled @endif>
+                                                @if ($p->status == 'draft' || $p->status == 'disetujui' || $p->status == 'ditolak' || $p->status == 'selesai' || $p->status == 'verifikasi') disabled @endif>
                                                 Persetujuan
                                             </button>
-                                            |
-                                            <button type="button" class="btn btn-warning btn-sm verify-btn"
-                                                data-nik="{{ $p->nik }}"
-                                                @if ($p->status == 'selesai' || $p->status == 'ditolak' || $p->status == 'draft' || $p->status == 'lengkap') disabled @endif>
+                                            <button type="button" class="btn btn-primary btn-sm verify-pdf"
+                                                data-id="{{ $p->id }}" data-nama="{{ $p->nama }}"
+                                                @if ($p->status != 'verifikasi') disabled @endif>
                                                 Verifikasi
                                             </button>
                                             <!-- Modal Preview Surat -->
@@ -113,48 +115,48 @@
                                                                     <table class="table table-borderless">
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td class="text-center">NIB</td>
-                                                                                <td>:</td>
-                                                                                <td class="text-center">
+                                                                                <td style="width: 100px;">NIB</td>
+                                                                                <td style="width: 500px; text-align: left;">:</td>
+                                                                                <td class="text-right" style="width: 150px;">
                                                                                     <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/nib') }}"
                                                                                         class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat NIB</a>
+                                                                                        target="_blank">Lihat Dokumen</a>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td class="text-center">Fotokopi NPWP</td>
+                                                                                <td class="text-left">Fotokopi NPWP</td>
                                                                                 <td>:</td>
-                                                                                <td class="text-center">
+                                                                                <td class="text-right">
                                                                                     <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/npwp') }}"
                                                                                         class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat NPWP</a>
+                                                                                        target="_blank">Lihat Dokumen</a>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td class="text-center">Fotokopi KTP</td>
+                                                                                <td class="text-left">Fotokopi KTP</td>
                                                                                 <td>:</td>
-                                                                                <td class="text-center">
+                                                                                <td class="text-right">
                                                                                     <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/ktp') }}"
                                                                                         class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat KTP</a>
+                                                                                        target="_blank">Lihat Dokumen</a>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td class="text-center">Fotokopi KK</td>
+                                                                                <td class="text-left">Fotokopi KK</td>
                                                                                 <td>:</td>
-                                                                                <td class="text-center">
+                                                                                <td class="text-right">
                                                                                     <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/kk') }}"
                                                                                         class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat KK</a>
+                                                                                        target="_blank">Lihat Dokumen</a>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td class="text-center">Pas Foto</td>
+                                                                                <td class="text-left">Pas Foto</td>
                                                                                 <td>:</td>
-                                                                                <td class="text-center">
+                                                                                <td class="text-right">
                                                                                     <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/foto') }}"
                                                                                         class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat Pas Foto</a>
+                                                                                        target="_blank">Lihat Dokumen</a>
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
@@ -471,52 +473,69 @@
             });
         });
     </script>
-
     <script>
-        $(document).ready(function() {
-            $('.verify-btn').on('click', function() {
-                var nik = $(this).data('nik');
-                console.log('Verify button clicked for NIK:', nik); // Debug
+       // Handle Verify button
+            document.querySelectorAll('.verify-pdf').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const nama = this.getAttribute('data-nama');
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                $.ajax({
-                    url: '/admin/permohonan/verify/' + nik,
-                    method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
-                    beforeSend: function() {
-                        console.log('Sending AJAX request to /admin/permohonan/verify/' +
-                            nik); // Debug
-                    },
-                    success: function(response) {
-                        console.log('AJAX success response:', response); // Debug
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sukses',
-                                text: 'Permohonan berhasil diverifikasi!'
-                            }).then(() => {
-                                location.reload(); // Refresh halaman untuk update tabel
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: 'Gagal: ' + response.error
+                    console.log('Verify button clicked for ID:', id, 'Nama:', nama, 'Button disabled:', this.disabled);
+
+                    Swal.fire({
+                        title: 'Konfirmasi Verifikasi',
+                        text: `Apakah Anda yakin ingin memverifikasi permohonan dari ${nama}?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Verifikasi',
+                        cancelButtonText: 'Batal',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            console.log('Sending fetch to /admin/permohonan/id/' + id + '/verify');
+                            fetch(`/admin/permohonan/id/${id}/verify`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken
+                                },
+                                body: JSON.stringify({
+                                    status: 'selesai'
+                                })
+                            })
+                            .then(res => {
+                                console.log('Fetch response status:', res.status);
+                                return res.json();
+                            })
+                            .then(data => {
+                                console.log('Fetch response data:', data);
+                                if (data.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Sukses',
+                                        text: `Permohonan dari ${nama} telah diverifikasi dan status menjadi selesai`
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal',
+                                        text: 'Gagal memverifikasi: ' + (data.error || 'Unknown error')
+                                    });
+                                }
+                            })
+                            .catch(err => {
+                                console.error('Fetch error:', err);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Terjadi kesalahan saat memverifikasi'
+                                });
                             });
                         }
-                    },
-                    error: function(xhr) {
-                        console.error('AJAX error:', xhr.responseJSON); // Debug
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Terjadi kesalahan: ' + (xhr.responseJSON?.error ||
-                                'Server error')
-                        });
-                    }
+                    });
                 });
             });
-        });
     </script>
 @endsection
