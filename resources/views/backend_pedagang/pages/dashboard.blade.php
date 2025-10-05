@@ -29,8 +29,8 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">986</h4>
-                                    <p class="mb-0 text-white">Total Orders</p>
+                                    <h4 class="mb-0 text-white">5</h4>
+                                    <p class="mb-0 text-white">Total Permohonan</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-cart"></i>
