@@ -118,8 +118,8 @@ class AccPermohonanController extends Controller
             return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
         }
     }
-      
-     public function approve(Request $request, $nik)
+
+    public function approve(Request $request, $nik)
     {
         try {
             $status = $request->input('status');
@@ -135,19 +135,23 @@ class AccPermohonanController extends Controller
             $newStatus = ($status === 'approved') ? 'disetujui' : 'ditolak';
             $keterangan = ($status === 'approved') ? 'Surat permohonan telah disetujui, Belum Terverifikasi!' : $reason;
 
-            // Generate surat pemberitahuan dan pernyataan jika disetujui
-            if ($status === 'approved') {
-                $this->generatePemberitahuan($nik);
-                $this->generatePernyataan($nik);
-            }
-
-            // Update status dan keterangan
+            // Update status dan keterangan terlebih dahulu
             DB::table('permohonan')
                 ->where('nik', $nik)
                 ->update([
                     'status' => $newStatus,
                     'keterangan' => $keterangan
                 ]);
+
+            // Ambil data terbaru setelah pembaruan untuk verifikasi
+            $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
+            Log::info('Status setelah pembaruan untuk NIK ' . $nik . ': ' . ($permohonan->status ?? 'null'));
+
+            // Generate surat pemberitahuan dan pernyataan jika disetujui
+            if ($status === 'approved') {
+                $this->generatePemberitahuan($nik);
+                $this->generatePernyataan($nik);
+            }
 
             // Set session untuk alert
             if ($status === 'approved') {
@@ -174,6 +178,9 @@ class AccPermohonanController extends Controller
             if (!$permohonan) {
                 throw new \Exception('Permohonan tidak ditemukan untuk NIK: ' . $nik);
             }
+
+            Log::info('Status permohonan untuk NIK ' . $nik . ': ' . ($permohonan->status ?? 'null'));
+            Log::info('Data permohonan: ' . json_encode($permohonan));
 
             $data = [
             'permohonan' => $permohonan, // Mengirim objek permohonan utuh
