@@ -45,8 +45,8 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">485</h4>
-                                    <p class="mb-0 text-white">Customers</p>
+                                    <h4 class="mb-0 text-white">1</h4>
+                                    <p class="mb-0 text-white">Permohonan Ditolak</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-group"></i>
@@ -61,8 +61,8 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">$24K</h4>
-                                    <p class="mb-0 text-white">Total Revenue</p>
+                                    <h4 class="mb-0 text-white">2</h4>
+                                    <p class="mb-0 text-white">Permohonan Disetujui</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-wallet"></i>
@@ -77,8 +77,8 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">22%</h4>
-                                    <p class="mb-0 text-white">Total Growth</p>
+                                    <h4 class="mb-0 text-white">2</h4>
+                                    <p class="mb-0 text-white">Permohonan Pending</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-line-chart-down"></i>
