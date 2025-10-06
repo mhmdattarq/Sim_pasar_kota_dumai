@@ -9,8 +9,8 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">986</h4>
-                                    <p class="mb-0 text-white">Total Orders</p>
+                                    <h4 class="mb-0 text-white">3</h4>
+                                    <p class="mb-0 text-white">Total Pasar</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-cart"></i>
@@ -26,7 +26,7 @@
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
                                     <h4 class="mb-0 text-white">485</h4>
-                                    <p class="mb-0 text-white">Customers</p>
+                                    <p class="mb-0 text-white">Total Unit Pasar Kelakap Tujuh</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-group"></i>
@@ -42,7 +42,7 @@
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
                                     <h4 class="mb-0 text-white">$24K</h4>
-                                    <p class="mb-0 text-white">Total Revenue</p>
+                                    <p class="mb-0 text-white">Total Unit Pasar Bundaran Sri Mersing
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-wallet"></i>
@@ -58,7 +58,7 @@
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
                                     <h4 class="mb-0 text-white">22%</h4>
-                                    <p class="mb-0 text-white">Total Growth</p>
+                                    <p class="mb-0 text-white">Total Unit Pasar Taman Lepin</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-line-chart-down"></i>

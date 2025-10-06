@@ -83,7 +83,7 @@
                             <table class="table table-striped text-center">
                                 <thead class="table-primary">
                                     <tr>
-                                        <th>#</th>
+                                        <th>No</th>
                                         <th>Nama Pasar</th>
                                         <th>Kios</th>
                                         <th>Los</th>
@@ -92,22 +92,25 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Pasar Kelakap</td>
-                                        <td>25</td>
-                                        <td>40</td>
-                                        <td>15</td>
-                                        <td><b>80</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Pasar Pulau Payung</td>
-                                        <td>30</td>
-                                        <td>20</td>
-                                        <td>10</td>
-                                        <td><b>60</b></td>
-                                    </tr>
+                                    @php
+                                        $pasars = $pasars ?? collect();
+                                    @endphp
+                                    @if ($pasars->isEmpty())
+                                        <tr>
+                                            <td colspan="6" class="text-center">Tidak ada data pasar atau terjadi error. Cek log Laravel.</td>
+                                        </tr>
+                                    @else
+                                        @foreach ($pasars as $index => $pasar)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $pasar->nama_pasar ?? 'N/A' }}</td>
+                                                <td>{{ $pasar->total_kios ?? 0 }}</td>
+                                                <td>{{ $pasar->total_los ?? 0 }}</td>
+                                                <td>{{ $pasar->total_pelataran ?? 0 }}</td>
+                                                <td><b>{{ $pasar->total_unit ?? 0 }}</b></td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
