@@ -9,14 +9,13 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">3</h4>
-                                    <p class="mb-0 text-white">Total Pasar</p>
+                                    <h4 class="mb-0 text-white">{{ $totalPasar ?? 0 }}</h4>
+                                    <p class="mb-0 text-white">Total Pasar <br>Kota Dumai</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-cart"></i>
                                 </div>
                             </div>
-                            <small class="mb-0 text-white">+2.6% Since Last Week</small>
                         </div>
                     </div>
                 </div>
@@ -25,14 +24,13 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">485</h4>
-                                    <p class="mb-0 text-white">Total Unit Pasar Kelakap Tujuh</p>
+                                    <h4 class="mb-0 text-white">{{ $totalUnitKelakap ?? 0 }}</h4>
+                                    <p class="mb-0 text-white">Total Unit <br>Pasar Kelakap Tujuh</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-group"></i>
                                 </div>
                             </div>
-                            <small class="mb-0 text-white">+2.6% Since Last Week</small>
                         </div>
                     </div>
                 </div>
@@ -41,14 +39,13 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">$24K</h4>
-                                    <p class="mb-0 text-white">Total Unit Pasar Bundaran Sri Mersing
+                                    <h4 class="mb-0 text-white">{{ $totalUnitBundaran ?? 0 }}</h4>
+                                    <p class="mb-0 text-white">Total Unit <br>Pasar Bundaran Sri Mersing</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-wallet"></i>
                                 </div>
                             </div>
-                            <small class="mb-0 text-white">+2.6% Since Last Week</small>
                         </div>
                     </div>
                 </div>
@@ -57,14 +54,13 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">22%</h4>
-                                    <p class="mb-0 text-white">Total Unit Pasar Taman Lepin</p>
+                                    <h4 class="mb-0 text-white">{{ $totalUnitTamanLepin ?? 0 }}</h4>
+                                    <p class="mb-0 text-white">Total Unit <br>Pasar Taman Lepin</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-line-chart-down"></i>
                                 </div>
                             </div>
-                            <small class="mb-0 text-white">+2.6% Since Last Week</small>
                         </div>
                     </div>
                 </div>
