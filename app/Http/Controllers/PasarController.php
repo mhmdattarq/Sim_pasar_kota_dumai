@@ -32,9 +32,9 @@ class PasarController extends Controller
         $request->validate([
             'nama_pasar'   => 'required|string|max:255',
             'alamat'       => 'required|string',
-            'total_kios'     => 'required|integer|min:0',
-            'total_los'     => 'required|integer|min:0',
-            'total_pelataran'     => 'required|integer|min:0',
+            'total_kios'     => 'nullable|integer|min:0',
+            'total_los'     => 'nullable|integer|min:0',
+            'total_pelataran'     => 'nullable|integer|min:0',
             'foto_depan'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'foto_belakang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'foto_dalam'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
