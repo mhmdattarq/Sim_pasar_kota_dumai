@@ -81,12 +81,12 @@ class AccPermohonanController extends Controller
               ], 500);
           }
       }
-      
-      public function getDocument($nik, $docType)
+
+    public function getDocument($nik, $docType)
     {
         try {
             $nik = str_replace('.', '', $nik);
-            $validDocTypes = ['nib', 'npwp', 'ktp', 'kk', 'foto'];
+            $validDocTypes = ['nib', 'npwp', 'ktp', 'kk', 'foto', 'pernyataan'];
             if (!in_array($docType, $validDocTypes)) {
                 return response()->json(['error' => 'Tipe dokumen tidak valid'], 400);
             }
@@ -96,7 +96,18 @@ class AccPermohonanController extends Controller
                 return response()->json(['error' => 'Permohonan tidak ditemukan'], 404);
             }
 
-            $filePath = $permohonan->$docType; // Kolom: nib, npwp, ktp, kk, foto
+            // Map docType to database column
+            $columnMap = [
+                'nib' => 'nib',
+                'npwp' => 'npwp',
+                'ktp' => 'ktp',
+                'kk' => 'kk',
+                'foto' => 'foto',
+                'pernyataan' => 'dokumen_path_pernyataan'
+            ];
+
+            $column = $columnMap[$docType];
+            $filePath = $permohonan->$column;
             if (!$filePath) {
                 return response()->json(['error' => 'Dokumen ' . strtoupper($docType) . ' tidak tersedia'], 404);
             }
@@ -119,14 +130,14 @@ class AccPermohonanController extends Controller
         }
     }
 
-    public function approve(Request $request, $nik)
+    public function approve(Request $request, $id)
     {
         try {
             $status = $request->input('status');
             $reason = $request->input('reason');
-            $nama = DB::table('permohonan')->where('nik', $nik)->value('nama');
+            $nama = DB::table('permohonan')->where('id', $id)->value('nama');
 
-            Log::info('Approve request for NIK: ' . $nik, ['status' => $status, 'reason' => $reason]);
+            Log::info('Approve request for ID: ' . $id, ['status' => $status, 'reason' => $reason]);
 
             if (!in_array($status, ['approved', 'rejected'])) {
                 return response()->json(['error' => 'Status tidak valid'], 400);
@@ -135,36 +146,32 @@ class AccPermohonanController extends Controller
             $newStatus = ($status === 'approved') ? 'disetujui' : 'ditolak';
             $keterangan = ($status === 'approved') ? 'Surat permohonan telah disetujui, Belum Terverifikasi!' : $reason;
 
-            // Update status dan keterangan terlebih dahulu
             DB::table('permohonan')
-                ->where('nik', $nik)
+                ->where('id', $id)
                 ->update([
                     'status' => $newStatus,
                     'keterangan' => $keterangan
                 ]);
 
-            // Ambil data terbaru setelah pembaruan untuk verifikasi
-            $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
-            Log::info('Status setelah pembaruan untuk NIK ' . $nik . ': ' . ($permohonan->status ?? 'null'));
+            $permohonan = DB::table('permohonan')->where('id', $id)->first();
+            Log::info('Status setelah pembaruan untuk ID ' . $id . ': ' . ($permohonan->status ?? 'null'));
 
-            // Generate surat pemberitahuan dan pernyataan jika disetujui
             if ($status === 'approved') {
-                $this->generatePemberitahuan($nik);
-                $this->generatePernyataan($nik);
+                $this->generatePemberitahuan($id);
+                $this->generatePernyataan($id);
             }
 
-            // Set session untuk alert
             if ($status === 'approved') {
                 session()->flash('success', "Surat permohonan dari {$nama} telah disetujui");
             } else {
                 session()->flash('error', "Surat permohonan dari {$nama} telah ditolak");
             }
 
-            Log::info('Approve successful for NIK: ' . $nik, ['status' => $newStatus, 'keterangan' => $keterangan]);
+            Log::info('Approve successful for ID: ' . $id, ['status' => $newStatus, 'keterangan' => $keterangan]);
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
-            Log::error('Error in approve for NIK: ' . $nik . ', Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            DB::table('permohonan')->where('nik', $nik)->update(['status' => 'lengkap', 'keterangan' => 'Gagal proses pemberitahuan']); // Rollback
+            Log::error('Error in approve for ID: ' . $id . ', Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            DB::table('permohonan')->where('id', $id)->update(['status' => 'lengkap', 'keterangan' => 'Gagal proses pemberitahuan']);
             return response()->json(['error' => 'Terjadi kesalahan saat menyimpan: ' . $e->getMessage()], 500);
         }
     }

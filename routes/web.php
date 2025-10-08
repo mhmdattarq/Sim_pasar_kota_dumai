@@ -97,7 +97,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         }
         abort(404);
     })->where('path', '.*');
-    Route::post('/admin/permohonan/{nik}/approve', [AccPermohonanController::class, 'approve'])->name('permohonan.approve');
+    Route::post('/admin/permohonan/{id}/approve', [AccPermohonanController::class, 'approve'])->name('permohonan.approve');
     Route::post('/admin/permohonan/id/{id}/verify', [AccPermohonanController::class, 'verify'])->name('permohonan.verify');
 });
 

@@ -168,7 +168,7 @@
                                                                                 <td style="width: 100px;">Surat Pernyataan</td>
                                                                                 <td style="width: 500px; text-align: left;">:</td>
                                                                                 <td class="text-right" style="width: 150px;">
-                                                                                    <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/nib') }}"
+                                                                                    <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/pernyataan') }}"
                                                                                         class="btn btn-sm btn-warning"
                                                                                         target="_blank">Lihat Dokumen</a>
                                                                                 </td>
@@ -201,6 +201,7 @@
                                                         </div>
                                                         <div class="modal-body">
                                                             <form id="approval-form-{{ $p->id }}" class="mt-4"
+                                                                data-id="{{ $p->id }}"
                                                                 data-nik="{{ $p->nik }}"
                                                                 data-nama="{{ $p->nama }}">
                                                                 <div class="row mb-3">
@@ -390,78 +391,65 @@
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
                     const modalId = this.id.replace('approval-form-', '');
-                    const nik = this.getAttribute('data-nik');
+                    const id = this.getAttribute('data-id'); // Ambil id dari atribut data-id
+                    const nik = this.getAttribute('data-nik'); // Tetap simpan nik jika diperlukan
                     const nama = this.getAttribute('data-nama');
-                    const status = document.querySelector(
-                        `input[name="approval-status-${modalId}"]:checked`).value;
-                    const reason = status === 'rejected' ? document.getElementById(
-                        `reason-text-${modalId}`).value : 'surat permohonan telah disetujui';
+                    const status = document.querySelector(`input[name="approval-status-${modalId}"]:checked`).value;
+                    const reason = status === 'rejected' ? document.getElementById(`reason-text-${modalId}`).value : 'surat permohonan telah disetujui';
 
-                    console.log('Submitting approval for NIK:', nik, 'Status:', status, 'Reason:',
-                        reason);
+                    console.log('Submitting approval for ID:', id, 'NIK:', nik, 'Status:', status, 'Reason:', reason);
 
-                    fetch(`/admin/permohonan/${nik}/approve`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector(
-                                    'meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                status: status,
-                                reason: reason
-                            })
+                    fetch(`/admin/permohonan/${id}/approve`, { // Gunakan id di URL
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            status: status,
+                            reason: reason
                         })
-                        .then(res => {
-                            console.log('Fetch response status:', res.status);
-                            return res.json();
-                        })
-                        .then(data => {
-                            console.log('Fetch response data:', data);
-                            if (data.success) {
-                                Swal.fire({
-                                    icon: status === 'approved' ? 'success' : 'error',
-                                    title: status === 'approved' ? 'Sukses' : 'Ditolak',
-                                    text: status === 'approved' ?
-                                        'Surat permohonan telah disetujui' :
-                                        'Surat permohonan telah ditolak'
-                                });
-                                // Tambah alert di breadcrumb dengan pengecekan
-                                const alertContainer = document.querySelector(
-                                    '.page-content > .page-breadcrumb');
-                                if (alertContainer && alertContainer.nextElementSibling) {
-                                    const alertType = status === 'approved' ? 'success' :
-                                        'danger';
-                                    const alertMessage =
-                                        `Surat permohonan dari ${nama} telah ${status === 'approved' ? 'disetujui' : 'ditolak'}`;
-                                    const alertHtml =
-                                        `<div class="alert alert-${alertType} alert-dismissible fade show" role="alert">${alertMessage}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
-                                    alertContainer.nextElementSibling.insertAdjacentHTML(
-                                        'afterbegin', alertHtml);
-                                    setTimeout(() => {
-                                        const alert = alertContainer.nextElementSibling
-                                            .querySelector('.alert');
-                                        if (alert) alert.remove();
-                                    }, 5000); // Hilang setelah 5 detik
-                                }
-                                location.reload(); // Refresh page to update table
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: 'Gagal memperbarui status: ' + (data.error ||
-                                        'Unknown error')
-                                });
+                    })
+                    .then(res => {
+                        console.log('Fetch response status:', res.status);
+                        return res.json();
+                    })
+                    .then(data => {
+                        console.log('Fetch response data:', data);
+                        if (data.success) {
+                            Swal.fire({
+                                icon: status === 'approved' ? 'success' : 'error',
+                                title: status === 'approved' ? 'Sukses' : 'Ditolak',
+                                text: status === 'approved' ? 'Surat permohonan telah disetujui' : 'Surat permohonan telah ditolak'
+                            });
+                            const alertContainer = document.querySelector('.page-content > .page-breadcrumb');
+                            if (alertContainer && alertContainer.nextElementSibling) {
+                                const alertType = status === 'approved' ? 'success' : 'danger';
+                                const alertMessage = `Surat permohonan dari ${nama} telah ${status === 'approved' ? 'disetujui' : 'ditolak'}`;
+                                const alertHtml = `<div class="alert alert-${alertType} alert-dismissible fade show" role="alert">${alertMessage}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+                                alertContainer.nextElementSibling.insertAdjacentHTML('afterbegin', alertHtml);
+                                setTimeout(() => {
+                                    const alert = alertContainer.nextElementSibling.querySelector('.alert');
+                                    if (alert) alert.remove();
+                                }, 5000);
                             }
-                        })
-                        .catch(err => {
-                            console.error('Fetch error:', err);
+                            location.reload();
+                        } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Error',
-                                text: 'Terjadi kesalahan saat menyimpan'
+                                title: 'Gagal',
+                                text: 'Gagal memperbarui status: ' + (data.error || 'Unknown error')
                             });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Fetch error:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Terjadi kesalahan saat menyimpan'
                         });
+                    });
                 });
             });
 
