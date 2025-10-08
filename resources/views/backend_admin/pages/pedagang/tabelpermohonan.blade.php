@@ -47,212 +47,214 @@
                             </thead>
                             <tbody>
                                 @foreach ($permohonans as $p)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $p->nama }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($p->created_at)->format('d-m-Y') }}</td>
-                                        <th>
-                                            @if ($p->status == 'draft')
-                                                <span class="badge bg-danger">Draft</span>
-                                            @elseif ($p->status == 'lengkap')
-                                                <span class="badge bg-warning text-dark">Lengkap</span>
-                                            @elseif ($p->status == 'disetujui')
-                                                <span class="badge bg-success">Disetujui, Belum Terverifikasi</span>
-                                            @elseif ($p->status == 'ditolak')
-                                                <span class="badge bg-danger">Ditolak</span>
-                                            @elseif ($p->status == 'selesai')
-                                                <span class="badge bg-success">Selesai</span>
-                                            @elseif ($p->status == 'verifikasi')
-                                                <span class="badge bg-info">Menunggu Verifikasi</span>
-                                            @else
-                                                <span class="badge bg-secondary">Unknown</span>
-                                            @endif
-                                        </th>
-                                        <td>{{ $p->keterangan ?? '-' }}</td>
-                                        <td>
-                                            <!-- Tombol Review -->
-                                            <button type="button" class="btn btn-gradient-warning btn-sm view-pdf"
-                                                data-bs-toggle="modal" data-bs-target="#reviewModal{{ $p->id }}"
-                                                data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}">
-                                                Review
-                                            </button>
-                                            <button type="button" class="btn btn-success btn-sm approve-pdf"
-                                                data-bs-toggle="modal" data-bs-target="#approveModal{{ $p->id }}"
-                                                data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}"
-                                                @if ($p->status == 'draft' || $p->status == 'disetujui' || $p->status == 'ditolak' || $p->status == 'selesai' || $p->status == 'verifikasi') disabled @endif>
-                                                Persetujuan
-                                            </button>
-                                            <button type="button" class="btn btn-primary btn-sm verify-pdf"
-                                                data-id="{{ $p->id }}" data-nama="{{ $p->nama }}"
-                                                @if ($p->status != 'verifikasi') disabled @endif>
-                                                Verifikasi
-                                            </button>
-                                            <!-- Modal Preview Surat -->
-                                            <div class="modal fade" id="reviewModal{{ $p->id }}" tabindex="-1"
-                                                aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Preview Surat Permohonan dari
-                                                                {{ $p->nama }}</h5>
-                                                            <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div id="loading-{{ $p->id }}"
-                                                                style="text-align:center; padding:20px; display:block;">
-                                                                Memuat PDF...</div>
-                                                            <div id="adobe-dc-view-{{ $p->id }}"
-                                                                style="height:600px; display:none;"
-                                                                class="adobe-view-container"></div>
-                                                            <iframe id="fallback-pdf-{{ $p->id }}" src=""
-                                                                width="100%" height="600px"
-                                                                style="border:none; display:none;"></iframe>
-                                                            <!-- Dokumen Tambahan -->
-                                                            <div class="row mt-4">
-                                                                <div class="col-md-12">
-                                                                    <h6 class="mb-3">Dokumen Kelengkapan Pemohon:</h6>
-                                                                    <table class="table table-borderless">
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td style="width: 100px;">NIB</td>
-                                                                                <td style="width: 500px; text-align: left;">:</td>
-                                                                                <td class="text-right" style="width: 150px;">
-                                                                                    <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/nib') }}"
-                                                                                        class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat Dokumen</a>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td class="text-left">Fotokopi NPWP</td>
-                                                                                <td>:</td>
-                                                                                <td class="text-right">
-                                                                                    <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/npwp') }}"
-                                                                                        class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat Dokumen</a>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td class="text-left">Fotokopi KTP</td>
-                                                                                <td>:</td>
-                                                                                <td class="text-right">
-                                                                                    <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/ktp') }}"
-                                                                                        class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat Dokumen</a>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td class="text-left">Fotokopi KK</td>
-                                                                                <td>:</td>
-                                                                                <td class="text-right">
-                                                                                    <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/kk') }}"
-                                                                                        class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat Dokumen</a>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td class="text-left">Pas Foto</td>
-                                                                                <td>:</td>
-                                                                                <td class="text-right">
-                                                                                    <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/foto') }}"
-                                                                                        class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat Dokumen</a>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                    @if($p->status === 'verifikasi' || $p->status === 'selesai')
-                                                                        <hr>
+                                    @if ($p->status === 'lengkap' || $p->status === 'disetujui' || $p->status === 'ditolak' || $p->status === 'verifikasi' || $p->status === 'selesai')
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $p->nama }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($p->created_at)->format('d-m-Y') }}</td>
+                                            <th>
+                                                @if ($p->status == 'draft')
+                                                    <span class="badge bg-danger">Draft</span>
+                                                @elseif ($p->status == 'lengkap')
+                                                    <span class="badge bg-warning text-dark">Lengkap</span>
+                                                @elseif ($p->status == 'disetujui')
+                                                    <span class="badge bg-success">Disetujui, Belum Terverifikasi</span>
+                                                @elseif ($p->status == 'ditolak')
+                                                    <span class="badge bg-danger">Ditolak</span>
+                                                @elseif ($p->status == 'selesai')
+                                                    <span class="badge bg-success">Selesai</span>
+                                                @elseif ($p->status == 'verifikasi')
+                                                    <span class="badge bg-info">Menunggu Verifikasi</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Unknown</span>
+                                                @endif
+                                            </th>
+                                            <td>{{ $p->keterangan ?? '-' }}</td>
+                                            <td>
+                                                <!-- Tombol Review -->
+                                                <button type="button" class="btn btn-gradient-warning btn-sm view-pdf"
+                                                    data-bs-toggle="modal" data-bs-target="#reviewModal{{ $p->id }}"
+                                                    data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}">
+                                                    Review
+                                                </button>
+                                                <button type="button" class="btn btn-success btn-sm approve-pdf"
+                                                    data-bs-toggle="modal" data-bs-target="#approveModal{{ $p->id }}"
+                                                    data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}"
+                                                    @if ($p->status == 'draft' || $p->status == 'disetujui' || $p->status == 'ditolak' || $p->status == 'selesai' || $p->status == 'verifikasi') disabled @endif>
+                                                    Persetujuan
+                                                </button>
+                                                <button type="button" class="btn btn-primary btn-sm verify-pdf"
+                                                    data-id="{{ $p->id }}" data-nama="{{ $p->nama }}"
+                                                    @if ($p->status != 'verifikasi') disabled @endif>
+                                                    Verifikasi
+                                                </button>
+                                                <!-- Modal Preview Surat -->
+                                                <div class="modal fade" id="reviewModal{{ $p->id }}" tabindex="-1"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Preview Surat Permohonan dari
+                                                                    {{ $p->nama }}</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div id="loading-{{ $p->id }}"
+                                                                    style="text-align:center; padding:20px; display:block;">
+                                                                    Memuat PDF...</div>
+                                                                <div id="adobe-dc-view-{{ $p->id }}"
+                                                                    style="height:600px; display:none;"
+                                                                    class="adobe-view-container"></div>
+                                                                <iframe id="fallback-pdf-{{ $p->id }}" src=""
+                                                                    width="100%" height="600px"
+                                                                    style="border:none; display:none;"></iframe>
+                                                                <!-- Dokumen Tambahan -->
+                                                                <div class="row mt-4">
+                                                                    <div class="col-md-12">
+                                                                        <h6 class="mb-3">Dokumen Kelengkapan Pemohon:</h6>
                                                                         <table class="table table-borderless">
                                                                             <tbody>
                                                                                 <tr>
-                                                                                    <td style="width: 100px;">Surat Pernyataan</td>
+                                                                                    <td style="width: 100px;">NIB</td>
                                                                                     <td style="width: 500px; text-align: left;">:</td>
                                                                                     <td class="text-right" style="width: 150px;">
-                                                                                        <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/pernyataan') }}"
-                                                                                        class="btn btn-sm btn-warning"
-                                                                                        target="_blank">Lihat Dokumen</a>
+                                                                                        <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/nib') }}"
+                                                                                            class="btn btn-sm btn-warning"
+                                                                                            target="_blank">Lihat Dokumen</a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td class="text-left">Fotokopi NPWP</td>
+                                                                                    <td>:</td>
+                                                                                    <td class="text-right">
+                                                                                        <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/npwp') }}"
+                                                                                            class="btn btn-sm btn-warning"
+                                                                                            target="_blank">Lihat Dokumen</a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td class="text-left">Fotokopi KTP</td>
+                                                                                    <td>:</td>
+                                                                                    <td class="text-right">
+                                                                                        <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/ktp') }}"
+                                                                                            class="btn btn-sm btn-warning"
+                                                                                            target="_blank">Lihat Dokumen</a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td class="text-left">Fotokopi KK</td>
+                                                                                    <td>:</td>
+                                                                                    <td class="text-right">
+                                                                                        <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/kk') }}"
+                                                                                            class="btn btn-sm btn-warning"
+                                                                                            target="_blank">Lihat Dokumen</a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td class="text-left">Pas Foto</td>
+                                                                                    <td>:</td>
+                                                                                    <td class="text-right">
+                                                                                        <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/foto') }}"
+                                                                                            class="btn btn-sm btn-warning"
+                                                                                            target="_blank">Lihat Dokumen</a>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
-                                                                    @endif
+                                                                        @if($p->status === 'verifikasi' || $p->status === 'selesai')
+                                                                            <hr>
+                                                                            <table class="table table-borderless">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td style="width: 100px;">Surat Pernyataan</td>
+                                                                                        <td style="width: 500px; text-align: left;">:</td>
+                                                                                        <td class="text-right" style="width: 150px;">
+                                                                                            <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/pernyataan') }}"
+                                                                                            class="btn btn-sm btn-warning"
+                                                                                            target="_blank">Lihat Dokumen</a>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        @endif
+                                                                    </div>
                                                                 </div>
+                                                                <!-- End Dokumen Tambahan -->
                                                             </div>
-                                                            <!-- End Dokumen Tambahan -->
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-danger"
-                                                                data-bs-dismiss="modal">Tutup</button>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-danger"
+                                                                    data-bs-dismiss="modal">Tutup</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <!-- End Modal Preview Surat -->
+                                                <!-- End Modal Preview Surat -->
 
-                                            <!-- Modal Setujui -->
-                                            <div class="modal fade" id="approveModal{{ $p->id }}" tabindex="-1"
-                                                aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Persetujuan Pedagang untuk
-                                                                {{ $p->nama }}</h5>
-                                                            <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form id="approval-form-{{ $p->id }}" class="mt-4"
-                                                                data-id="{{ $p->id }}"
-                                                                data-nik="{{ $p->nik }}"
-                                                                data-nama="{{ $p->nama }}">
-                                                                <div class="row mb-3">
-                                                                    <label class="col-sm-3 col-form-label">Status
-                                                                        Persetujuan :</label>
-                                                                    <div class="col-sm-9">
-                                                                        <div class="form-check">
-                                                                            <input type="radio" class="form-check-input"
-                                                                                name="approval-status-{{ $p->id }}"
-                                                                                value="approved"
-                                                                                id="approved-{{ $p->id }}" checked>
-                                                                            <label class="form-check-label"
-                                                                                for="approved-{{ $p->id }}">DIKABULKAN</label>
+                                                <!-- Modal Setujui -->
+                                                <div class="modal fade" id="approveModal{{ $p->id }}" tabindex="-1"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Persetujuan Pedagang untuk
+                                                                    {{ $p->nama }}</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form id="approval-form-{{ $p->id }}" class="mt-4"
+                                                                    data-id="{{ $p->id }}"
+                                                                    data-nik="{{ $p->nik }}"
+                                                                    data-nama="{{ $p->nama }}">
+                                                                    <div class="row mb-3">
+                                                                        <label class="col-sm-3 col-form-label">Status
+                                                                            Persetujuan :</label>
+                                                                        <div class="col-sm-9">
+                                                                            <div class="form-check">
+                                                                                <input type="radio" class="form-check-input"
+                                                                                    name="approval-status-{{ $p->id }}"
+                                                                                    value="approved"
+                                                                                    id="approved-{{ $p->id }}" checked>
+                                                                                <label class="form-check-label"
+                                                                                    for="approved-{{ $p->id }}">DIKABULKAN</label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <input type="radio" class="form-check-input"
+                                                                                    name="approval-status-{{ $p->id }}"
+                                                                                    value="rejected"
+                                                                                    id="rejected-{{ $p->id }}">
+                                                                                <label class="form-check-label"
+                                                                                    for="rejected-{{ $p->id }}">TIDAK
+                                                                                    DIKABULKAN</label>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="form-check">
-                                                                            <input type="radio" class="form-check-input"
-                                                                                name="approval-status-{{ $p->id }}"
-                                                                                value="rejected"
-                                                                                id="rejected-{{ $p->id }}">
-                                                                            <label class="form-check-label"
-                                                                                for="rejected-{{ $p->id }}">TIDAK
-                                                                                DIKABULKAN</label>
+                                                                    </div>
+                                                                    <div class="row mb-3"
+                                                                        id="reason-container-{{ $p->id }}"
+                                                                        style="display:none;">
+                                                                        <label class="col-sm-3 col-form-label">Alasan Tidak
+                                                                            Dikabulkan :</label>
+                                                                        <div class="col-sm-9">
+                                                                            <textarea class="form-control mb-3" placeholder="Masukkan Alasan.." aria-label="default textarea example"
+                                                                                id="reason-text-{{ $p->id }}" rows="3"></textarea>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="row mb-3"
-                                                                    id="reason-container-{{ $p->id }}"
-                                                                    style="display:none;">
-                                                                    <label class="col-sm-3 col-form-label">Alasan Tidak
-                                                                        Dikabulkan :</label>
-                                                                    <div class="col-sm-9">
-                                                                        <textarea class="form-control mb-3" placeholder="Masukkan Alasan.." aria-label="default textarea example"
-                                                                            id="reason-text-{{ $p->id }}" rows="3"></textarea>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-9 offset-sm-3">
+                                                                            <button type="submit"
+                                                                                class="btn btn-success px-5">Simpan
+                                                                                Persetujuan</button>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-sm-9 offset-sm-3">
-                                                                        <button type="submit"
-                                                                            class="btn btn-success px-5">Simpan
-                                                                            Persetujuan</button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
