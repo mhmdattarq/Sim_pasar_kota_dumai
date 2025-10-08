@@ -50,9 +50,9 @@ class PasarController extends Controller
         DB::table('pasar')->insert([
             'nama_pasar'    => $request->nama_pasar,
             'alamat'        => $request->alamat,
-            'total_kios'        => $request->total_kios,
-            'total_los'        => $request->total_los,
-            'total_pelataran'        => $request->total_pelataran,
+            'total_kios'        => $request->input('total_kios') ?? 0,
+            'total_los'        => $request->input('total_los') ?? 0,
+            'total_pelataran'        => $request->input('total_pelataran') ?? 0,
             'foto_depan'    => $fotoDepan,
             'foto_belakang' => $fotoBelakang,
             'foto_dalam'    => $fotoDalam,
