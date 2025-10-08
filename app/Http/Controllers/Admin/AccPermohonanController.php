@@ -156,9 +156,12 @@ class AccPermohonanController extends Controller
             $permohonan = DB::table('permohonan')->where('id', $id)->first();
             Log::info('Status setelah pembaruan untuk ID ' . $id . ': ' . ($permohonan->status ?? 'null'));
 
+            // Trigger generasi dokumen berdasarkan status
             if ($status === 'approved') {
-                $this->generatePemberitahuan($id);
-                $this->generatePernyataan($id);
+                $this->generatePemberitahuan($id); // Generate surat pemberitahuan
+                $this->generatePernyataan($id);   // Generate surat pernyataan
+            } elseif ($status === 'rejected') {
+                $this->generatePemberitahuan($id); // Generate hanya surat pemberitahuan
             }
 
             if ($status === 'approved') {

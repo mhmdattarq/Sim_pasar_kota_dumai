@@ -138,8 +138,8 @@
         </div>
 
         <p>Memperhatikan surat permohonan saudara tanggal perihal permohonan menjadi pedagang, maka permohonan saudara :</p>
-        <p><img src="{{ strtolower($permohonan->status) === 'disetujui' ? public_path('backend/assets/images/ceklist.png') : (public_path('backend/assets/images/ceklist_kosong.png') . ' - DEBUG: Status = ' . ($permohonan->status ?? 'null')) }}" alt="Check - Status: {{ $permohonan->status ?? 'null' }}" class="checkbox-img">DIKABULKAN, untuk selanjutnya kepada saudara diminta untuk hadir di Kantor UPT. Pelayanan Pasar / koordinator Pasar untuk segera mengikuti arahan langkah selanjutnya</p>
-        <p><img src="{{ strtolower($permohonan->status) === 'ditolak' ? public_path('backend/assets/images/ceklist.png') : public_path('backend/assets/images/ceklist_kosong.png') }}" alt="Check - Status: {{ $permohonan->status ?? 'null' }}" class="checkbox-img">TIDAK DIKABULKAN, karena {{ strtolower($permohonan->status) === 'ditolak' ? $permohonan->keterangan : '...................................' }}</p>
+        <p><img src="{{ strtolower($permohonan->status) === 'disetujui' ? public_path('backend/assets/images/ceklist.png') : public_path('backend/assets/images/ceklist_kosong.png') }}" alt="Check - DIKABULKAN" class="checkbox-img">DIKABULKAN, untuk selanjutnya kepada saudara diminta untuk hadir di Kantor UPT. Pelayanan Pasar / koordinator Pasar untuk segera mengikuti arahan langkah selanjutnya</p>
+        <p><img src="{{ strtolower($permohonan->status) === 'ditolak' ? public_path('backend/assets/images/ceklist.png') : public_path('backend/assets/images/ceklist_kosong.png') }}" alt="Check - TIDAK DIKABULKAN" class="checkbox-img">TIDAK DIKABULKAN, karena {{ strtolower($permohonan->status) === 'ditolak' ? $permohonan->keterangan : '...................................' }}</p>
 
         <p>Demikian, atas perhatiannya diucapkan terima kasih</p>
 

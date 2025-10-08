@@ -29,8 +29,9 @@ class PemberitahuanController extends Controller
             return redirect()->back()->with('error', 'Permohonan tidak ditemukan.');
         }
 
-        if ($permohonan->status !== 'disetujui') {
-            return redirect()->back()->with('error', 'Surat pemberitahuan hanya tersedia untuk status disetujui.');
+        // Izinkan download untuk status 'disetujui' atau 'ditolak'
+        if (!in_array($permohonan->status, ['disetujui', 'ditolak'])) {
+            return redirect()->back()->with('error', 'Surat pemberitahuan hanya tersedia untuk status disetujui atau ditolak.');
         }
 
         // Ambil path file dari kolom dokumen_path_pemberitahuan
