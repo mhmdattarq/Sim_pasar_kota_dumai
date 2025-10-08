@@ -176,49 +176,45 @@ class AccPermohonanController extends Controller
         }
     }
 
-    public function generatePemberitahuan($nik)
+    public function generatePemberitahuan($id)
     {
         try {
-            Log::info('Starting generatePemberitahuan for NIK: ' . $nik);
+            Log::info('Starting generatePemberitahuan for ID: ' . $id);
 
-            $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
+            $permohonan = DB::table('permohonan')->where('id', $id)->first();
             if (!$permohonan) {
-                throw new \Exception('Permohonan tidak ditemukan untuk NIK: ' . $nik);
+                throw new \Exception('Permohonan tidak ditemukan untuk ID: ' . $id);
             }
 
-            Log::info('Status permohonan untuk NIK ' . $nik . ': ' . ($permohonan->status ?? 'null'));
+            Log::info('Status permohonan untuk ID ' . $id . ': ' . ($permohonan->status ?? 'null'));
             Log::info('Data permohonan: ' . json_encode($permohonan));
 
             $data = [
-            'permohonan' => $permohonan, // Mengirim objek permohonan utuh
-            'tanggal' => now()->format('d F Y'), // Tanggal TTD
+                'permohonan' => $permohonan,
+                'tanggal' => now()->format('d F Y'),
             ];
 
-            // Cek apakah view ada sebelum generate
             if (!view()->exists('backend_pedagang.surat.pemberitahuan')) {
                 throw new \Exception('View backend_pedagang.surat.pemberitahuan tidak ditemukan');
             }
             Log::info('View backend_pedagang.surat.pemberitahuan ditemukan');
 
-            // Cek apakah library PDF tersedia
             if (!class_exists('Barryvdh\DomPDF\Facade\Pdf')) {
                 throw new \Exception('Library PDF (barryvdh/laravel-dompdf) belum diinstall');
             }
 
-            // Gunakan direktori utama
             $directory = 'uploads/dokumen';
-            $fileName = "surat_pemberitahuan_{$permohonan->nik}.pdf";
+            $timestamp = now()->format('Ymd_His'); // Tambahkan timestamp, contoh: 20251008_092300
+            $fileName = "surat_pemberitahuan_{$permohonan->nik}_{$timestamp}.pdf"; // Tambah timestamp
             $filePath = $directory . '/' . $fileName;
             $fullPath = storage_path('app/public/' . $filePath);
             Log::info('Generated file path: ' . $filePath);
             Log::info('Full file path: ' . $fullPath);
 
-            // Generate PDF
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('backend_pedagang.surat.pemberitahuan', $data)->setPaper('A4', 'portrait');
 
             Log::info('PDF generated successfully');
 
-            // Simpan PDF
             $pdfOutput = $pdf->output();
             if (empty($pdfOutput)) {
                 throw new \Exception('Output PDF kosong, gagal generate PDF');
@@ -226,69 +222,63 @@ class AccPermohonanController extends Controller
             Storage::disk('public')->put($filePath, $pdfOutput);
             Log::info('PDF saved to storage: ' . $fullPath);
 
-            // Verifikasi file ada
             if (!Storage::disk('public')->exists($filePath)) {
                 throw new \Exception('File tidak ditemukan di storage setelah disimpan');
             }
             Log::info('File verified in storage');
 
-            // Update database dengan path PDF
             DB::table('permohonan')
-                ->where('nik', $nik)
+                ->where('id', $id)
                 ->update(['dokumen_path_pemberitahuan' => $filePath]);
             Log::info('Database updated with file path: ' . $filePath);
 
-            Log::info('generatePemberitahuan completed successfully for NIK: ' . $nik);
+            Log::info('generatePemberitahuan completed successfully for ID: ' . $id);
         } catch (\Exception $e) {
-            Log::error('Error in generatePemberitahuan for NIK: ' . $nik . ', Error: ' . $e->getMessage() . ', Trace: ' . $e->getTraceAsString());
-            throw $e; // Re-throw agar ditangkap di approve
+            Log::error('Error in generatePemberitahuan for ID: ' . $id . ', Error: ' . $e->getMessage() . ', Trace: ' . $e->getTraceAsString());
+            throw $e;
         }
     }
-    
-    public function generatePernyataan($nik)
+
+    public function generatePernyataan($id)
     {
         try {
-            Log::info('Starting generatePernyataan for NIK: ' . $nik);
+            Log::info('Starting generatePernyataan for ID: ' . $id);
 
             $permohonan = DB::table('permohonan')
                 ->join('pasar', 'permohonan.pasar_id', '=', 'pasar.id')
                 ->select('permohonan.*', 'pasar.nama_pasar')
-                ->where('permohonan.nik', $nik)
+                ->where('permohonan.id', $id)
                 ->first();
             if (!$permohonan) {
-                throw new \Exception('Permohonan tidak ditemukan untuk NIK: ' . $nik);
+                throw new \Exception('Permohonan tidak ditemukan untuk ID: ' . $id);
             }
 
             $data = [
-                'permohonan' => $permohonan, // Mengirim objek permohonan utuh
-                'tanggal' => now()->format('d F Y'), // Tanggal TTD
+                'permohonan' => $permohonan,
+                'tanggal' => now()->format('d F Y'),
             ];
 
-            // Cek apakah view ada sebelum generate
             if (!view()->exists('backend_pedagang.surat.pernyataan')) {
                 throw new \Exception('View backend_pedagang.surat.pernyataan tidak ditemukan');
             }
             Log::info('View backend_pedagang.surat.pernyataan ditemukan');
 
-            // Cek apakah library PDF tersedia
             if (!class_exists('Barryvdh\DomPDF\Facade\Pdf')) {
                 throw new \Exception('Library PDF (barryvdh/laravel-dompdf) belum diinstall');
             }
 
-            // Gunakan direktori utama
             $directory = 'uploads/dokumen';
-            $fileName = "surat_pernyataan_{$permohonan->nik}.pdf";
+            $timestamp = now()->format('Ymd_His'); // Tambahkan timestamp, contoh: 20251008_092300
+            $fileName = "surat_pernyataan_{$permohonan->nik}_{$timestamp}.pdf"; // Tambah timestamp
             $filePath = $directory . '/' . $fileName;
             $fullPath = storage_path('app/public/' . $filePath);
             Log::info('Generated file path: ' . $filePath);
             Log::info('Full file path: ' . $fullPath);
 
-            // Generate PDF
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('backend_pedagang.surat.pernyataan', $data)->setPaper('A4', 'portrait');
 
             Log::info('PDF generated successfully');
 
-            // Simpan PDF
             $pdfOutput = $pdf->output();
             if (empty($pdfOutput)) {
                 throw new \Exception('Output PDF kosong, gagal generate PDF');
@@ -296,22 +286,20 @@ class AccPermohonanController extends Controller
             Storage::disk('public')->put($filePath, $pdfOutput);
             Log::info('PDF saved to storage: ' . $fullPath);
 
-            // Verifikasi file ada
             if (!Storage::disk('public')->exists($filePath)) {
                 throw new \Exception('File tidak ditemukan di storage setelah disimpan');
             }
             Log::info('File verified in storage');
 
-            // Update database dengan path PDF
             DB::table('permohonan')
-                ->where('nik', $nik)
+                ->where('id', $id)
                 ->update(['dokumen_path_pernyataan' => $filePath]);
             Log::info('Database updated with file path: ' . $filePath);
 
-            Log::info('generatePernyataan completed successfully for NIK: ' . $nik);
+            Log::info('generatePernyataan completed successfully for ID: ' . $id);
         } catch (\Exception $e) {
-            Log::error('Error in generatePernyataan for NIK: ' . $nik . ', Error: ' . $e->getMessage() . ', Trace: ' . $e->getTraceAsString());
-            throw $e; // Re-throw agar ditangkap di approve
+            Log::error('Error in generatePernyataan for ID: ' . $id . ', Error: ' . $e->getMessage() . ', Trace: ' . $e->getTraceAsString());
+            throw $e;
         }
     }
 
