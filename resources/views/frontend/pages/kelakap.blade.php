@@ -28,7 +28,7 @@
                 <div class="col-lg-7"
                     style="background: linear-gradient(rgba(255, 255, 255, .8), rgba(255, 255, 255, .8)), url(img/about-img-1.png);">
                     <h5 class="section-about-title pe-3">Profil Kelakap Tujuh</h5>
-                    <h1 class="mb-4">Pasar<span class="text-primary">Kelakap Tujuh</span></h1>
+                    <h1 class="mb-4">Pasar<span class="text-primary"> Kelakap Tujuh</span></h1>
                     <p class="mb-4">Pasar Kelakap Tujuh terletak di Jalan Kelakap Tujuh, Kelurahan Bukit Batrem, Kecamatan
                         Dumai Timur, Kota Dumai, Provinsi Riau. Pasar ini menjadi salah satu pusat perdagangan dan aktivitas
                         ekonomi bagi warga sekitar, terutama di wilayah Dumai Timur.</p>

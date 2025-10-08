@@ -9,7 +9,7 @@
             background-repeat: no-repeat;
             min-height: 300px;">
         <div class="container text-center">
-            <h3 class="display-3 mb-4 text-white">PASAR PULAU PAYUNG</h3>
+            <h3 class="display-3 mb-4 text-white">PASAR BUNDARAN SRI MERSING</h3>
         </div>
     </div>
 
@@ -27,12 +27,12 @@
                 </div>
                 <div class="col-lg-7"
                     style="background: linear-gradient(rgba(255, 255, 255, .8), rgba(255, 255, 255, .8)), url(img/about-img-1.png);">
-                    <h5 class="section-about-title pe-3">Profil Pasar Pulau Payung</h5>
-                    <h1 class="mb-4">Pasar<span class="text-primary">Pulau Payung</span></h1>
-                    <p class="mb-4">Pasar Pulau Payung terletak di Jalan Pangeran Diponegoro, Kelurahan Rimba Sekampung,
+                    <h5 class="section-about-title pe-3">Profil Pasar Bundaran Sri Mersing</h5>
+                    <h1 class="mb-4">Pasar<span class="text-primary"> Bundaran Sri Mersing</span></h1>
+                    <p class="mb-4">Pasar Bundaran Sri Mersing terletak di Jalan Pangeran Diponegoro, Kelurahan Rimba Sekampung,
                         Kecamatan Dumai Kota, Kota Dumai, Provinsi Riau. Pasar ini menjadi salah satu pusat aktivitas
                         ekonomi masyarakat Dumai.</p>
-                    <p class="mb-4">Pasar Pulau Payung dikenal sebagai pasar tradisional yang menjual beragam kebutuhan
+                    <p class="mb-4">Pasar Bundaran Sri Mersing dikenal sebagai pasar tradisional yang menjual beragam kebutuhan
                         pokok masyarakat, di antaranya:</p>
                     <div class="row gy-2 gx-4 mb-4">
                         <div class="col-sm-6">
@@ -79,7 +79,7 @@
             <tbody>
                 <tr>
                     <td>Nama Pasar</td>
-                    <td>Pasar Pulau Payung</td>
+                    <td>Pasar Bundaran Sri Mersing</td>
                 </tr>
                 <tr>
                     <td>Alamat Pasar</td>
@@ -110,7 +110,7 @@
     <div class="container-fluid guide py-5">
         <div class="container py-5">
             <div class="mx-auto text-center mb-5" style="max-width: 900px;">
-                <h5 class="section-title px-3">Foto Pasar Pulau Payung</h5>
+                <h5 class="section-title px-3">Foto Pasar Bundaran Sri Mersing</h5>
             </div>
             <div class="row g-4 justify-content-center">
                 <div class="col-md-6 col-lg-3">
@@ -124,7 +124,7 @@
                         <div class="guide-title text-center rounded-bottom p-4">
                             <div class="guide-title-inner">
                                 <h4 class="mt-3">Tampak Dalam</h4>
-                                <p class="mb-0">Pasar Pulau Payung</p>
+                                <p class="mb-0">Pasar Bundaran Sri Mersing</p>
                             </div>
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                         <div class="guide-title text-center rounded-bottom p-4">
                             <div class="guide-title-inner">
                                 <h4 class="mt-3">Tampak Samping</h4>
-                                <p class="mb-0">Pasar Pulau Payung</p>
+                                <p class="mb-0">Pasar Bundaran Sri Mersing</p>
                             </div>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
                         <div class="guide-title text-center rounded-bottom p-4">
                             <div class="guide-title-inner">
                                 <h4 class="mt-3">Tampak Depan</h4>
-                                <p class="mb-0">Pasar Pulau Payung</p>
+                                <p class="mb-0">Pasar Bundaran Sri Mersing</p>
                             </div>
                         </div>
                     </div>

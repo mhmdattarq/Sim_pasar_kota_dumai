@@ -9,7 +9,7 @@
             background-repeat: no-repeat;
             min-height: 300px;">
         <div class="container text-center">
-            <h3 class="display-3 mb-4 text-white">PASAR TAMAN LEPIN</h3>
+            <h3 class="display-3 mb-4 text-white">PASAR LEPIN</h3>
         </div>
     </div>
 
@@ -27,12 +27,12 @@
                 </div>
                 <div class="col-lg-7"
                     style="background: linear-gradient(rgba(255, 255, 255, .8), rgba(255, 255, 255, .8)), url(img/about-img-1.png);">
-                    <h5 class="section-about-title pe-3">Profil Pasar Taman Lepin</h5>
-                    <h1 class="mb-4">Pasar<span class="text-primary"> Taman Lepin</span></h1>
-                    <p class="mb-4">Pasar Taman Lepin terletak di Jalan Taman Lepin, Kelurahan Rimba Sekampung, Kecamatan
+                    <h5 class="section-about-title pe-3">Profil Pasar Lepin</h5>
+                    <h1 class="mb-4">Pasar<span class="text-primary"> Lepin</span></h1>
+                    <p class="mb-4">Pasar Lepin terletak di Jalan Lepin, Kelurahan Rimba Sekampung, Kecamatan
                         Dumai Kota, Kota Dumai, Provinsi Riau. Pasar ini dikenal sebagai salah satu pasar tradisional yang
                         melayani kebutuhan masyarakat sekitar Dumai.</p>
-                    <p class="mb-4">Pedagang di Pasar Taman Lepin menjual beragam kebutuhan harian, antara lain:</p>
+                    <p class="mb-4">Pedagang di Pasar Lepin menjual beragam kebutuhan harian, antara lain:</p>
                     <div class="row gy-2 gx-4 mb-4">
                         <div class="col-sm-6">
                             <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Pakaian pria, wanita, dan
@@ -72,7 +72,7 @@
             <tbody>
                 <tr>
                     <td>Nama Pasar</td>
-                    <td>Pasar Taman Lepin</td>
+                    <td>Pasar Lepin</td>
                 </tr>
                 <tr>
                     <td>Alamat Pasar</td>
@@ -111,7 +111,7 @@
     <div class="container-fluid guide py-5">
         <div class="container py-5">
             <div class="mx-auto text-center mb-5" style="max-width: 900px;">
-                <h5 class="section-title px-3">Foto Pasar Taman Lepin</h5>
+                <h5 class="section-title px-3">Foto Pasar Lepin</h5>
             </div>
             <div class="row g-4 justify-content-center">
                 <div class="col-md-6 col-lg-3">

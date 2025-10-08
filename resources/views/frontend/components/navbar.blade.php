@@ -23,19 +23,15 @@
             <div class="dropdown-menu m-0">
                 <a href="{{ route('frontend.pages.pulaupayung') }}" 
                class="dropdown-item {{ request()->routeIs('frontend.pages.pulaupayung') ? 'active' : '' }}">
-               Pasar Pulau Payung
+               PASAR BUNDARAN SRI MERSING
             </a>
             <a href="{{ route('frontend.pages.tamanlepin') }}" 
                class="dropdown-item {{ request()->routeIs('frontend.pages.tamanlepin') ? 'active' : '' }}">
-               Pasar Taman Lepin
+               PASAR LEPIN
             </a>
             <a href="{{ route('frontend.pages.kelakap') }}" 
                class="dropdown-item {{ request()->routeIs('frontend.pages.kelakap') ? 'active' : '' }}">
-               Pasar Kelakap Tujuh
-            </a>
-            <a href="{{ route('frontend.pages.senggol') }}" 
-               class="dropdown-item {{ request()->routeIs('frontend.pages.senggol') ? 'active' : '' }}">
-               Pasar Senggol
+               PASAR KELAKAP TUJUH
             </a>
         </div>
     </div>
