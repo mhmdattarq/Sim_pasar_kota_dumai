@@ -161,13 +161,13 @@
                     <div class="col">
                         <div class="card rounded-4 bg-gradient-danger">
                             <div class="card-body text-center">
-                                <h3 class="text-white">Permohonan Telah Ditolak !</h3>
+                                <h3 class="text-white">Permohonan Anda Ditolak !</h3>
                                 <div class="widgets-icons-2 mx-auto my-4 bg-white rounded-circle text-dark">
-                                    <i class='bx bx-sad'></i>
+                                    <i class='bx bx-x'></i>
                                 </div>
-                                <p class="mb-0 text-white">Surat permohonan telah ditolak. <br>Silahkan
-                                    buat surat permohonan menjadi pedagang.</p>
-                                <a href="{{ route('backend_pedagang.pages.uploadpermohonan') }}"
+                                <p class="mb-0 text-white">Permohonan yang Anda ajukan belum memenuhi kriteria yang diperlukan.
+Silakan ajukan kembali permohonan baru dengan memastikan seluruh informasi dan dokumen telah sesuai.</p>
+                                <a href="{{ route('backend_pedagang.pages.permohonan') }}"
                                     class="btn btn-white px-4 rounded-5 mt-4"><i class='bx bx-cloud-upload'></i>Buat Ulang Surat Permohonan</a>
                             </div>
                         </div>
