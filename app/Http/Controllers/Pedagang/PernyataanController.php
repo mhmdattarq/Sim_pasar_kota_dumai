@@ -33,17 +33,19 @@ class PernyataanController extends Controller
             return redirect()->back()->with('error', 'Surat pernyataan hanya tersedia untuk status disetujui.');
         }
 
-        // Tentukan file pernyataan berdasarkan NIK
-        $fileName = 'surat_pernyataan_' . $nik . '.pdf';
-        $filePath = 'uploads/dokumen/' . $fileName;
+        // Ambil path file dari kolom dokumen_path_pernyataan
+        $filePath = $permohonan->dokumen_path_pernyataan;
 
-        if (!Storage::disk('public')->exists($filePath)) {
+        if (!$filePath || !Storage::disk('public')->exists($filePath)) {
             return redirect()->back()->with('error', 'File surat pernyataan tidak ditemukan.');
         }
 
-        return Storage::disk('public')->download($filePath, 'Surat_Pernyataan_' . $nik . '.pdf');
+        // Ambil nama file asli dari path untuk download
+        $fileName = basename($filePath);
+
+        return Storage::disk('public')->download($filePath, 'Surat_Pernyataan_' . $nik . '_' . now()->format('Ymd_His') . '.pdf');
     }
-    
+
     public function uploadSigned(Request $request)
     {
         // Ambil NIK dari user yang login
@@ -74,10 +76,11 @@ class PernyataanController extends Controller
         }
 
         // Tentukan file path
-        $fileName = 'surat_pernyataan_' . $nik . '.pdf';
+        $timestamp = now()->format('Ymd_His'); // Tambahkan timestamp
+        $fileName = "surat_pernyataan_{$nik}_{$timestamp}.pdf"; // Sesuaikan dengan format baru
         $filePath = 'uploads/dokumen/' . $fileName;
 
-        // Upload file baru, replace yang lama
+        // Upload file baru
         if ($request->hasFile('signed_document')) {
             $file = $request->file('signed_document');
             $fileContent = file_get_contents($file->getRealPath());

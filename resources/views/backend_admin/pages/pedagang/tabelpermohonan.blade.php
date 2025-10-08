@@ -161,20 +161,22 @@
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
-                                                                    <hr>
-                                                                    <table class="table table-borderless">
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td style="width: 100px;">Surat Pernyataan</td>
-                                                                                <td style="width: 500px; text-align: left;">:</td>
-                                                                                <td class="text-right" style="width: 150px;">
-                                                                                    <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/pernyataan') }}"
+                                                                    @if($p->status === 'verifikasi' || $p->status === 'selesai')
+                                                                        <hr>
+                                                                        <table class="table table-borderless">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td style="width: 100px;">Surat Pernyataan</td>
+                                                                                    <td style="width: 500px; text-align: left;">:</td>
+                                                                                    <td class="text-right" style="width: 150px;">
+                                                                                        <a href="{{ url('/admin/permohonan/' . $p->nik . '/document/pernyataan') }}"
                                                                                         class="btn btn-sm btn-warning"
                                                                                         target="_blank">Lihat Dokumen</a>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                             <!-- End Dokumen Tambahan -->

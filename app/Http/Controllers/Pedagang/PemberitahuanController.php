@@ -33,14 +33,16 @@ class PemberitahuanController extends Controller
             return redirect()->back()->with('error', 'Surat pemberitahuan hanya tersedia untuk status disetujui.');
         }
 
-        // Tentukan file pemberitahuan berdasarkan NIK
-        $fileName = 'surat_pemberitahuan_' . $nik . '.pdf';
-        $filePath = 'uploads/dokumen/' . $fileName;
+        // Ambil path file dari kolom dokumen_path_pemberitahuan
+        $filePath = $permohonan->dokumen_path_pemberitahuan;
 
-        if (!Storage::disk('public')->exists($filePath)) {
+        if (!$filePath || !Storage::disk('public')->exists($filePath)) {
             return redirect()->back()->with('error', 'File surat pemberitahuan tidak ditemukan.');
         }
 
-        return Storage::disk('public')->download($filePath, 'Surat_Pemberitahuan_' . $nik . '.pdf');
+        // Ambil nama file asli dari path untuk download
+        $fileName = basename($filePath);
+
+        return Storage::disk('public')->download($filePath, 'Surat_Pemberitahuan_' . $nik . '_' . now()->format('Ymd_His') . '.pdf');
     }
 }
