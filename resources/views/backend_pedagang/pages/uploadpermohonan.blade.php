@@ -136,17 +136,22 @@
                                                 </a>
                                             @elseif ($p->status == 'selesai')
                                                 <a href="{{ route('pedagang.permohonan.download', $p->id) }}"
-                                                    class="btn btn-sm btn-info">
+                                                    class="btn btn-sm btn-success">
                                                     Download Dokumen <b>Permohonan</b>
                                                 </a>
                                                 |
                                                 <a href="{{ route('pedagang.pernyataan.download') }}"
-                                                    class="btn btn-sm btn-info">
+                                                    class="btn btn-sm btn-success">
                                                     Download Surat <b>Pernyataan</b>
                                                 </a>
                                                 |
                                                 <a href="{{ route('pedagang.pemberitahuan.download') }}"
-                                                    class="btn btn-sm btn-info">
+                                                    class="btn btn-sm btn-success">
+                                                    Download Surat <b>Pemberitahuan</b>
+                                                </a>
+                                            @elseif ($p->status == 'ditolak')
+                                                <a href="{{ route('pedagang.pemberitahuan.download') }}"
+                                                    class="btn btn-sm btn-danger">
                                                     Download Surat <b>Pemberitahuan</b>
                                                 </a>
                                             @else
