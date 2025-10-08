@@ -46,7 +46,7 @@
                                                     permohonan</a></b>
                                             Anda.</span>
                                     @endif
-                                    @if(!$sudahAda || ($sudahAda && $status === 'selesai'))
+                                    @if(!$sudahAda || ($sudahAda && $status === 'selesai') || ($sudahAda && $status === 'ditolak'))
                                     <span style="animation: blink 1.5s infinite;">Sebelum Mengisi Form Surat Permohonan.
                                         Pastikan data sudah benar dan sudah menyiapkan berkas:</span>
                                     <ul class="mt-2 mb-0">
