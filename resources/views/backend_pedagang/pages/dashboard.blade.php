@@ -29,14 +29,13 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">5</h4>
+                                    <h4 class="mb-0 text-white">{{ $totalPermohonan ?? 0 }}</h4>
                                     <p class="mb-0 text-white">Total Permohonan</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-cart"></i>
                                 </div>
                             </div>
-                            <small class="mb-0 text-white">+2.6% Since Last Week</small>
                         </div>
                     </div>
                 </div>
@@ -45,14 +44,13 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">1</h4>
+                                    <h4 class="mb-0 text-white">{{ $permohonanDitolak ?? 0 }}</h4>
                                     <p class="mb-0 text-white">Permohonan Ditolak</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-group"></i>
                                 </div>
                             </div>
-                            <small class="mb-0 text-white">+2.6% Since Last Week</small>
                         </div>
                     </div>
                 </div>
@@ -61,14 +59,13 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">2</h4>
-                                    <p class="mb-0 text-white">Permohonan Disetujui</p>
+                                    <h4 class="mb-0 text-white">{{ $permohonanSelesai ?? 0 }}</h4>
+                                    <p class="mb-0 text-white">Permohonan Disetujui dan Selesai</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-wallet"></i>
                                 </div>
                             </div>
-                            <small class="mb-0 text-white">+2.6% Since Last Week</small>
                         </div>
                     </div>
                 </div>
@@ -77,14 +74,13 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-0">
                                 <div class="">
-                                    <h4 class="mb-0 text-white">2</h4>
+                                    <h4 class="mb-0 text-white">{{ $permohonanPending ?? 0 }}</h4>
                                     <p class="mb-0 text-white">Permohonan Pending</p>
                                 </div>
                                 <div class="fs-1 text-white">
                                     <i class="bx bx-line-chart-down"></i>
                                 </div>
                             </div>
-                            <small class="mb-0 text-white">+2.6% Since Last Week</small>
                         </div>
                     </div>
                 </div>
@@ -158,6 +154,21 @@
                                     lalu tanda tangani Surat pernyataan untuk menyelesaikan verifikasi.</p>
                                 <a href="{{ route('backend_pedagang.pages.uploadpermohonan') }}"
                                     class="btn btn-white px-4 rounded-5 mt-4"><i class='bx bx-check'></i>Verifikasi</a>
+                            </div>
+                        </div>
+                    </div>
+                @elseif($permohonan->status == 'ditolak')
+                    <div class="col">
+                        <div class="card rounded-4 bg-gradient-danger">
+                            <div class="card-body text-center">
+                                <h3 class="text-white">Permohonan Telah Ditolak !</h3>
+                                <div class="widgets-icons-2 mx-auto my-4 bg-white rounded-circle text-dark">
+                                    <i class='bx bx-sad'></i>
+                                </div>
+                                <p class="mb-0 text-white">Surat permohonan telah ditolak. <br>Silahkan
+                                    buat surat permohonan menjadi pedagang.</p>
+                                <a href="{{ route('backend_pedagang.pages.uploadpermohonan') }}"
+                                    class="btn btn-white px-4 rounded-5 mt-4"><i class='bx bx-cloud-upload'></i>Buat Ulang Surat Permohonan</a>
                             </div>
                         </div>
                     </div>
