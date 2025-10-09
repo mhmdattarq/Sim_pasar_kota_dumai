@@ -25,6 +25,8 @@
 
         p {
             margin: 2px 0;
+            text-align: justify;
+            text-justify: inter-word;
         }
 
         .judul {
@@ -45,20 +47,21 @@
         .garis-kop {
             border-bottom: 2px solid black;
             border-top: 1px solid black;
-            margin-top: 4px;
+            margin-top: 15px;
             margin-bottom: 10px;
         }
 
         .isi {
-            margin: 20px 50px;
+            margin: 20px 60px 10px 60px;
         }
 
-        .indent {
-            text-indent: 40px;
-        }
+        .isi p {
+            text-align: justify;
+            /* rapi kiri-kanan */
+            margin-left: 265px;
+            /* geser dikit ke kanan */
+            line-height: 1.5;
 
-        .list {
-            margin-left: 20px;
         }
 
         .ttd {
@@ -67,18 +70,15 @@
         }
 
         .ttd .kanan {
-            text-align: right;
+            text-align: center;
             float: right;
-            margin-right: 60px;
-        }
-
-        .syarat {
-            margin-left: 30px;
+            margin-right: 400px;
         }
 
         .kepada-container {
             text-align: right;
             margin-right: 5px;
+            padding-right: 450px;
         }
 
         .kepada {
@@ -122,7 +122,7 @@
     </div>
 
     <div class="judul">
-        <p>PEMBERITAHUAN PERSETUJUAN ATAU PENOLAKAN MENJADI PEDAGANG</p>
+        <h3>PEMBERITAHUAN PERSETUJUAN ATAU PENOLAKAN MENJADI PEDAGANG</h3>
     </div>
 
     <div class="isi">
@@ -145,14 +145,11 @@
 
         <div class="ttd">
             <div class="kanan">
-                Dumai, {{ $tanggal }}<br><br><br><br>
+                Dumai, {{ $tanggal }}<br>
                 KEPALA <br><br><br><br>
                 ( ................................... )
             </div>
         </div>
-
-        <br><br>
-        <p><i>*) Coret yang tidak perlu</i></p>
     </div>
 </body>
 
