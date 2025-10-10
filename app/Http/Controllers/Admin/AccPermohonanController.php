@@ -242,6 +242,60 @@ class AccPermohonanController extends Controller
         }
     }
 
+    // Fungsi baru untuk menghitung kios, los, dan pelataran berdasarkan NIK
+    private function getTempatData($nik)
+    {
+        // Ambil semua permohonan berdasarkan NIK dengan status disetujui
+        $permohonanList = DB::table('permohonan')
+            ->join('pasar', 'permohonan.pasar_id', '=', 'pasar.id')
+            ->select('permohonan.tipe_tempat', 'permohonan.nomor_tempat', 'permohonan.lokasi', 'permohonan.luas', 'pasar.nama_pasar')
+            ->where('permohonan.nik', $nik)
+            ->where('permohonan.status', 'disetujui')
+            ->get();
+
+        // Inisialisasi counter dan lokasi
+        $kiosCount = 0;
+        $losTotal = 0;
+        $pelataranTotal = 0;
+        $kiosLocations = [];
+        $losLocations = [];
+        $pelataranLocations = [];
+
+        // Proses setiap permohonan
+        foreach ($permohonanList as $item) {
+            if ($item->tipe_tempat === 'kios') {
+                $kiosCount++;
+                $kiosLocations[] = "{$item->nomor_tempat}, {$item->lokasi}, {$item->nama_pasar}";
+            } elseif ($item->tipe_tempat === 'los') {
+                $losTotal += floatval($item->luas);
+                $losLocations[] = "{$item->nomor_tempat}, {$item->lokasi}, {$item->nama_pasar}";
+            } elseif ($item->tipe_tempat === 'pelataran') {
+                $pelataranTotal += floatval($item->luas);
+                $pelataranLocations[] = "{$item->nomor_tempat}, {$item->lokasi}, {$item->nama_pasar}";
+            }
+        }
+
+        // Format string lokasi
+        $kiosLocationString = $kiosCount > 0 ? implode('; ', $kiosLocations) : '-';
+        $losLocationString = $losTotal > 0 ? implode('; ', $losLocations) : '-';
+        $pelataranLocationString = $pelataranTotal > 0 ? implode('; ', $pelataranLocations) : '-';
+
+        return [
+            'kios' => [
+                'count' => $kiosCount,
+                'locations' => $kiosLocationString,
+            ],
+            'los' => [
+                'total' => $losTotal,
+                'locations' => $losLocationString,
+            ],
+            'pelataran' => [
+                'total' => $pelataranTotal,
+                'locations' => $pelataranLocationString,
+            ],
+        ];
+    }
+
     public function generatePernyataan($id)
     {
         try {
@@ -256,9 +310,15 @@ class AccPermohonanController extends Controller
                 throw new \Exception('Permohonan tidak ditemukan untuk ID: ' . $id);
             }
 
+            // Ambil data kios, los, pelataran
+            $tempatData = $this->getTempatData($permohonan->nik);
+
             $data = [
                 'permohonan' => $permohonan,
                 'tanggal' => now()->format('d F Y'),
+                'kios' => $tempatData['kios'],
+                'los' => $tempatData['los'],
+                'pelataran' => $tempatData['pelataran'],
             ];
 
             if (!view()->exists('backend_pedagang.surat.pernyataan')) {

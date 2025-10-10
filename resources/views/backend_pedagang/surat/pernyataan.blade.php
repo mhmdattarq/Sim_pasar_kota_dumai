@@ -113,31 +113,31 @@
         <p>1.&nbsp;&nbsp;<span style="color: red;">Saya belum memiliki hak penggunakan Kios atau Los atau Pelataran Pasar Kota</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumai.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Saya telah memiliki hak penggunaan:</p>
         <ol>
             <table>
-                    <tr>
-                        <td class="label">a. Kios</td>
-                        <td class="value">: ………… unit, di</td>
-                    </tr>
-                    <tr>
-                        <td class="label">&nbsp;&nbsp;&nbsp;&nbsp;Pasar</td>
-                        <td class="value">: …………………………………………………………</td>
-                    </tr>
-                    <tr>
-                        <td class="label">b. Los</td>
-                        <td class="value">: ………… m, di</td>
-                    </tr>
-                    <tr>
-                        <td class="label">&nbsp;&nbsp;&nbsp;&nbsp;Pasar</td>
-                        <td class="value">: …………………………………………………………</td>
-                    </tr>
-                    <tr>
-                        <td class="label">c. Pelataran</td>
-                        <td class="value">: ………… m, di</td>
-                    </tr>
-                    <tr>
-                        <td class="label">&nbsp;&nbsp;&nbsp;&nbsp;Pasar</td>
-                        <td class="value">: …………………………………………………………</td>
-                    </tr>
-                </table>
+                <tr>
+                    <td class="label">a. Kios</td>
+                    <td class="value">: {{ $kios['count'] }} unit, di</td>
+                </tr>
+                <tr>
+                    <td class="label">&nbsp;&nbsp;&nbsp;&nbsp;Pasar</td>
+                    <td class="value">: {{ $kios['locations'] }}</td>
+                </tr>
+                <tr>
+                    <td class="label">b. Los</td>
+                    <td class="value">: {{ $los['total'] }} m, di</td>
+                </tr>
+                <tr>
+                    <td class="label">&nbsp;&nbsp;&nbsp;&nbsp;Pasar</td>
+                    <td class="value">: {{ $los['locations'] }}</td>
+                </tr>
+                <tr>
+                    <td class="label">c. Pelataran</td>
+                    <td class="value">: {{ $pelataran['total'] }} m, di</td>
+                </tr>
+                <tr>
+                    <td class="label">&nbsp;&nbsp;&nbsp;&nbsp;Pasar</td>
+                    <td class="value">: {{ $pelataran['locations'] }}</td>
+                </tr>
+            </table>
         </ol>
         <p>2.&nbsp;&nbsp;Apabila saya ditetapkan sebagai Pedagang, saya akan mematuhi semua ketentuan yang diatur<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dalam Perwa Kota Dumai Nomor&nbsp;&nbsp;Tahun 2025 tentang Pasar Rakyat.</p>
         <p>3.&nbsp;&nbsp;Apabila saya ditetapkan sebagai Pedagang, maka saya:</p>
