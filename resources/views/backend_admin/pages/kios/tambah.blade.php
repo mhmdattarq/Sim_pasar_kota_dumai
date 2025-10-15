@@ -88,7 +88,6 @@
                                                 <option selected>Masukkan Status Kios</option>
                                                 <option value="tersedia">Tersedia</option>
                                                 <option value="disewa">Disewa</option>
-                                                <option value="kosong">Kosong</option>
                                             </select>
                                             @error('status_kios')
                                                 <span class="text-danger">{{ $message }}</span>

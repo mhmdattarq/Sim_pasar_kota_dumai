@@ -85,7 +85,6 @@
                                                 <option selected>Masukkan Status Los</option>
                                                 <option value="tersedia">Tersedia</option>
                                                 <option value="disewa">Disewa</option>
-                                                <option value="kosong">Kosong</option>
                                             </select>
                                         </div>
                                     </div>
