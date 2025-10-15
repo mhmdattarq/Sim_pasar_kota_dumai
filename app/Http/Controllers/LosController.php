@@ -39,7 +39,7 @@ class LosController extends Controller
             'ukuran_los' => 'required|string|max:255',
             'harga_sewa' => 'required|numeric',
             'satuan_retribusi' => 'required|in:hari,bulan,tahun',
-            'status_los' => 'required|in:tersedia,disewa,kosong',
+            'status_los' => 'required|in:tersedia,terisi',
             'lokasi_los' => 'required|string|max:255',
             'pasar_id' => 'required|exists:pasar,id'
         ]);

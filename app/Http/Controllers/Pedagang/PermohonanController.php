@@ -84,8 +84,8 @@ class PermohonanController extends Controller
     // untuk mengambil data lokasi lokasi dan nama dari database
     public function getTempatByPasar($pasarId)
     {
-        $kios = DB::table('kios')->where('pasar_id', $pasarId)->get();
-        $loss = DB::table('loss')->where('pasar_id', $pasarId)->get();
+        $kios = DB::table('kios')->where('pasar_id', $pasarId)->where('status_kios', 'tersedia')->get();
+        $loss = DB::table('loss')->where('pasar_id', $pasarId)->where('status_los', 'tersedia')->get();
         $pelatarans = DB::table('pelatarans')->where('pasar_id', $pasarId)->get();
 
         return response()->json([
@@ -162,6 +162,9 @@ class PermohonanController extends Controller
             'foto.mimes' => 'Foto harus dalam format PDF.',
         ]);
 
+        // Mulai transaksi untuk mencegah race condition
+        return DB::transaction(
+            function () use ($request) {
         // Ambil nik user
         $nik = $request->nik;
 
@@ -180,19 +183,47 @@ class PermohonanController extends Controller
         $lokasi = null;
         $luas = null;
 
-        if ($request->tipe_tempat == 'kios') {
-            $data = DB::table('kios')->where('id', $request->kios_id)->first();
-            $lokasi = $data->lokasi_kios ?? null;
-            $luas = $data->ukuran_kios ?? null;
-        } elseif ($request->tipe_tempat == 'los') {
-            $data = DB::table('loss')->where('id', $request->los_id)->first();
-            $lokasi = $data->lokasi_los ?? null;
-            $luas = $data->ukuran_los ?? null;
-        } elseif ($request->tipe_tempat == 'pelataran') {
-            $data = DB::table('pelatarans')->where('id', $request->pelataran_id)->first();
-            $lokasi = $data->lokasi_pelataran ?? null;
-            $luas = $data->ukuran_pelataran ?? null;
-        }
+                if ($request->tipe_tempat == 'kios') {
+                    $data = DB::table('kios')
+                        ->where('id', $request->kios_id)
+                        ->where('status_kios', 'tersedia')
+                        ->lockForUpdate()
+                        ->first();
+                    if (!$data) {
+                        return back()->withErrors(['kios_id' => 'Kios sudah tidak tersedia.']);
+                    }
+                    $lokasi = $data->lokasi_kios ?? null;
+                    $luas = $data->ukuran_kios ?? null;
+                    // Update status kios
+                    DB::table('kios')
+                        ->where('id', $request->kios_id)
+                        ->update(['status_kios' => 'terisi', 'updated_at' => now()]);
+                } elseif ($request->tipe_tempat == 'los') {
+                    $data = DB::table('loss')
+                        ->where('id', $request->los_id)
+                        ->where('status_los', 'tersedia')
+                        ->lockForUpdate()
+                        ->first();
+                    if (!$data) {
+                        return back()->withErrors(['los_id' => 'Los sudah tidak tersedia.']);
+                    }
+                    $lokasi = $data->lokasi_los ?? null;
+                    $luas = $data->ukuran_los ?? null;
+                    // Update status los
+                    DB::table('loss')
+                        ->where('id', $request->los_id)
+                        ->update(['status_los' => 'terisi', 'updated_at' => now()]);
+                } elseif ($request->tipe_tempat == 'pelataran') {
+                    $data = DB::table('pelatarans')
+                        ->where('id', $request->pelataran_id)
+                        ->first();
+                    if (!$data) {
+                        return back()->withErrors(['pelataran_id' => 'Pelataran tidak ditemukan.']);
+                    }
+                    $lokasi = $data->lokasi_pelataran ?? null;
+                    $luas = $data->ukuran_pelataran ?? null;
+                    // Tidak perlu update status untuk pelataran
+                }   
 
         // simpan ke tabel permohonan (bukan users lagi)
         $permohonanId = DB::table('permohonan')->insertGetId([
@@ -229,7 +260,8 @@ class PermohonanController extends Controller
 
         return redirect()->route('pedagang.permohonan.success', $permohonanId)
             ->with('success', 'Permohonan berhasil diajukan.');
-    }
+    });
+}
 
     // halaman sukses setelah submit permohonan
     public function success($id)

@@ -39,7 +39,7 @@ class KiosController extends Controller
             'ukuran_kios' => 'required|string|max:255',
             'harga_sewa' => 'required|numeric',
             'satuan_retribusi' => 'required|in:hari,bulan,tahun',
-            'status_kios' => 'required|in:tersedia,disewa,kosong',
+            'status_kios' => 'required|in:tersedia,terisi',
             'lokasi_kios' => 'required|string|max:255',
             'pasar_id' => 'required|exists:pasar,id'
         ]);
