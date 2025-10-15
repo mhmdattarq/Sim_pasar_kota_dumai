@@ -84,7 +84,7 @@
                                             <select class="form-select" id="status_los" name="status_los">
                                                 <option selected>Masukkan Status Los</option>
                                                 <option value="tersedia">Tersedia</option>
-                                                <option value="disewa">Disewa</option>
+                                                <option value="terisi">Terisi</option>
                                             </select>
                                         </div>
                                     </div>

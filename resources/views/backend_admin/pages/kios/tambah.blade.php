@@ -87,7 +87,7 @@
                                             <select class="form-select" id="status_kios" name="status_kios">
                                                 <option selected>Masukkan Status Kios</option>
                                                 <option value="tersedia">Tersedia</option>
-                                                <option value="disewa">Disewa</option>
+                                                <option value="terisi">Terisi</option>
                                             </select>
                                             @error('status_kios')
                                                 <span class="text-danger">{{ $message }}</span>
