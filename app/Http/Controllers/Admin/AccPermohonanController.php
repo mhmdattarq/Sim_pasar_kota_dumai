@@ -394,17 +394,57 @@ class AccPermohonanController extends Controller
                 return response()->json(['error' => 'Permohonan tidak dapat diverifikasi, status tidak valid: ' . $permohonan->status], 400);
             }
 
-            DB::table('permohonan')
-                ->where('id', $id)
-                ->update([
-                    'status' => 'selesai',
-                    'keterangan' => 'Permohonan telah diverifikasi dan selesai'
-                ]);
+            DB::beginTransaction();
 
-            session()->flash('success', "Permohonan dari {$nama} telah diverifikasi dan selesai");
+            try {
+                // Update status permohonan
+                DB::table('permohonan')
+                    ->where('id', $id)
+                    ->update([
+                        'status' => 'selesai',
+                        'keterangan' => 'Permohonan telah diverifikasi dan selesai'
+                    ]);
 
-            Log::info('Verify successful for ID: ' . $id, ['status' => 'selesai']);
-            return response()->json(['success' => true]);
+                // Update status di tabel kios atau loss berdasarkan tipe_tempat dan nomor_tempat
+                if ($permohonan->tipe_tempat == 'kios') {
+                    $kios = DB::table('kios')
+                        ->where('pasar_id', $permohonan->pasar_id)
+                        ->where('nomor_kios', $permohonan->nomor_tempat)
+                        ->where('status_kios', 'pengajuan')
+                        ->first();
+                    if ($kios) {
+                        DB::table('kios')
+                            ->where('id', $kios->id)
+                            ->update(['status_kios' => 'terisi', 'updated_at' => now()]);
+                    } else {
+                        Log::warning('Kios not found or not in pengajuan state for pasar_id: ' . $permohonan->pasar_id . ', nomor_tempat: ' . $permohonan->nomor_tempat);
+                    }
+                } elseif ($permohonan->tipe_tempat == 'los') {
+                    $los = DB::table('loss')
+                        ->where('pasar_id', $permohonan->pasar_id)
+                        ->where('nomor_los', $permohonan->nomor_tempat)
+                        ->where('status_los', 'pengajuan')
+                        ->first();
+                    if ($los) {
+                        DB::table('loss')
+                            ->where('id', $los->id)
+                            ->update(['status_los' => 'terisi', 'updated_at' => now()]);
+                    } else {
+                        Log::warning('Los not found or not in pengajuan state for pasar_id: ' . $permohonan->pasar_id . ', nomor_tempat: ' . $permohonan->nomor_tempat);
+                    }
+                }
+
+                DB::commit();
+
+                session()->flash('success', "Permohonan dari {$nama} telah diverifikasi dan selesai");
+
+                Log::info('Verify successful for ID: ' . $id, ['status' => 'selesai']);
+                return response()->json(['success' => true]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Error in transaction for verify ID: ' . $id . ', Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+                return response()->json(['error' => 'Terjadi kesalahan saat memverifikasi: ' . $e->getMessage()], 500);
+            }
         } catch (\Exception $e) {
             Log::error('Error in verify for ID: ' . $id . ', Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return response()->json(['error' => 'Terjadi kesalahan saat memverifikasi: ' . $e->getMessage()], 500);

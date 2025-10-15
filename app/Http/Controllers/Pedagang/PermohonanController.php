@@ -197,7 +197,11 @@ class PermohonanController extends Controller
                     // Update status kios
                     DB::table('kios')
                         ->where('id', $request->kios_id)
-                        ->update(['status_kios' => 'terisi', 'updated_at' => now()]);
+                        ->update(['status_kios' => 'pengajuan', 'updated_at' => now()]);
+                    // Kurangi total_kios di tabel pasar
+                    DB::table('pasar')
+                        ->where('id', $request->pasar_id)
+                        ->decrement('total_kios');
                 } elseif ($request->tipe_tempat == 'los') {
                     $data = DB::table('loss')
                         ->where('id', $request->los_id)
@@ -212,7 +216,11 @@ class PermohonanController extends Controller
                     // Update status los
                     DB::table('loss')
                         ->where('id', $request->los_id)
-                        ->update(['status_los' => 'terisi', 'updated_at' => now()]);
+                        ->update(['status_los' => 'pengajuan', 'updated_at' => now()]);
+                    // Kurangi total_los di tabel pasar
+                    DB::table('pasar')
+                        ->where('id', $request->pasar_id)
+                        ->decrement('total_los');
                 } elseif ($request->tipe_tempat == 'pelataran') {
                     $data = DB::table('pelatarans')
                         ->where('id', $request->pelataran_id)
@@ -222,7 +230,10 @@ class PermohonanController extends Controller
                     }
                     $lokasi = $data->lokasi_pelataran ?? null;
                     $luas = $data->ukuran_pelataran ?? null;
-                    // Tidak perlu update status untuk pelataran
+                    // Kurangi total_pelataran di tabel pasar (tanpa ubah status karena pelataran bebas)
+                    DB::table('pasar')
+                        ->where('id', $request->pasar_id)
+                        ->decrement('total_pelataran');
                 }   
 
         // simpan ke tabel permohonan (bukan users lagi)
