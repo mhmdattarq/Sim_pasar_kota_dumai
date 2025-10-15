@@ -146,35 +146,84 @@ class AccPermohonanController extends Controller
             $newStatus = ($status === 'approved') ? 'disetujui' : 'ditolak';
             $keterangan = ($status === 'approved') ? 'Surat permohonan telah disetujui, Belum Terverifikasi!' : $reason;
 
-            DB::table('permohonan')
-                ->where('id', $id)
-                ->update([
-                    'status' => $newStatus,
-                    'keterangan' => $keterangan
-                ]);
+            DB::beginTransaction();
 
-            $permohonan = DB::table('permohonan')->where('id', $id)->first();
-            Log::info('Status setelah pembaruan untuk ID ' . $id . ': ' . ($permohonan->status ?? 'null'));
+            try {
+                $permohonan = DB::table('permohonan')->where('id', $id)->first();
 
-            // Trigger generasi dokumen berdasarkan status
-            if ($status === 'approved') {
-                $this->generatePemberitahuan($id); // Generate surat pemberitahuan
-                $this->generatePernyataan($id);   // Generate surat pernyataan
-            } elseif ($status === 'rejected') {
-                $this->generatePemberitahuan($id); // Generate hanya surat pemberitahuan
+                // Update status permohonan
+                DB::table('permohonan')
+                    ->where('id', $id)
+                    ->update([
+                        'status' => $newStatus,
+                        'keterangan' => $keterangan
+                    ]);
+
+                // Handle penolakan: kembalikan status kios/los ke "tersedia" dan tambah total di pasar
+                if ($status === 'rejected') {
+                    if ($permohonan->tipe_tempat == 'kios') {
+                        $kios = DB::table('kios')
+                            ->where('pasar_id', $permohonan->pasar_id)
+                            ->where('nomor_kios', $permohonan->nomor_tempat)
+                            ->where('status_kios', 'pengajuan')
+                            ->first();
+                        if ($kios) {
+                            DB::table('kios')
+                                ->where('id', $kios->id)
+                                ->update(['status_kios' => 'tersedia', 'updated_at' => now()]);
+                            // Tambah kembali total_kios di pasar
+                            DB::table('pasar')
+                                ->where('id', $permohonan->pasar_id)
+                                ->increment('total_kios');
+                        } else {
+                            Log::warning('Kios not found or not in pengajuan state for pasar_id: ' . $permohonan->pasar_id . ', nomor_tempat: ' . $permohonan->nomor_tempat);
+                        }
+                    } elseif ($permohonan->tipe_tempat == 'los') {
+                        $los = DB::table('loss')
+                            ->where('pasar_id', $permohonan->pasar_id)
+                            ->where('nomor_los', $permohonan->nomor_tempat)
+                            ->where('status_los', 'pengajuan')
+                            ->first();
+                        if ($los) {
+                            DB::table('loss')
+                                ->where('id', $los->id)
+                                ->update(['status_los' => 'tersedia', 'updated_at' => now()]);
+                            // Tambah kembali total_los di pasar
+                            DB::table('pasar')
+                                ->where('id', $permohonan->pasar_id)
+                                ->increment('total_los');
+                        } else {
+                            Log::warning('Los not found or not in pengajuan state for pasar_id: ' . $permohonan->pasar_id . ', nomor_tempat: ' . $permohonan->nomor_tempat);
+                        }
+                    }
+                }
+
+                // Trigger generasi dokumen berdasarkan status
+                if ($status === 'approved') {
+                    $this->generatePemberitahuan($id); // Generate surat pemberitahuan
+                    $this->generatePernyataan($id);   // Generate surat pernyataan
+                } elseif ($status === 'rejected') {
+                    $this->generatePemberitahuan($id); // Generate hanya surat pemberitahuan
+                }
+
+                DB::commit();
+
+                if ($status === 'approved') {
+                    session()->flash('success', "Surat permohonan dari {$nama} telah disetujui");
+                } else {
+                    session()->flash('error', "Surat permohonan dari {$nama} telah ditolak");
+                }
+
+                Log::info('Approve successful for ID: ' . $id, ['status' => $newStatus, 'keterangan' => $keterangan]);
+                return response()->json(['success' => true]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Error in transaction for approve ID: ' . $id . ', Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+                DB::table('permohonan')->where('id', $id)->update(['status' => 'lengkap', 'keterangan' => 'Gagal proses pemberitahuan']);
+                return response()->json(['error' => 'Terjadi kesalahan saat menyimpan: ' . $e->getMessage()], 500);
             }
-
-            if ($status === 'approved') {
-                session()->flash('success', "Surat permohonan dari {$nama} telah disetujui");
-            } else {
-                session()->flash('error', "Surat permohonan dari {$nama} telah ditolak");
-            }
-
-            Log::info('Approve successful for ID: ' . $id, ['status' => $newStatus, 'keterangan' => $keterangan]);
-            return response()->json(['success' => true]);
         } catch (\Exception $e) {
             Log::error('Error in approve for ID: ' . $id . ', Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            DB::table('permohonan')->where('id', $id)->update(['status' => 'lengkap', 'keterangan' => 'Gagal proses pemberitahuan']);
             return response()->json(['error' => 'Terjadi kesalahan saat menyimpan: ' . $e->getMessage()], 500);
         }
     }
