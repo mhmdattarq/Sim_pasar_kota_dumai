@@ -74,7 +74,7 @@
                                             Restribusi</label>
                                         <div class="col-sm-9">
                                             <select class="form-select" id="satuan_retribusi" name="satuan_retribusi">
-                                                <option selected>-- Masukkan Satuan Retribusi --</option>
+                                                <option selected>Masukkan Satuan Retribusi</option>
                                                 <option value="hari">Hari</option>
                                                 <option value="bulan">Bulan</option>
                                                 <option value="tahun">Tahun</option>
@@ -85,7 +85,7 @@
                                         <label for="status_kios" class="col-sm-3 col-form-label">Status Kios</label>
                                         <div class="col-sm-9">
                                             <select class="form-select" id="status_kios" name="status_kios">
-                                                <option selected>-- Masukkan Status Kios --</option>
+                                                <option selected>Masukkan Status Kios</option>
                                                 <option value="tersedia">Tersedia</option>
                                                 <option value="disewa">Disewa</option>
                                                 <option value="kosong">Kosong</option>

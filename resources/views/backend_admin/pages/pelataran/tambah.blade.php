@@ -66,7 +66,7 @@
                                             Restribusi</label>
                                         <div class="col-sm-9">
                                             <select class="form-select" id="satuan_retribusi" name="satuan_retribusi">
-                                                <option selected>-- Masukkan Satuan Retribusi --</option>
+                                                <option selected>Masukkan Satuan Retribusi</option>
                                                 <option value="hari">Hari</option>
                                                 <option value="bulan">Bulan</option>
                                             </select>
@@ -77,7 +77,7 @@
                                             Pelataran</label>
                                         <div class="col-sm-9">
                                             <select class="form-select" id="kategori_pelataran" name="kategori_pelataran">
-                                                <option selected>-- Masukkan Kategori --</option>
+                                                <option selected>Masukkan Kategori</option>
                                                 <option value="tetap">Tetap/bulan</option>
                                                 <option value="tidaktetap">Tidak tetap/harian</option>
                                                 <option value="insidentil">insidentil/event</option>
