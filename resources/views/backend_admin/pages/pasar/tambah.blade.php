@@ -124,7 +124,7 @@
 
                                     <!-- Google Maps Embed -->
                                     <div class="row mb-3">
-                                        <label class="col-sm-3 col-form-label">Lokasi Peta (Embed)</label>
+                                        <label class="col-sm-3 col-form-label">Lokasi Peta</label>
                                         <div class="col-sm-9">
                                             <textarea name="lokasi_peta" class="form-control" rows="3"
                                                 placeholder="Tempel iframe embed dari Google Maps di sini..." required></textarea>
