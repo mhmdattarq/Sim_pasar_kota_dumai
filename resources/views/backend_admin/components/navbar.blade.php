@@ -132,28 +132,13 @@
             </li>
 
             <!-- Informasi -->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret {{ request()->routeIs('backend_admin.pages.informasi.*') ? 'active text-white' : '' }}"
-                   href="javascript:;" data-bs-toggle="dropdown">
+            <li class="nav-item">
+                <a href="{{ route('backend_admin.pages.pengumuman.informasi') }}"
+                   class="nav-link {{ request()->routeIs('backend_admin.pages.pengumuman.informasi') ? 'active text-white' : '' }}" aria-current="page">
                     <div class="parent-icon"><i class="bx bx-envelope-open"></i></div>
-                    <div class="menu-title">Informasi</div>
+                    <div class="menu-title">Pengumuman</div>
                 </a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.informasi.pengumuman') ? 'active text-white' : '' }}"
-                           href="authentication-signin.html" target="_blank">
-                           <i class="bx bx-right-arrow-alt"></i>Pengumuman
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.informasi.tarif') ? 'active text-white' : '' }}"
-                           href="authentication-signup.html" target="_blank">
-                           <i class="bx bx-right-arrow-alt"></i>Tarif Testribusi
-                        </a>
-                    </li>
-                </ul>
             </li>
-
         </ul>
     </nav>
 </div>

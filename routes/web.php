@@ -30,6 +30,7 @@ use App\Http\Controllers\KiosController; // menuju kios admin
 use App\Http\Controllers\LosController; // menuju loss admin
 use App\Http\Controllers\PelataranController; // menuju pelataran admin
 use App\Http\Controllers\Admin\AccPermohonanController; // menuju pedagang admin
+use App\Http\Controllers\Admin\PengumumanController; // menuju pedagang admin
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 
@@ -99,6 +100,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     })->where('path', '.*');
     Route::post('/admin/permohonan/{id}/approve', [AccPermohonanController::class, 'approve'])->name('permohonan.approve');
     Route::post('/admin/permohonan/id/{id}/verify', [AccPermohonanController::class, 'verify'])->name('permohonan.verify');
+    Route::get('/Pengumuman', [PengumumanController::class, 'index'])->name('backend_admin.pages.pengumuman.informasi');
 });
 
 // middleware dan seluruh fungsi dan tampilan backend pedagang

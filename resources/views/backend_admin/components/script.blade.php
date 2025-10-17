@@ -45,3 +45,7 @@
         });
     });
 </script>
+<script>
+		new PerfectScrollbar('.email-navigation');
+		new PerfectScrollbar('.email-read-box');
+	</script
