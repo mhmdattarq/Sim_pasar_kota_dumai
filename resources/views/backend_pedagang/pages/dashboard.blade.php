@@ -15,7 +15,7 @@
                         <p>Selamat Anda berhasil login ke aplikasi <b>Sim-Pasar</b>!</p>
                     </div>
                     <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Lanjutkan</button>
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Lanjutkan</button>
                     </div>
                 </div>
             </div>
@@ -166,7 +166,7 @@
                                     <i class='bx bx-x'></i>
                                 </div>
                                 <p class="mb-0 text-white">Permohonan yang Anda ajukan belum memenuhi kriteria yang diperlukan.
-Silakan ajukan kembali permohonan baru dengan memastikan seluruh informasi dan dokumen telah sesuai.</p>
+                                Silakan ajukan kembali permohonan baru dengan memastikan seluruh informasi dan dokumen telah sesuai.</p>
                                 <a href="{{ route('backend_pedagang.pages.permohonan') }}"
                                     class="btn btn-white px-4 rounded-5 mt-4"><i class='bx bx-cloud-upload'></i>Buat Ulang Surat Permohonan</a>
                             </div>

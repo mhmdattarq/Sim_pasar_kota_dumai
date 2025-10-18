@@ -100,7 +100,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     })->where('path', '.*');
     Route::post('/admin/permohonan/{id}/approve', [AccPermohonanController::class, 'approve'])->name('permohonan.approve');
     Route::post('/admin/permohonan/id/{id}/verify', [AccPermohonanController::class, 'verify'])->name('permohonan.verify');
-    Route::get('/Pengumuman', [PengumumanController::class, 'index'])->name('backend_admin.pages.pengumuman.informasi');
+    Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('backend_admin.pages.pengumuman.informasi');
+    Route::post('/pengumuman', [PengumumanController::class, 'store'])->name('pengumuman.store');
+    Route::get('/pengumuman/{id}', [PengumumanController::class, 'show'])->name('pengumuman.show');
+    Route::get('/pengumuman/{id}/edit', [PengumumanController::class, 'edit'])->name('pengumuman.edit');
+    Route::put('/pengumuman/{id}', [PengumumanController::class, 'update'])->name('pengumuman.update');
+    Route::delete('/pengumuman/{id}', [PengumumanController::class, 'destroy'])->name('pengumuman.destroy');
 });
 
 // middleware dan seluruh fungsi dan tampilan backend pedagang

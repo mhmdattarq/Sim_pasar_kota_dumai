@@ -4,60 +4,103 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PengumumanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('backend_admin.pages.pengumuman.informasi');
+        $pengumumans = DB::table('pengumuman')->get();
+        return view('backend_admin.pages.pengumuman.informasi', compact('pengumumans'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'judul' => 'required|string|max:255',
+                'isi' => 'required',
+                'tanggal' => 'required|date', // Ganti dari 'berlaku' ke 'tanggal' biar sinkron
+                'status' => 'required|in:Terpublish,Draft,Arsip',
+            ]);
+
+            DB::table('pengumuman')->insert([
+                'judul' => $request->judul,
+                'isi' => $request->isi,
+                'tanggal' => $request->tanggal,
+                'status' => $request->status,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Pengumuman berhasil ditambahkan!']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $pengumuman = DB::table('pengumuman')->where('id', $id)->first();
+        if (!$pengumuman) {
+            return response()->json(['error' => 'Pengumuman tidak ditemukan!'], 404);
+        }
+        return view('backend_admin.pages.pengumuman.show', compact('pengumuman'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $pengumuman = DB::table('pengumuman')->where('id', $id)->first();
+        if (!$pengumuman) {
+            return response()->json(['error' => 'Pengumuman tidak ditemukan!'], 404);
+        }
+        return response()->json(['pengumuman' => $pengumuman]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $request->validate([
+                'judul' => 'required|string|max:255',
+                'isi' => 'required',
+                'tanggal' => 'required|date', // Konsisten dengan blade
+                'status' => 'required|in:Draft,Terpublish,Arsip', // Tambahin Arsip biar sinkron
+            ]);
+
+            DB::table('pengumuman')
+                ->where('id', $id)
+                ->update([
+                    'judul' => $request->judul,
+                    'isi' => $request->isi,
+                    'tanggal' => $request->tanggal,
+                    'status' => $request->status,
+                    'updated_at' => now(),
+                ]);
+
+            return response()->json(['success' => true, 'message' => 'Pengumuman berhasil diperbarui!']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

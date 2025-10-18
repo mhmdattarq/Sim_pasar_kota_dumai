@@ -36,38 +36,33 @@
                     <div class="text-center mb-5">
                         <h5 class="mt-2 fw-bold">LOGIN SIMPASAR</h5>
                     </div>
-
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                {{ $errors->first() }}
-                            </div>
-                        @endif
-
                         <div class="mb-3">
                             <label class="form-label">Username / NIK</label>
-                            <input type="text" name="login" value="{{ old('login') }}"
-                                class="form-control @error('login') is-invalid @enderror" autofocus>
-                            @error('login')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="input-group input-group-lg"> <span class="input-group-text bg-transparent @error('login') is-invalid @enderror"><i class='bx bxs-user'></i></span>
+                                <input type="text" name="login" value="{{ old('login') }}"
+                                    class="form-control @error('login') is-invalid @enderror" placeholder="Masukkan Username / NIK" autofocus>
+                                @error('login')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <input type="password" name="password"
-                                class="form-control @error('password') is-invalid @enderror"">
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="input-group input-group-lg"> <span class="input-group-text bg-transparent @error('password') is-invalid @enderror"><i class='bx bxs-lock-open'></i></span>
+                                <input type="password" name="password"
+                                    class="form-control @error('password') is-invalid @enderror" placeholder="Masukkan Password">
+                                @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                         <br>
                         <div class="d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary w-50">
-                                Login
-                            </button>
+                            <button type="submit" class="btn btn-success btn-lg px-5 w-50"><i class='bx bxs-lock-open'></i>Login</button>
                         </div>
                     </form>
                 </div>
