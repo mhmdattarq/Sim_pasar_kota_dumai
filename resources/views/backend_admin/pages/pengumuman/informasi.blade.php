@@ -35,7 +35,7 @@
             <div class="card-body">
                 <div class="d-lg-flex align-items-center mb-4 gap-3">
                     <div class="position-relative">
-                        <p>Kelola Informasi</p>
+                        <h5 class="card-title">Kelola Informasi</h5>
                     </div>
                     <div class="ms-auto">
                         <button type="button" class="btn btn-success radius-30 mt-2 mt-lg-0" data-bs-toggle="modal" data-bs-target="#addPengumumanModal">
@@ -72,11 +72,7 @@
                                     <td>
                                         <div class="d-flex order-actions">
                                             <a href="#" class="edit-btn" data-bs-toggle="modal" data-bs-target="#editPengumumanModal_{{ $pengumuman->id }}" data-id="{{ $pengumuman->id }}"><i class='bx bxs-edit'></i></a>
-                                            <form action="{{ route('pengumuman.destroy', $pengumuman->id) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="ms-3 btn btn-link text-danger" onclick="return confirm('Yakin hapus pengumuman ini?')"><i class='bx bxs-trash'></i></button>
-                                            </form>
+                                            <button type="button" class="ms-3 btn btn-link text-danger" data-id="{{ $pengumuman->id }}" id="deletePengumuman_{{ $pengumuman->id }}"><i class='bx bxs-trash'></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -108,38 +104,38 @@
                                                 <h5 class="mb-0 text-info">Tambah Pengumuman</h5>
                                             </div>
                                             <hr/>
-                                            <form id="addPengumumanForm" method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="row mb-3">
-                                                    <label for="judul" class="col-sm-3 col-form-label">Judul</label>
-                                                    <div class="col-sm-9">
-                                                        <input type="text" name="judul" class="form-control" id="judul" placeholder="Masukkan Judul" required>
-                                                    </div>
+                                            <form id="addPengumumanForm" method="POST" action="{{ route('pengumuman.store') }}">
+                                            @csrf
+                                            <div class="row mb-3">
+                                                <label for="judul" class="col-sm-3 col-form-label">Judul</label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" name="judul" class="form-control" id="judul" placeholder="Masukkan Judul" required>
                                                 </div>
-                                                <div class="row mb-3">
-                                                    <label for="isi" class="col-sm-3 col-form-label">Isi</label>
-                                                    <div class="col-sm-9">
-                                                        <textarea name="isi" class="form-control" id="isi" rows="3" placeholder="Masukkan Isi Pengumuman" required></textarea>
-                                                    </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <label for="isi" class="col-sm-3 col-form-label">Isi</label>
+                                                <div class="col-sm-9">
+                                                    <textarea name="isi" class="form-control" id="isi" rows="3" placeholder="Masukkan Isi Pengumuman" required></textarea>
                                                 </div>
-                                                <div class="row mb-3">
-                                                    <label for="tanggal" class="col-sm-3 col-form-label">Tanggal</label>
-                                                    <div class="col-sm-9">
-                                                        <input type="date" name="tanggal" class="form-control" id="tanggal" required>
-                                                    </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <label for="tanggal" class="col-sm-3 col-form-label">Tanggal</label>
+                                                <div class="col-sm-9">
+                                                    <input type="date" name="tanggal" class="form-control" id="tanggal" required>
                                                 </div>
-                                                <div class="row mb-3">
-                                                    <label for="status" class="col-sm-3 col-form-label">Status</label>
-                                                    <div class="col-sm-9">
-                                                        <select name="status" class="form-select mb-3" id="status" aria-label="Pilih Status" required>
-                                                            <option value="" selected>Pilih Status</option>
-                                                            <option value="Draft">Draft</option>
-                                                            <option value="Terpublish">Terpublish</option>
-                                                        </select>
-                                                    </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <label for="status" class="col-sm-3 col-form-label">Status</label>
+                                                <div class="col-sm-9">
+                                                    <select name="status" class="form-select mb-3" id="status" aria-label="Pilih Status" required>
+                                                        <option value="" selected>Pilih Status</option>
+                                                        <option value="Draft">Draft</option>
+                                                        <option value="Terpublish">Terpublish</option>
+                                                    </select>
                                                 </div>
-                                                <div id="formError" class="text-danger"></div>
-                                            </form>
+                                            </div>
+                                            <div id="formError" class="text-danger"></div>
+                                        </form>
                                         </div>
                                     </div>
                                 </div>
@@ -158,27 +154,27 @@
         @foreach ($pengumumans as $pengumuman)
             <div class="modal fade" id="editPengumumanModal_{{ $pengumuman->id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-fullscreen">
-                    <div class="modal-content" style="border: none; box-shadow: none;">
-                        <div class="modal-header" style="border-bottom: none;">
-                            <h5 class="modal-title">Edit Pengumuman: {{ $pengumuman->judul }}</h5>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Pengumuman</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body" style="padding: 20px;">
+                        <div class="modal-body">
                             <div class="row">
                                 <div class="col-xl-9 mx-auto">
                                     <h6 class="mb-0 text-uppercase">Form Pengumuman</h6>
-									<hr>
-                                    <div class="card border-top border-0 border-4 border-warning">
+                                    <hr/>
+                                    <div class="card border-top border-0 border-4 border-info">
                                         <div class="card-body">
                                             <div class="border p-4 rounded">
                                                 <div class="card-title d-flex align-items-center">
-                                                    <div><i class="bx bxs-news me-1 font-22 text-warning"></i></div>
-                                                    <h5 class="mb-0 text-warning">Edit Pengumuman</h5>
+                                                    <div><i class="bx bxs-news me-1 font-22 text-info"></i></div>
+                                                    <h5 class="mb-0 text-info">Edit Pengumuman</h5>
                                                 </div>
                                                 <hr/>
-                                                <form id="editPengumumanForm_{{ $pengumuman->id }}" method="POST" enctype="multipart/form-data" data-id="{{ $pengumuman->id }}">
+                                                <form id="editPengumumanForm_{{ $pengumuman->id }}" data-id="{{ $pengumuman->id }}"> <!-- Hapus action dan method, biar cuma AJAX -->
                                                     @csrf
-                                                    @method('PUT')
+                                                    <input type="hidden" name="_method" value="PUT"> <!-- Tambah hidden input untuk PUT -->
                                                     <div class="row mb-3">
                                                         <label for="judul_{{ $pengumuman->id }}" class="col-sm-3 col-form-label">Judul</label>
                                                         <div class="col-sm-9">
@@ -200,7 +196,7 @@
                                                     <div class="row mb-3">
                                                         <label for="status_{{ $pengumuman->id }}" class="col-sm-3 col-form-label">Status</label>
                                                         <div class="col-sm-9">
-                                                            <select name="status" class="form-select mb-3" id="status_{{ $pengumuman->id }}" aria-label="Pilih Status" required>
+                                                            <select name="status" class="form-select mb-3" id="status_{{ $pengumuman->id }}" required>
                                                                 <option value="Draft" {{ $pengumuman->status == 'Draft' ? 'selected' : '' }}>Draft</option>
                                                                 <option value="Terpublish" {{ $pengumuman->status == 'Terpublish' ? 'selected' : '' }}>Terpublish</option>
                                                             </select>
@@ -214,7 +210,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer" style="border-top: none;">
+                        <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-warning px-5" id="updatePengumuman_{{ $pengumuman->id }}">Update</button>
                         </div>
@@ -270,99 +266,51 @@
 <!-- JavaScript untuk submit form via AJAX -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Submit untuk tambah pengumuman
+        // Submit untuk tambah pengumuman (tetap sama)
         const addForm = document.getElementById('addPengumumanForm');
         const saveButton = document.getElementById('savePengumuman');
         const addErrorDiv = document.getElementById('formError');
 
-        saveButton.addEventListener('click', function () {
-            addErrorDiv.textContent = ''; // Clear previous errors
+        if (addForm && saveButton && addErrorDiv) {
+            saveButton.addEventListener('click', function (event) {
+                event.preventDefault();
+                addErrorDiv.textContent = '';
 
-            const formData = new FormData(addForm);
+                const formData = new FormData(addForm);
 
-            fetch('{{ route('pengumuman.store') }}', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses',
-                        text: 'Pengumuman berhasil ditambahkan!',
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        addForm.reset();
-                        $('#addPengumumanModal').modal('hide');
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: data.message || 'Terjadi kesalahan saat menyimpan.'
-                    });
-                    if (data.errors) {
-                        addErrorDiv.textContent = Object.values(data.errors).join(', ');
-                    }
-                }
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Terjadi kesalahan pada server.'
-                });
-                console.error('Error:', error);
-            });
-        });
-
-        // Submit untuk edit pengumuman
-        @foreach ($pengumumans as $pengumuman)
-            const editForm = document.getElementById('editPengumumanForm_{{ $pengumuman->id }}');
-            const updateButton = document.getElementById('updatePengumuman_{{ $pengumuman->id }}');
-            const editErrorDiv = document.getElementById('editFormError_{{ $pengumuman->id }}');
-
-            updateButton.addEventListener('click', function () {
-                editErrorDiv.textContent = ''; // Clear previous errors
-
-                const formData = new FormData(editForm);
-                const id = editForm.getAttribute('data-id');
-
-                fetch(`{{ route('pengumuman.update', ':id') }}`.replace(':id', id), {
-                    method: 'PUT',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
+                fetch('{{ route('pengumuman.store') }}', {
+                    method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Respon server bermasalah');
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Sukses',
-                            text: 'Pengumuman berhasil diperbarui!',
+                            text: 'Pengumuman berhasil ditambahkan!',
                             timer: 2000,
                             showConfirmButton: false
                         }).then(() => {
-                            editForm.reset();
-                            $(`#editPengumumanModal_${id}`).modal('hide');
-                            location.reload();
+                            addForm.reset();
+                            try {
+                                $('#addPengumumanModal').modal('hide');
+                                location.reload();
+                            } catch (e) {
+                                location.reload();
+                            }
                         });
                     } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
-                            text: data.message || 'Terjadi kesalahan saat memperbarui.'
+                            text: data.message || 'Terjadi kesalahan saat menyimpan.'
                         });
                         if (data.errors) {
-                            editErrorDiv.textContent = Object.values(data.errors).join(', ');
+                            addErrorDiv.textContent = Object.values(data.errors).flat().join(', ');
                         }
                     }
                 })
@@ -370,11 +318,148 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Terjadi kesalahan pada server.'
+                        text: 'Terjadi kesalahan pada server: ' + error.message
                     });
-                    console.error('Error:', error);
                 });
             });
+        }
+
+        // Submit untuk edit pengumuman (tetap sama)
+        @foreach ($pengumumans as $pengumuman)
+            try {
+                const editForm = document.getElementById('editPengumumanForm_{{ $pengumuman->id }}');
+                const updateButton = document.getElementById('updatePengumuman_{{ $pengumuman->id }}');
+                const editErrorDiv = document.getElementById('editFormError_{{ $pengumuman->id }}');
+
+                if (editForm && updateButton && editErrorDiv) {
+                    updateButton.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        editErrorDiv.textContent = '';
+
+                        const formData = new FormData(editForm);
+                        formData.append('_method', 'PUT');
+                        const id = editForm.getAttribute('data-id');
+                        const url = '{{ route('pengumuman.update', ':id') }}'.replace(':id', id);
+
+                        fetch(url, {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error('Respon server bermasalah');
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses',
+                                    text: 'Pengumuman berhasil diperbarui!',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    try {
+                                        $('#editPengumumanModal_{{ $pengumuman->id }}').modal('hide');
+                                        location.reload();
+                                    } catch (e) {
+                                        location.reload();
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: data.message || 'Terjadi kesalahan saat memperbarui.'
+                                });
+                                if (data.errors) {
+                                    editErrorDiv.textContent = Object.values(data.errors).flat().join(', ');
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Terjadi kesalahan pada server: ' + error.message
+                            });
+                        });
+                    });
+                } else {
+                    console.warn('Elemen update untuk ID {{ $pengumuman->id }} tidak lengkap');
+                }
+            } catch (e) {
+                console.warn('Error inisialisasi update untuk ID {{ $pengumuman->id }}: ' + e.message);
+            }
+        @endforeach
+
+        // Submit untuk hapus pengumuman (diperbaiki dengan try-catch)
+        @foreach ($pengumumans as $pengumuman)
+            try {
+                const deleteButton = document.getElementById('deletePengumuman_{{ $pengumuman->id }}');
+                if (deleteButton) {
+                    deleteButton.addEventListener('click', function () {
+                        Swal.fire({
+                            title: 'Apakah Anda Yakin?',
+                            text: 'Data akan dihapus permanen!',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Ya, Hapus!',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const id = this.getAttribute('data-id');
+                                const url = '{{ route('pengumuman.destroy', ':id') }}'.replace(':id', id);
+
+                                fetch(url, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ id: id })
+                                })
+                                .then(response => {
+                                    if (!response.ok) throw new Error('Respon server bermasalah');
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Sukses',
+                                            text: 'Pengumuman berhasil dihapus!',
+                                            timer: 2000,
+                                            showConfirmButton: false
+                                        }).then(() => {
+                                            const row = document.querySelector(`tr:has(#deletePengumuman_${id})`);
+                                            if (row) row.remove(); // Hapus baris dari DOM
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Gagal',
+                                            text: data.message || 'Terjadi kesalahan saat menghapus.'
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: 'Terjadi kesalahan pada server: ' + error.message
+                                    });
+                                });
+                            }
+                        });
+                    });
+                } else {
+                    console.warn('Tombol hapus untuk ID {{ $pengumuman->id }} tidak ditemukan');
+                }
+            } catch (e) {
+                console.warn('Error inisialisasi hapus untuk ID {{ $pengumuman->id }}: ' + e.message);
+            }
         @endforeach
     });
 </script>
