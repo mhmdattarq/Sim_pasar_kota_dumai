@@ -77,15 +77,15 @@
                                                     data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}">
                                                     Review
                                                 </button>
-                                                <button type="button" class="btn btn-success btn-sm approve-pdf"
-                                                    data-bs-toggle="modal" data-bs-target="#approveModal{{ $p->id }}"
-                                                    data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}"
-                                                    @if ($p->status == 'draft' || $p->status == 'disetujui' || $p->status == 'ditolak' || $p->status == 'selesai' || $p->status == 'verifikasi') disabled @endif>
+                                                <button type="button" class="btn btn-sm approve-pdf @if ($p->status == 'draft' || $p->status == 'disetujui' || $p->status == 'ditolak' || $p->status == 'selesai' || $p->status == 'verifikasi') btn-secondary @else btn-success @endif"
+                                                        data-bs-toggle="modal" data-bs-target="#approveModal{{ $p->id }}"
+                                                        data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}"
+                                                        @if ($p->status == 'draft' || $p->status == 'disetujui' || $p->status == 'ditolak' || $p->status == 'selesai' || $p->status == 'verifikasi') disabled @endif>
                                                     Persetujuan
                                                 </button>
-                                                <button type="button" class="btn btn-primary btn-sm verify-pdf"
-                                                    data-id="{{ $p->id }}" data-nama="{{ $p->nama }}"
-                                                    @if ($p->status != 'verifikasi') disabled @endif>
+                                                <button type="button" class="btn btn-sm verify-pdf @if ($p->status != 'verifikasi') btn-secondary @else btn-primary @endif"
+                                                        data-id="{{ $p->id }}" data-nama="{{ $p->nama }}"
+                                                        @if ($p->status != 'verifikasi') disabled @endif>
                                                     Verifikasi
                                                 </button>
                                                 <!-- Modal Preview Surat -->
