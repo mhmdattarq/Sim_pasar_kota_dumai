@@ -83,52 +83,56 @@ class AccPermohonanController extends Controller
       }
 
     public function getDocument($nik, $docType)
-    {
-        try {
-            $nik = str_replace('.', '', $nik);
-            $validDocTypes = ['nib', 'npwp', 'ktp', 'kk', 'foto', 'pernyataan'];
-            if (!in_array($docType, $validDocTypes)) {
-                return response()->json(['error' => 'Tipe dokumen tidak valid'], 400);
-            }
-
-            $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
-            if (!$permohonan) {
-                return response()->json(['error' => 'Permohonan tidak ditemukan'], 404);
-            }
-
-            // Map docType to database column
-            $columnMap = [
-                'nib' => 'nib',
-                'npwp' => 'npwp',
-                'ktp' => 'ktp',
-                'kk' => 'kk',
-                'foto' => 'foto',
-                'pernyataan' => 'dokumen_path_pernyataan'
-            ];
-
-            $column = $columnMap[$docType];
-            $filePath = $permohonan->$column;
-            if (!$filePath) {
-                return response()->json(['error' => 'Dokumen ' . strtoupper($docType) . ' tidak tersedia'], 404);
-            }
-
-            $fullPath = storage_path('app/public/' . $filePath);
-            if (!file_exists($fullPath)) {
-                \Log::error('File not found: ' . $fullPath);
-                return response()->json(['error' => 'File PDF tidak ditemukan'], 404);
-            }
-            if (!is_readable($fullPath)) {
-                \Log::error('File not readable: ' . $fullPath);
-                return response()->json(['error' => 'File tidak bisa dibaca'], 403);
-            }
-
-            $fileUrl = url('/proxy-storage/' . $filePath);
-            return redirect($fileUrl); // Buka PDF di tab baru
-        } catch (\Exception $e) {
-            \Log::error('Get document error for NIK: ' . $nik . ', DocType: ' . $docType . ': ' . $e->getMessage());
-            return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
+{
+    try {
+        $nik = str_replace('.', '', $nik);
+        $validDocTypes = ['nib', 'npwp', 'ktp', 'kk', 'foto', 'pernyataan'];
+        if (!in_array($docType, $validDocTypes)) {
+            return response()->json(['error' => 'Tipe dokumen tidak valid'], 400);
         }
+
+        $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
+        if (!$permohonan) {
+            return response()->json(['error' => 'Permohonan tidak ditemukan'], 404);
+        }
+
+        $columnMap = [
+            'nib' => 'nib',
+            'npwp' => 'npwp',
+            'ktp' => 'ktp',
+            'kk' => 'kk',
+            'foto' => 'foto',
+            'pernyataan' => 'dokumen_path_pernyataan'
+        ];
+        $column = $columnMap[$docType];
+        $filePath = $permohonan->$column;
+
+        if (!$filePath) {
+            return response()->json(['error' => 'Dokumen ' . strtoupper($docType) . ' tidak tersedia'], 404);
+        }
+
+        $fullPath = storage_path('app/public/' . $filePath);
+        if (!file_exists($fullPath)) {
+            \Log::error('File not found: ' . $fullPath);
+            return response()->json(['error' => 'File PDF tidak ditemukan'], 404);
+        }
+
+        if (!is_readable($fullPath)) {
+            \Log::error('File not readable: ' . $fullPath);
+            return response()->json(['error' => 'File tidak bisa dibaca'], 403);
+        }
+
+        $fileUrl = url('/proxy-storage/' . $filePath . '?v=' . time());
+        return response()->json([
+            'success' => true,
+            'fileUrl' => $fileUrl,
+            'fileName' => basename($filePath)
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Get document error for NIK: ' . $nik . ', DocType: ' . $docType . ': ' . $e->getMessage());
+        return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
     }
+}
 
     public function approve(Request $request, $id)
     {
@@ -232,29 +236,24 @@ class AccPermohonanController extends Controller
     {
         try {
             Log::info('Starting generatePemberitahuan for ID: ' . $id);
-
             $permohonan = DB::table('permohonan')->where('id', $id)->first();
             if (!$permohonan) {
                 throw new \Exception('Permohonan tidak ditemukan untuk ID: ' . $id);
             }
-
             Log::info('Status permohonan untuk ID ' . $id . ': ' . ($permohonan->status ?? 'null'));
             Log::info('Data permohonan: ' . json_encode($permohonan));
-
             $data = [
                 'permohonan' => $permohonan,
-                'tanggal' => now()->format('d F Y'),
+                'tanggal_permohonan' => \Carbon\Carbon::parse($permohonan->updated_at)->locale('id')->translatedFormat('d F Y'),
+                'tanggal' => now()->locale('id')->translatedFormat('d F Y'),
             ];
-
             if (!view()->exists('backend_pedagang.surat.pemberitahuan')) {
                 throw new \Exception('View backend_pedagang.surat.pemberitahuan tidak ditemukan');
             }
             Log::info('View backend_pedagang.surat.pemberitahuan ditemukan');
-
             if (!class_exists('Barryvdh\DomPDF\Facade\Pdf')) {
                 throw new \Exception('Library PDF (barryvdh/laravel-dompdf) belum diinstall');
             }
-
             $directory = 'uploads/dokumen';
             $timestamp = now()->format('Ymd_His'); // Tambahkan timestamp, contoh: 20251008_092300
             $fileName = "surat_pemberitahuan_{$permohonan->nik}_{$timestamp}.pdf"; // Tambah timestamp
@@ -262,28 +261,22 @@ class AccPermohonanController extends Controller
             $fullPath = storage_path('app/public/' . $filePath);
             Log::info('Generated file path: ' . $filePath);
             Log::info('Full file path: ' . $fullPath);
-
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('backend_pedagang.surat.pemberitahuan', $data)->setPaper('A4', 'portrait');
-
             Log::info('PDF generated successfully');
-
             $pdfOutput = $pdf->output();
             if (empty($pdfOutput)) {
                 throw new \Exception('Output PDF kosong, gagal generate PDF');
             }
             Storage::disk('public')->put($filePath, $pdfOutput);
             Log::info('PDF saved to storage: ' . $fullPath);
-
             if (!Storage::disk('public')->exists($filePath)) {
                 throw new \Exception('File tidak ditemukan di storage setelah disimpan');
             }
             Log::info('File verified in storage');
-
             DB::table('permohonan')
                 ->where('id', $id)
                 ->update(['dokumen_path_pemberitahuan' => $filePath]);
             Log::info('Database updated with file path: ' . $filePath);
-
             Log::info('generatePemberitahuan completed successfully for ID: ' . $id);
         } catch (\Exception $e) {
             Log::error('Error in generatePemberitahuan for ID: ' . $id . ', Error: ' . $e->getMessage() . ', Trace: ' . $e->getTraceAsString());
@@ -364,7 +357,7 @@ class AccPermohonanController extends Controller
 
             $data = [
                 'permohonan' => $permohonan,
-                'tanggal' => now()->format('d F Y'),
+                'tanggal' => now()->locale('id')->translatedFormat('d F Y'),
                 'kios' => $tempatData['kios'],
                 'los' => $tempatData['los'],
                 'pelataran' => $tempatData['pelataran'],

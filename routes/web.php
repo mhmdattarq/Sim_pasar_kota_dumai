@@ -21,6 +21,7 @@ use App\Http\Controllers\Pedagang\PermohonanController; //proses permohonan
 use App\Http\Controllers\Pedagang\UploadpermohonanController; //proses upload permohonan
 use App\Http\Controllers\Pedagang\PemberitahuanController;// proses download pemberitahuan
 use App\Http\Controllers\Pedagang\PernyataanController;// proses download pernyataan
+use App\Http\Controllers\Pedagang\PengumumanPedagangController;// pengumuman
 
 
 // Route backend admin
@@ -72,6 +73,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/penambahan_pasar', [PasarController::class, 'create'])->name('backend_admin.pages.pasar.tambah');
     Route::post('/pasar/store', [PasarController::class, 'store'])->name('pasar.store');
     Route::get('/detail_pasar', [PasarController::class, 'table'])->name('backend_admin.pages.pasar.table');
+    Route::get('/pasar/{id}', [PasarController::class, 'show'])->name('pasar.show');
     //kios
     Route::get('/penambahan_kios', [KiosController::class, 'create'])->name('backend_admin.pages.kios.tambah');
     Route::post('/kios/store', [KiosController::class, 'store'])->name('kios.store');
@@ -147,4 +149,7 @@ Route::middleware(['auth', 'role:pedagang'])->group(function () {
     Route::get('/pedagang/pemberitahuan/download', [PemberitahuanController::class, 'download'])->name('pedagang.pemberitahuan.download')->middleware('auth');
     Route::get('/pedagang/pernyataan/download', [PernyataanController::class, 'download'])->name('pedagang.pernyataan.download')->middleware('auth');
     Route::post('/pedagang/upload-signed-pernyataan', [PernyataanController::class, 'uploadSigned'])->name('pedagang.uploadSigned');
+
+    //pengumuman
+    Route::get('/pengumuman_pedagang', [PengumumanPedagangController::class, 'index'])->name('backend_pedagang.pages.pengumuman');
 });

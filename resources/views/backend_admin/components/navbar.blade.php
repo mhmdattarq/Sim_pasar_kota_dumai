@@ -48,15 +48,15 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.pasar.table') ? 'active text-white' : '' }}"
-                           href="{{ route('backend_admin.pages.pasar.table') }}">
-                           <i class="bx bx-right-arrow-alt"></i>Detail Pasar
+                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.pasar.tambah') ? 'active text-white' : '' }}"
+                           href="{{ route('backend_admin.pages.pasar.tambah') }}">
+                           <i class="bx bx-right-arrow-alt"></i>Tambah Data Pasar
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.pasar.tambah') ? 'active text-white' : '' }}"
-                           href="{{ route('backend_admin.pages.pasar.tambah') }}">
-                           <i class="bx bx-right-arrow-alt"></i>Penambahan Pasar
+                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.pasar.table') ? 'active text-white' : '' }}"
+                           href="{{ route('backend_admin.pages.pasar.table') }}">
+                           <i class="bx bx-right-arrow-alt"></i>Data Pasar
                         </a>
                     </li>
                 </ul>
@@ -71,15 +71,15 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.kios.table') ? 'active text-white' : '' }}"
-                           href="{{ route('backend_admin.pages.kios.table') }}">
-                           <i class="bx bx-right-arrow-alt"></i>Detail Kios
+                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.kios.tambah') ? 'active text-white' : '' }}"
+                           href="{{ route('backend_admin.pages.kios.tambah') }}">
+                           <i class="bx bx-right-arrow-alt"></i>Tambah Data Kios
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.kios.tambah') ? 'active text-white' : '' }}"
-                           href="{{ route('backend_admin.pages.kios.tambah') }}">
-                           <i class="bx bx-right-arrow-alt"></i>Penambahan Kios
+                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.kios.table') ? 'active text-white' : '' }}"
+                           href="{{ route('backend_admin.pages.kios.table') }}">
+                           <i class="bx bx-right-arrow-alt"></i>Data Kios
                         </a>
                     </li>
                 </ul>
@@ -94,15 +94,15 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.los.table') ? 'active text-white' : '' }}"
-                           href="{{ route('backend_admin.pages.los.table') }}">
-                           <i class="bx bx-right-arrow-alt"></i>Detail Loss
+                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.los.tambah') ? 'active text-white' : '' }}"
+                           href="{{ route('backend_admin.pages.los.tambah') }}">
+                           <i class="bx bx-right-arrow-alt"></i>Tambah Data Loss
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.los.tambah') ? 'active text-white' : '' }}"
-                           href="{{ route('backend_admin.pages.los.tambah') }}">
-                           <i class="bx bx-right-arrow-alt"></i>Penambahan Loss
+                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.los.table') ? 'active text-white' : '' }}"
+                           href="{{ route('backend_admin.pages.los.table') }}">
+                           <i class="bx bx-right-arrow-alt"></i>Data Loss
                         </a>
                     </li>
                 </ul>
@@ -117,15 +117,15 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.pelataran.table') ? 'active text-white' : '' }}"
-                           href="{{ route('backend_admin.pages.pelataran.table') }}">
-                           <i class="bx bx-right-arrow-alt"></i>Detail Pelataran
+                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.pelataran.tambah') ? 'active text-white' : '' }}"
+                           href="{{ route('backend_admin.pages.pelataran.tambah') }}">
+                           <i class="bx bx-right-arrow-alt"></i>Tambah Data Pelataran
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.pelataran.tambah') ? 'active text-white' : '' }}"
-                           href="{{ route('backend_admin.pages.pelataran.tambah') }}">
-                           <i class="bx bx-right-arrow-alt"></i>Penambahan Pelataran
+                        <a class="dropdown-item {{ request()->routeIs('backend_admin.pages.pelataran.table') ? 'active text-white' : '' }}"
+                           href="{{ route('backend_admin.pages.pelataran.table') }}">
+                           <i class="bx bx-right-arrow-alt"></i>Data Pelataran
                         </a>
                     </li>
                 </ul>

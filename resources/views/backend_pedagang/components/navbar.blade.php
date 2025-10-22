@@ -44,30 +44,35 @@
                 </ul>
             </li>
 
-            <!-- Inbox -->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret {{ request()->is('inbox/*') ? 'active text-white' : '' }}" 
-                   href="javascript:;" data-bs-toggle="dropdown">
-                    <div class="parent-icon"><i class="bx bx-envelope-open"></i></div>
-                    <div class="menu-title">Inbox</div>
+            <!-- pengumuman -->
+            <li class="nav-item">
+                <a href="{{ route('backend_pedagang.pages.pengumuman') }}" 
+                   class="nav-link {{ request()->routeIs('backend_pedagang.pages.pengumuman') ? 'active text-white' : '' }}">
+                    <div class="parent-icon">
+                        <i class="bx bx-envelope-open"></i>
+                    </div>
+                    <div class="menu-title">Pengumuman</div>
                 </a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" href="authentication-signin.html" target="_blank">
-                            <i class="bx bx-right-arrow-alt"></i>Pengumuman
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="authentication-signup.html" target="_blank">
-                            <i class="bx bx-right-arrow-alt"></i>Dokumen
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="authentication-signup.html" target="_blank">
-                            <i class="bx bx-right-arrow-alt"></i>Tarif Retribusi
-                        </a>
-                    </li>
-                </ul>
+            </li>
+            <!-- dokumen -->
+            <li class="nav-item">
+                <a href="{{ route('backend_pedagang.pages.dashboard') }}" 
+                   class="nav-link {{ request()->routeIs('backend_pedagang.pages.Dokumen') ? 'active text-white' : '' }}">
+                    <div class="parent-icon">
+                        <i class="bx bx-briefcase"></i>
+                    </div>
+                    <div class="menu-title">Dokumen</div>
+                </a>
+            </li>
+            <!-- tarif -->
+            <li class="nav-item">
+                <a href="{{ route('backend_pedagang.pages.dashboard') }}" 
+                   class="nav-link {{ request()->routeIs('backend_pedagang.pages.tarif') ? 'active text-white' : '' }}">
+                    <div class="parent-icon">
+                        <i class="bx bx-money"></i>
+                    </div>
+                    <div class="menu-title">Tarif Restribusi</div>
+                </a>
             </li>
         </ul>
     </nav>
