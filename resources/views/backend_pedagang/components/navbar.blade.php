@@ -56,8 +56,8 @@
             </li>
             <!-- dokumen -->
             <li class="nav-item">
-                <a href="{{ route('backend_pedagang.pages.dashboard') }}" 
-                   class="nav-link {{ request()->routeIs('backend_pedagang.pages.Dokumen') ? 'active text-white' : '' }}">
+                <a href="{{ route('backend_pedagang.pages.dokumen') }}" 
+                   class="nav-link {{ request()->routeIs('backend_pedagang.pages.dokumen') ? 'active text-white' : '' }}">
                     <div class="parent-icon">
                         <i class="bx bx-briefcase"></i>
                     </div>
@@ -66,8 +66,8 @@
             </li>
             <!-- tarif -->
             <li class="nav-item">
-                <a href="{{ route('backend_pedagang.pages.dashboard') }}" 
-                   class="nav-link {{ request()->routeIs('backend_pedagang.pages.tarif') ? 'active text-white' : '' }}">
+                <a href="{{ route('backend_pedagang.pages.comingsoon') }}" 
+                   class="nav-link {{ request()->routeIs('backend_pedagang.pages.comingsoon') ? 'active text-white' : '' }}">
                     <div class="parent-icon">
                         <i class="bx bx-money"></i>
                     </div>

@@ -19,9 +19,11 @@ use App\Http\Controllers\Auth\PedagangRegistrasiController; // routing menuju pe
 use App\Http\Controllers\Pedagang\PedagangDashboardController; // routing menuju dashboard pedagang
 use App\Http\Controllers\Pedagang\PermohonanController; //proses permohonan
 use App\Http\Controllers\Pedagang\UploadpermohonanController; //proses upload permohonan
-use App\Http\Controllers\Pedagang\PemberitahuanController;// proses download pemberitahuan
-use App\Http\Controllers\Pedagang\PernyataanController;// proses download pernyataan
-use App\Http\Controllers\Pedagang\PengumumanPedagangController;// pengumuman
+use App\Http\Controllers\Pedagang\PemberitahuanController; // proses download pemberitahuan
+use App\Http\Controllers\Pedagang\PernyataanController; // proses download pernyataan
+use App\Http\Controllers\Pedagang\PengumumanPedagangController; // pengumuman
+use App\Http\Controllers\Pedagang\DokumenPedagangController; // dokumen
+use App\Http\Controllers\Pedagang\ComingSoonController; // comingsoon
 
 
 // Route backend admin
@@ -40,6 +42,8 @@ use Illuminate\Support\Facades\Response;
 //Frontend Simpasar
 // mengarah ke home
 Route::get('/', [HomeController::class, 'index'])->name('frontend.pages.home');
+// Route untuk proxy API harga pangan
+Route::get('/api/harga-pangan', [HomeController::class, 'getHargaPanganData']);
 // mengarah ke pasar
 Route::get('/pasar_pulau_payung', [PpayungController::class, 'PP'])->name('frontend.pages.pulaupayung');
 Route::get('/pasar_taman_lepin', [TamanlepinController::class, 'TL'])->name('frontend.pages.tamanlepin');
@@ -88,8 +92,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/detail_pelataran', [PelataranController::class, 'table'])->name('backend_admin.pages.pelataran.table');
     //pedagang
     Route::get('/list/permohonan', [AccPermohonanController::class, 'showTable'])->name('backend_admin.pages.pedagang.tabelpermohonan');
-    Route::get('/admin/permohonan/{nik}/review', [AccPermohonanController::class, 'reviewPdf'])->name('admin.permohonan.review');
-    Route::get('/admin/permohonan/{nik}/document/{docType}', [AccPermohonanController::class, 'getDocument'])->name('admin.permohonan.document');
+    Route::get('/admin/permohonan/{nik}/{id}/review', [AccPermohonanController::class, 'reviewPdf'])->name('admin.permohonan.review');
+    Route::get('/admin/permohonan/{nik}/{id}/documents/{docType}', [AccPermohonanController::class, 'getDocument'])->name('admin.permohonan.document');
     Route::get('/proxy-storage/{path}', function ($path) {
         $fullPath = storage_path('app/public/' . $path);
         if (file_exists($fullPath)) {
@@ -129,27 +133,46 @@ Route::middleware(['auth', 'role:pedagang'])->group(function () {
     Route::get('/upload/permohonan', [UploadpermohonanController::class, 'showTable'])->name('backend_pedagang.pages.uploadpermohonan');
     Route::post('/upload-permohonan', [UploadpermohonanController::class, 'store'])->name('uploadpermohonan.store');
     Route::get('/user-proxy-storage/{path}', function ($path) {
-    $fullPath = storage_path('app/public/' . $path);
-    if (!file_exists($fullPath)) {
-        \Log::error('User proxy storage file not found: ' . $fullPath);
-        abort(404, 'File not found');
-    }
-    if (!is_readable($fullPath)) {
-        \Log::error('User proxy storage file not readable: ' . $fullPath);
-        abort(403, 'File not readable');
-    }
-    return response()->file($fullPath, [
-        'Content-Type' => 'application/pdf',
-        'Access-Control-Allow-Origin' => '*'
-    ]);
+        $fullPath = storage_path('app/public/' . $path);
+        if (!file_exists($fullPath)) {
+            \Log::error('User proxy storage file not found: ' . $fullPath);
+            abort(404, 'File not found');
+        }
+        if (!is_readable($fullPath)) {
+            \Log::error('User proxy storage file not readable: ' . $fullPath);
+            abort(403, 'File not readable');
+        }
+        return response()->file($fullPath, [
+            'Content-Type' => 'application/pdf',
+            'Access-Control-Allow-Origin' => '*'
+        ]);
     })->where('path', '.*')->name('user.proxy.storage');
     Route::get('/get-document-url/{id}', [UploadpermohonanController::class, 'getDocumentUrl'])->name('get.document.url');
-    
+
     //download surat pemberitahuan
     Route::get('/pedagang/pemberitahuan/download', [PemberitahuanController::class, 'download'])->name('pedagang.pemberitahuan.download')->middleware('auth');
     Route::get('/pedagang/pernyataan/download', [PernyataanController::class, 'download'])->name('pedagang.pernyataan.download')->middleware('auth');
     Route::post('/pedagang/upload-signed-pernyataan', [PernyataanController::class, 'uploadSigned'])->name('pedagang.uploadSigned');
-
     //pengumuman
     Route::get('/pengumuman_pedagang', [PengumumanPedagangController::class, 'index'])->name('backend_pedagang.pages.pengumuman');
+    //dokumen
+    Route::get('/dokumen_pedagang', [DokumenPedagangController::class, 'showTable'])->name('backend_pedagang.pages.dokumen');
+    Route::get('/dokumen/download/{id}/{type}', [App\Http\Controllers\Pedagang\DokumenPedagangController::class, 'download'])->name('pedagang.dokumen.download');
+    //tarif
+    Route::get('/comingsoon', [ComingSoonController::class, 'CS'])->name('backend_pedagang.pages.comingsoon');
+});
+
+// ==================== API ROUTES UNTUK WEB LAIN ====================
+// API seperti dev-hargapangan.dumaikota.go.id/home/api
+Route::prefix('home')->group(function () {
+    Route::get('/api', [PasarController::class, 'apiIndex']);
+    Route::get('/api/{id}', [PasarController::class, 'apiShow']);
+    Route::get('/api/search/{keyword}', [PasarController::class, 'apiSearch']);
+});
+
+// Alternatif API routes (buat backup)
+Route::prefix('api/v1')->group(function () {
+    Route::get('/pasar', [PasarController::class, 'apiIndex']);
+    Route::get('/pasar/{id}', [PasarController::class, 'apiShow']);
+    Route::get('/pasar/search/{keyword}', [PasarController::class, 'apiSearch']);
 });
