@@ -37,8 +37,8 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama</th>
                                     <th>Tanggal</th>
+                                    <th>Nama Pemohon</th>
                                     <th>Status</th>
                                     <th>Keterangan</th>
                                     <th>Aksi</th>
@@ -49,8 +49,10 @@
     @if ($p->status === 'lengkap' || $p->status == 'disetujui' || $p->status === 'ditolak' || $p->status === 'verifikasi' || $p->status === 'selesai')
         <tr>
             <td>{{ $loop->iteration }}</td>
-            <td>{{ $p->nama }}</td>
             <td>{{ \Carbon\Carbon::parse($p->updated_at)->format('d-m-Y') }}</td>
+            <td>{{ $p->nama }}<br>
+            <small>NIK : {{$p->nik}}</small>
+            </td>
             <th>
                 @if ($p->status == 'draft')
                     <span class="badge bg-danger">Draft</span>
@@ -89,7 +91,7 @@
                 </button>
                 <!-- Modal Preview Surat -->
                 <div class="modal fade" id="reviewModal{{ $p->id }}" tabindex="-1"
-                    aria-hidden="true" data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}">
+                    aria-hidden="true" data-nik="{{ $p->nik }}" data-nama="{{ $p->nama }}" data-id="{{ $p->id }}">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -119,8 +121,8 @@
                                                     <td style="width: 500px; text-align: left;">:</td>
                                                     <td class="text-right" style="width: 150px;">
                                                         <button type="button" class="btn btn-sm btn-warning view-document"
-                                                            data-nik="{{ $p->nik }}" data-doc-type="nib"
-                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}">
+                                                            data-nik="{{ $p->nik }}" data-doc-type="nib" data-id="{{ $p->id }}"
+                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}"> <!-- Fix target -->
                                                             Lihat Dokumen
                                                         </button>
                                                     </td>
@@ -130,8 +132,8 @@
                                                     <td>:</td>
                                                     <td class="text-right">
                                                         <button type="button" class="btn btn-sm btn-warning view-document"
-                                                            data-nik="{{ $p->nik }}" data-doc-type="npwp"
-                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}">
+                                                            data-nik="{{ $p->nik }}" data-doc-type="npwp" data-id="{{ $p->id }}"
+                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}"> <!-- Fix target -->
                                                             Lihat Dokumen
                                                         </button>
                                                     </td>
@@ -141,8 +143,8 @@
                                                     <td>:</td>
                                                     <td class="text-right">
                                                         <button type="button" class="btn btn-sm btn-warning view-document"
-                                                            data-nik="{{ $p->nik }}" data-doc-type="ktp"
-                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}">
+                                                            data-nik="{{ $p->nik }}" data-doc-type="ktp" data-id="{{ $p->id }}"
+                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}"> <!-- Fix target -->
                                                             Lihat Dokumen
                                                         </button>
                                                     </td>
@@ -152,8 +154,8 @@
                                                     <td>:</td>
                                                     <td class="text-right">
                                                         <button type="button" class="btn btn-sm btn-warning view-document"
-                                                            data-nik="{{ $p->nik }}" data-doc-type="kk"
-                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}">
+                                                            data-nik="{{ $p->nik }}" data-doc-type="kk" data-id="{{ $p->id }}"
+                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}"> <!-- Fix target -->
                                                             Lihat Dokumen
                                                         </button>
                                                     </td>
@@ -163,8 +165,8 @@
                                                     <td>:</td>
                                                     <td class="text-right">
                                                         <button type="button" class="btn btn-sm btn-warning view-document"
-                                                            data-nik="{{ $p->nik }}" data-doc-type="foto"
-                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}">
+                                                            data-nik="{{ $p->nik }}" data-doc-type="foto" data-id="{{ $p->id }}"
+                                                            data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}"> <!-- Fix target -->
                                                             Lihat Dokumen
                                                         </button>
                                                     </td>
@@ -180,8 +182,8 @@
                                                         <td style="width: 500px; text-align: left;">:</td>
                                                         <td class="text-right" style="width: 150px;">
                                                             <button type="button" class="btn btn-sm btn-warning view-document"
-                                                                data-nik="{{ $p->nik }}" data-doc-type="pernyataan"
-                                                                data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}">
+                                                                data-nik="{{ $p->nik }}" data-doc-type="pernyataan" data-id="{{ $p->id }}"
+                                                                data-bs-toggle="modal" data-bs-target="#documentModal{{ $p->id }}"> <!-- Fix target -->
                                                                 Lihat Dokumen
                                                             </button>
                                                         </td>
@@ -202,7 +204,7 @@
                 </div>
                 <!-- End Modal Preview Surat -->
                 <!-- Modal Dokumen -->
-                <div class="modal fade" id="documentModal{{ $p->id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal fade" id="documentModal{{ $p->id }}" tabindex="-1" aria-hidden="true"> <!-- Pastikan ID cuma satu -->
                     <div class="modal-dialog modal-fullscreen">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -216,8 +218,8 @@
                                 <iframe id="fallback-pdf-document-{{ $p->id }}" src="" width="100%" height="90vh" style="border:none; display:none;"></iframe>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                <a href="#" id="open-in-new-tab-{{ $p->id }}" class="btn btn-primary" target="_blank">Buka di Tab Baru</a>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                                <a href="#" id="open-in-new-tab-{{ $p->id }}" class="btn btn-primary" download>Download</a>
                             </div>
                         </div>
                     </div>
@@ -312,7 +314,7 @@
                 fallbackEl.style.display = 'none';
                 fallbackEl.src = '';
                 document.querySelector(`#${modalId} .modal-title`).textContent = `Preview Surat Permohonan dari ${nama}`;
-                fetch(`/admin/permohonan/${nik}/review`, {
+                fetch(`/admin/permohonan/${nik}/${modal.dataset.id}/review`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -358,7 +360,6 @@
                     alert('Gagal memuat data: ' + err.message);
                 });
             }
-
             // Attach load to shown event for review modals
             document.querySelectorAll('.modal[id^="reviewModal"]').forEach(modal => {
                 modal.addEventListener('shown.bs.modal', function() {
@@ -368,9 +369,7 @@
                     loadReviewPDF(this, nik, nama, modalId);
                 });
             });
-
             // The view-pdf button just toggles modal, load happens on shown
-
             // Handle Approve button
             document.querySelectorAll('.approve-pdf').forEach(button => {
                 button.addEventListener('click', function() {
@@ -568,7 +567,8 @@
                 e.preventDefault();
                 const nik = this.getAttribute('data-nik');
                 const docType = this.getAttribute('data-doc-type');
-                const modalId = this.getAttribute('data-bs-target').substring(1);
+                const id = this.getAttribute('data-id');
+                const modalId = this.getAttribute('data-bs-target').substring(1); // Ambil ID modal dengan benar
                 const loadingEl = document.getElementById('loading-document-' + modalId.replace('documentModal', ''));
                 const adobeEl = document.getElementById('adobe-dc-view-document-' + modalId.replace('documentModal', ''));
                 const fallbackEl = document.getElementById('fallback-pdf-document-' + modalId.replace('documentModal', ''));
@@ -584,7 +584,7 @@
                 fallbackEl.src = '';
                 openInNewTabEl.href = '#';
                 document.getElementById('documentModalTitle' + modalId.replace('documentModal', '')).textContent = `Preview Dokumen ${docType.toUpperCase()} dari ${nik}`;
-                fetch(`/admin/permohonan/${nik}/documents/${docType}`, {
+                fetch(`/admin/permohonan/${nik}/${id}/documents/${docType}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -631,7 +631,7 @@
                     loadingEl.style.display = 'none';
                     alert('Gagal memuat data: ' + err.message);
                 });
-                const documentModal = new bootstrap.Modal(document.getElementById(modalId));
+                const documentModal = new bootstrap.Modal(document.getElementById(modalId)); // Pastikan inisiasi modal dengan ID yang benar
                 documentModal.show();
             });
         });

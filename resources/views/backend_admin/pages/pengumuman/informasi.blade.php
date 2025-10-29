@@ -47,9 +47,10 @@
                     <table class="table mb-0">
                         <thead class="table-light">
                             <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
                                 <th>Judul</th>
                                 <th>Status</th>
-                                <th>Tanggal</th>
                                 <th>Lihat Isi Pengumuman</th>
                                 <th>Actions</th>
                             </tr>
@@ -57,13 +58,14 @@
                         <tbody>
                             @foreach ($pengumumans as $pengumuman)
                                 <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($pengumuman->tanggal)->locale('id')->translatedFormat('d M Y') }}</td>
                                     <td>{{ $pengumuman->judul }}</td>
                                     <td>
                                         <div class="badge rounded-pill {{ $pengumuman->status == 'Terpublish' ? 'text-success bg-light-success' : 'text-warning bg-light-warning' }} p-2 text-uppercase px-3">
                                             <i class='bx bxs-circle me-1'></i>{{ $pengumuman->status }}
                                         </div>
                                     </td>
-                                    <td>{{ \Carbon\Carbon::parse($pengumuman->tanggal)->format('d M Y') }}</td>
                                     <td>
                                         <button type="button" class="btn btn-warning btn-sm radius-30 px-4" data-bs-toggle="modal" data-bs-target="#viewPengumumanModal_{{ $pengumuman->id }}" data-id="{{ $pengumuman->id }}">
                                             View Details
@@ -261,7 +263,6 @@
 <!-- Include SweetAlert2 untuk notifikasi -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- JavaScript untuk submit form via AJAX -->
 <script>

@@ -3,7 +3,7 @@
 @section('content')
     <!-- Header Start -->
     <div class="container-fluid d-flex align-items-center justify-content-center"
-        style="background-image: url('{{ asset('frontend/assets/img/bannertarif.jpeg') }}');
+        style="background-image: url('{{ asset('frontend/assets/img/tarif.jpeg') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

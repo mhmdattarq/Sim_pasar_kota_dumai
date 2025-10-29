@@ -12,8 +12,6 @@
 <script src="{{ asset('backend/assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
 <script src="{{ asset('backend/assets/js/index.js') }}"></script>
 <script src="{{ asset('backend/assets/js/app.js') }}"></script>
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Stack untuk script tambahan -->
 @stack('scripts')
 <script>

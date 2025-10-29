@@ -1,4 +1,5 @@
 @extends('backend_admin.app')
+
 @section('content')
     <div class="page-wrapper">
         <div class="page-content">
@@ -62,10 +63,9 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal Fullscreen -->
+    <!-- Modal Scrollable -->
     <div class="modal fade" id="detailPasarModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitle">Detail Pasar</h5>
@@ -90,27 +90,22 @@
 <script>
 $(document).ready(function() {
     console.log('Table script loaded'); // DEBUG
-
     var buttons = $('.view-detail');
     console.log('Found view-detail buttons:', buttons.length); // DEBUG
-
     if (buttons.length === 0) {
         console.error('No view-detail buttons found! Check table HTML.');
         alert('Error: Tombol detail tidak ditemukan.');
         return;
     }
-
     buttons.each(function() {
         $(this).on('click', function() {
             var id = $(this).data('id');
             console.log('Button clicked, ID:', id); // DEBUG
-
             if (!id) {
                 console.error('No ID found on button!');
                 alert('Error: ID tidak ditemukan.');
                 return;
             }
-
             // Show modal
             try {
                 var modal = new bootstrap.Modal(document.getElementById('detailPasarModal'));
@@ -121,7 +116,6 @@ $(document).ready(function() {
                 alert('Error: Gagal membuka modal.');
                 return;
             }
-
             // Reset modal
             var modalBody = $('#modalBody');
             modalBody.html(`
@@ -132,7 +126,6 @@ $(document).ready(function() {
                 </div>
             `);
             $('#modalTitle').text('Detail Pasar');
-
             // Fetch data
             console.log('Fetching data for ID:', id); // DEBUG
             $.ajax({
@@ -147,11 +140,9 @@ $(document).ready(function() {
                         modalBody.html(`<div class="alert alert-danger">Error: ${data.error}</div>`);
                         return;
                     }
-
-                    var lokasiPeta = data.lokasi_peta && data.lokasi_peta.includes('<iframe') 
-                        ? data.lokasi_peta 
+                    var lokasiPeta = data.lokasi_peta && data.lokasi_peta.includes('<iframe')
+                        ? data.lokasi_peta.replace('<iframe', '<iframe style="width: 100%; height: 300px;"')
                         : '<p class="text-muted">Tidak ada peta tersedia</p>';
-
                     $('#modalTitle').text(`Detail Pasar: ${data.nama_pasar || 'N/A'}`);
                     modalBody.html(`
                         <div class="container">

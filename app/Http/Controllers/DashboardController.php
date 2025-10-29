@@ -8,96 +8,67 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    // Dashboard untuk admin
     public function adminDashboard()
     {
         $user = Auth::user();
-
         try {
-            // Total Pasar (jumlah baris di tabel pasar)
-            $totalPasar = DB::table('pasar')->count();
+            // Ambil semua pasar dari tabel pasar
+            $pasars = DB::table('pasar')
+                ->select('id', 'nama_pasar', 'total_kios', 'total_los', 'total_pelataran')
+                ->get();
 
-            // Ambil data agregat untuk masing-masing pasar
-            $pasarKelakap = DB::table('pasar')
-                ->where('nama_pasar', 'PASAR KELAKAP TUJUH') // Sesuaikan nama tepat di database
-                ->first();
+            // Hitung total pasar
+            $totalPasar = $pasars->count();
 
-            $pasarBundaran = DB::table('pasar')
-                ->where('nama_pasar', 'PASAR BUNDARAN SRI MERSING') // Sesuaikan nama tepat di database
-                ->first();
-
-            $pasarTamanLepin = DB::table('pasar')
-                ->where('nama_pasar', 'PASAR LEPIN') // Sesuaikan nama tepat di database
-                ->first();
-
-            // Hitung total unit (kios + los + pelataran) untuk masing-masing pasar
-            $totalUnitKelakap = $pasarKelakap ? ($pasarKelakap->total_kios + $pasarKelakap->total_los + $pasarKelakap->total_pelataran) : 0;
-            $totalUnitBundaran = $pasarBundaran ? ($pasarBundaran->total_kios + $pasarBundaran->total_los + $pasarBundaran->total_pelataran) : 0;
-            $totalUnitTamanLepin = $pasarTamanLepin ? ($pasarTamanLepin->total_kios + $pasarTamanLepin->total_los + $pasarTamanLepin->total_pelataran) : 0;
+            // Siapkan array untuk total unit per pasar
+            $totalUnits = [];
+            foreach ($pasars as $pasar) {
+                $totalUnits[$pasar->nama_pasar] = [
+                    'total' => ($pasar->total_kios + $pasar->total_los + $pasar->total_pelataran),
+                    'nama_pasar' => $pasar->nama_pasar
+                ];
+            }
 
             // Debug: Log data yang diambil
-            \Log::info('Dashboard Admin Data - Total Pasar: ' . $totalPasar);
-            \Log::info('Dashboard Admin Data - Total Unit Kelakap: ' . $totalUnitKelakap);
-            \Log::info('Dashboard Admin Data - Total Unit Bundaran: ' . $totalUnitBundaran);
-            \Log::info('Dashboard Admin Data - Total Unit Taman Lepin: ' . $totalUnitTamanLepin);
+            \Log::info('Dashboard Admin Data', [
+                'total_pasar' => $totalPasar,
+                'total_units' => $totalUnits
+            ]);
 
-            return view('backend_admin.pages.dashboard', compact('user', 'totalPasar', 'totalUnitKelakap', 'totalUnitBundaran', 'totalUnitTamanLepin'));
+            return view('backend_admin.pages.dashboard', compact('user', 'totalPasar', 'totalUnits'));
         } catch (\Exception $e) {
-            \Log::error('Error fetch pasar admin dashboard: ' . $e->getMessage());
+            \Log::error('Error fetching dashboard data: ' . $e->getMessage());
             $totalPasar = 0;
-            $totalUnitKelakap = 0;
-            $totalUnitBundaran = 0;
-            $totalUnitTamanLepin = 0;
-            return view('backend_admin.pages.dashboard', compact('user', 'totalPasar', 'totalUnitKelakap', 'totalUnitBundaran', 'totalUnitTamanLepin'));
+            $totalUnits = [];
+            return view('backend_admin.pages.dashboard', compact('user', 'totalPasar', 'totalUnits'));
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

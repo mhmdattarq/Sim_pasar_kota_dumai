@@ -11,128 +11,125 @@ use Illuminate\Support\Facades\DB;
 class AccPermohonanController extends Controller
 {
     public function showTable()
-      {
-          $permohonans = DB::table('permohonan')
-              ->join('pasar', 'permohonan.pasar_id', '=', 'pasar.id')
-              ->select('permohonan.*', 'pasar.nama_pasar')
-              ->get();
+    {
+        $permohonans = DB::table('permohonan')
+            ->join('pasar', 'permohonan.pasar_id', '=', 'pasar.id')
+            ->select('permohonan.*', 'pasar.nama_pasar')
+            ->get();
 
-          return view('backend_admin.pages.pedagang.tabelpermohonan', compact('permohonans'));
-      }
-
-      public function reviewPdf($nik)
-      {
-          try {
-              $nik = str_replace('.', '', $nik);
-
-              // Ambil data permohonan berdasarkan nik
-              $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
-              if (!$permohonan) {
-                  return response()->json([
-                      'error' => 'Permohonan tidak ditemukan',
-                      'debug' => ['nik' => $nik]
-                  ], 404);
-              }
-
-              // Cek dokumen_path
-              $filePath = $permohonan->dokumen_path;
-              if (!$filePath) {
-                  return response()->json([
-                      'error' => 'Dokumen path tidak tersedia',
-                      'debug' => ['nik' => $nik, 'id' => $permohonan->id]
-                  ], 404);
-              }
-
-              // Cek apakah file ada di storage
-              $fullPath = storage_path('app/public/' . $filePath);
-              if (!file_exists($fullPath)) {
-                  return response()->json([
-                      'error' => 'File PDF tidak ditemukan di storage',
-                      'debug' => [
-                          'nik' => $nik,
-                          'id' => $permohonan->id,
-                          'filePath' => $filePath,
-                          'fullPath' => $fullPath,
-                          'url' => asset('storage/' . $filePath)
-                      ]
-                  ], 404);
-              }
-
-              $fileUrl = url('/proxy-storage/' . $filePath);
-              $fileName = basename($filePath);
-
-              return response()->json([
-                  'fileUrl' => $fileUrl,
-                  'fileName' => $fileName,
-                  'debug' => [
-                      'nik' => $nik,
-                      'id' => $permohonan->id,
-                      'filePath' => $filePath,
-                      'fullPath' => $fullPath
-                  ]
-              ]);
-          } catch (\Exception $e) {
-              return response()->json([
-                  'error' => 'Terjadi error server: ' . $e->getMessage(),
-                  'debug' => [
-                      'nik' => $nik,
-                      'trace' => $e->getTraceAsString()
-                  ]
-              ], 500);
-          }
-      }
-
-    public function getDocument($nik, $docType)
-{
-    try {
-        $nik = str_replace('.', '', $nik);
-        $validDocTypes = ['nib', 'npwp', 'ktp', 'kk', 'foto', 'pernyataan'];
-        if (!in_array($docType, $validDocTypes)) {
-            return response()->json(['error' => 'Tipe dokumen tidak valid'], 400);
-        }
-
-        $permohonan = DB::table('permohonan')->where('nik', $nik)->first();
-        if (!$permohonan) {
-            return response()->json(['error' => 'Permohonan tidak ditemukan'], 404);
-        }
-
-        $columnMap = [
-            'nib' => 'nib',
-            'npwp' => 'npwp',
-            'ktp' => 'ktp',
-            'kk' => 'kk',
-            'foto' => 'foto',
-            'pernyataan' => 'dokumen_path_pernyataan'
-        ];
-        $column = $columnMap[$docType];
-        $filePath = $permohonan->$column;
-
-        if (!$filePath) {
-            return response()->json(['error' => 'Dokumen ' . strtoupper($docType) . ' tidak tersedia'], 404);
-        }
-
-        $fullPath = storage_path('app/public/' . $filePath);
-        if (!file_exists($fullPath)) {
-            \Log::error('File not found: ' . $fullPath);
-            return response()->json(['error' => 'File PDF tidak ditemukan'], 404);
-        }
-
-        if (!is_readable($fullPath)) {
-            \Log::error('File not readable: ' . $fullPath);
-            return response()->json(['error' => 'File tidak bisa dibaca'], 403);
-        }
-
-        $fileUrl = url('/proxy-storage/' . $filePath . '?v=' . time());
-        return response()->json([
-            'success' => true,
-            'fileUrl' => $fileUrl,
-            'fileName' => basename($filePath)
-        ]);
-    } catch (\Exception $e) {
-        \Log::error('Get document error for NIK: ' . $nik . ', DocType: ' . $docType . ': ' . $e->getMessage());
-        return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
+        return view('backend_admin.pages.pedagang.tabelpermohonan', compact('permohonans'));
     }
-}
+
+    public function reviewPdf($nik, $id)
+    {
+        try {
+            $nik = str_replace('.', '', $nik);
+            $permohonan = DB::table('permohonan')->where('nik', $nik)->where('id', $id)->first();
+            if (!$permohonan) {
+                return response()->json([
+                    'error' => 'Permohonan tidak ditemukan',
+                    'debug' => ['nik' => $nik, 'id' => $id]
+                ], 404);
+            }
+
+            $filePath = $permohonan->dokumen_path;
+            if (!$filePath) {
+                return response()->json([
+                    'error' => 'Dokumen path tidak tersedia',
+                    'debug' => ['nik' => $nik, 'id' => $id]
+                ], 404);
+            }
+
+            $fullPath = storage_path('app/public/' . $filePath);
+            if (!file_exists($fullPath)) {
+                return response()->json([
+                    'error' => 'File PDF tidak ditemukan di storage',
+                    'debug' => [
+                        'nik' => $nik,
+                        'id' => $id,
+                        'filePath' => $filePath,
+                        'fullPath' => $fullPath,
+                        'url' => asset('storage/' . $filePath)
+                    ]
+                ], 404);
+            }
+
+            $fileUrl = url('/proxy-storage/' . $filePath);
+            $fileName = basename($filePath);
+
+            return response()->json([
+                'fileUrl' => $fileUrl,
+                'fileName' => $fileName,
+                'debug' => [
+                    'nik' => $nik,
+                    'id' => $id,
+                    'filePath' => $filePath,
+                    'fullPath' => $fullPath
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Terjadi error server: ' . $e->getMessage(),
+                'debug' => [
+                    'nik' => $nik,
+                    'id' => $id,
+                    'trace' => $e->getTraceAsString()
+                ]
+            ], 500);
+        }
+    }
+
+    public function getDocument($nik, $id, $docType)
+    {
+        try {
+            $nik = str_replace('.', '', $nik);
+            $validDocTypes = ['nib', 'npwp', 'ktp', 'kk', 'foto', 'pernyataan'];
+            if (!in_array($docType, $validDocTypes)) {
+                return response()->json(['error' => 'Tipe dokumen tidak valid'], 400);
+            }
+
+            $permohonan = DB::table('permohonan')->where('nik', $nik)->where('id', $id)->first();
+            if (!$permohonan) {
+                return response()->json(['error' => 'Permohonan tidak ditemukan'], 404);
+            }
+
+            $columnMap = [
+                'nib' => 'nib',
+                'npwp' => 'npwp',
+                'ktp' => 'ktp',
+                'kk' => 'kk',
+                'foto' => 'foto',
+                'pernyataan' => 'dokumen_path_pernyataan'
+            ];
+            $column = $columnMap[$docType];
+            $filePath = $permohonan->$column;
+
+            if (!$filePath) {
+                return response()->json(['error' => 'Dokumen ' . strtoupper($docType) . ' tidak tersedia'], 404);
+            }
+
+            $fullPath = storage_path('app/public/' . $filePath);
+            if (!file_exists($fullPath)) {
+                \Log::error('File not found: ' . $fullPath);
+                return response()->json(['error' => 'File PDF tidak ditemukan'], 404);
+            }
+
+            if (!is_readable($fullPath)) {
+                \Log::error('File not readable: ' . $fullPath);
+                return response()->json(['error' => 'File tidak bisa dibaca'], 403);
+            }
+
+            $fileUrl = url('/proxy-storage/' . $filePath . '?v=' . time());
+            return response()->json([
+                'success' => true,
+                'fileUrl' => $fileUrl,
+                'fileName' => basename($filePath)
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Get document error for NIK: ' . $nik . ', ID: ' . $id . ', DocType: ' . $docType . ': ' . $e->getMessage());
+            return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
+        }
+    }
 
     public function approve(Request $request, $id)
     {
