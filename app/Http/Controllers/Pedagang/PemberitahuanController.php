@@ -30,7 +30,7 @@ class PemberitahuanController extends Controller
         }
 
         // Izinkan download untuk status 'disetujui' atau 'ditolak'
-        if (!in_array($permohonan->status, ['disetujui', 'ditolak'])) {
+        if (!in_array($permohonan->status, ['disetujui', 'ditolak', 'selesai', 'verifikasi'])) {
             return redirect()->back()->with('error', 'Surat pemberitahuan hanya tersedia untuk status disetujui atau ditolak.');
         }
 

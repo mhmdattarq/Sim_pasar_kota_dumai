@@ -29,8 +29,12 @@ class PernyataanController extends Controller
             return redirect()->back()->with('error', 'Permohonan tidak ditemukan.');
         }
 
-        if ($permohonan->status !== 'disetujui') {
-            return redirect()->back()->with('error', 'Surat pernyataan hanya tersedia untuk status disetujui.');
+        if (!in_array($permohonan->status, ['disetujui', 'verifikasi', 'selesai'])) {
+            \Log::error('Pernyataan download failed: Invalid status', [
+                'nik' => $nik,
+                'status' => $permohonan->status
+            ]);
+            return redirect()->back()->with('error', 'Surat pernyataan hanya tersedia untuk status disetujui, verifikasi, atau selesai.');
         }
 
         // Ambil path file dari kolom dokumen_path_pernyataan

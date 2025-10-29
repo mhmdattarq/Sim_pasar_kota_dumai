@@ -10,7 +10,10 @@ class PengumumanPedagangController extends Controller
 {
     public function index()
     {
-        $pengumumans = DB::table('pengumuman')->get();
+        $pengumumans = DB::table('pengumuman')
+            ->where('status', 'Terpublish')
+            ->orderBy('tanggal', 'desc') // Urutkan dari terbaru
+            ->get();
         return view('backend_pedagang.pages.pengumuman', compact('pengumumans'));
     }
 }

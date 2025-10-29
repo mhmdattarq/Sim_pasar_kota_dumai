@@ -36,12 +36,19 @@ class PedagangDashboardController extends Controller
         $permohonanSelesai = DB::table('permohonan')->where('user_id', $user->id)->where('status', 'selesai')->count();
         $permohonanPending = DB::table('permohonan')
             ->where('user_id', $user->id)
-            ->whereIn('status', ['draft', 'lengkap', 'verifikasi'])
+            ->whereIn('status', ['lengkap', 'verifikasi'])
             ->count();
+
+        // Ambil 5 pengumuman terbaru dengan status 'Terpublish'
+        $pengumumans = DB::table('pengumuman')
+            ->where('status', 'Terpublish')
+            ->orderBy('tanggal', 'desc')
+            ->take(5)
+            ->get();
 
         // Ambil dan hapus flag modal dari session
         $showModal = session()->pull('show_welcome_modal', false);
 
-        return view('backend_pedagang.pages.dashboard', compact('user', 'permohonan', 'displayName', 'showModal', 'totalPermohonan', 'permohonanDitolak', 'permohonanDisetujui', 'permohonanPending', 'permohonanSelesai'));
+        return view('backend_pedagang.pages.dashboard', compact('user', 'permohonan', 'displayName', 'showModal', 'totalPermohonan', 'permohonanDitolak', 'permohonanDisetujui', 'permohonanPending', 'permohonanSelesai', 'pengumumans'));
     }
 }

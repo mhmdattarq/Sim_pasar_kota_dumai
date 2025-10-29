@@ -165,23 +165,23 @@ class PermohonanController extends Controller
         // Mulai transaksi untuk mencegah race condition
         return DB::transaction(
             function () use ($request) {
-        // Ambil nik user
-        $nik = $request->nik;
+                // Ambil nik user
+                $nik = $request->nik;
 
-        // Buat folder path utama
-        $nikFolder = "uploads/{$nik}";
+                // Buat folder path utama
+                $nikFolder = "uploads/{$nik}";
 
-        // Simpan file ke folder sesuai nik
-        $nibPath  = $request->file('nib')->store("{$nikFolder}/nib", 'public');
-        $npwpPath = $request->file('npwp')->store("{$nikFolder}/npwp", 'public');
-        $ktpPath  = $request->file('ktp')->store("{$nikFolder}/ktp", 'public');
-        $kkPath   = $request->file('kk')->store("{$nikFolder}/kk", 'public');
-        $fotoPath = $request->file('foto')->store("{$nikFolder}/foto", 'public');
+                // Simpan file ke folder sesuai nik
+                $nibPath  = $request->file('nib')->store("{$nikFolder}/nib", 'public');
+                $npwpPath = $request->file('npwp')->store("{$nikFolder}/npwp", 'public');
+                $ktpPath  = $request->file('ktp')->store("{$nikFolder}/ktp", 'public');
+                $kkPath   = $request->file('kk')->store("{$nikFolder}/kk", 'public');
+                $fotoPath = $request->file('foto')->store("{$nikFolder}/foto", 'public');
 
 
-        // cek tipe tempat
-        $lokasi = null;
-        $luas = null;
+                // cek tipe tempat
+                $lokasi = null;
+                $luas = null;
 
                 if ($request->tipe_tempat == 'kios') {
                     $data = DB::table('kios')
@@ -234,45 +234,77 @@ class PermohonanController extends Controller
                     DB::table('pasar')
                         ->where('id', $request->pasar_id)
                         ->decrement('total_pelataran');
-                }   
+                }
 
-        // simpan ke tabel permohonan (bukan users lagi)
-        $permohonanId = DB::table('permohonan')->insertGetId([
-            'user_id'       => Auth::id(),
-            'nik'           => $request->nik,
-            'nama'          => $request->nama,
-            'tempat_lahir'  => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'no_telp'       => $request->no_telp,
-            'alamat'        => $request->alamat,
-            'pasar_id'      => $request->pasar_id,
-            'tipe_tempat'   => $request->tipe_tempat,
-            'nomor_tempat'  => $request->nomor_tempat,
-            'lokasi'        => $lokasi,
-            'luas'          => $luas,
-            'jenis_dagangan' => $request->jenis_dagangan,
-            'jam_buka'      => $request->jam_buka,
-            'jam_tutup'     => $request->jam_tutup,
+                // simpan ke tabel permohonan (bukan users lagi)
+                $permohonanId = DB::table('permohonan')->insertGetId([
+                    'user_id'       => Auth::id(),
+                    'nik'           => $request->nik,
+                    'nama'          => $request->nama,
+                    'tempat_lahir'  => $request->tempat_lahir,
+                    'tanggal_lahir' => $request->tanggal_lahir,
+                    'jenis_kelamin' => $request->jenis_kelamin,
+                    'no_telp'       => $request->no_telp,
+                    'alamat'        => $request->alamat,
+                    'pasar_id'      => $request->pasar_id,
+                    'tipe_tempat'   => $request->tipe_tempat,
+                    'nomor_tempat'  => $request->nomor_tempat,
+                    'lokasi'        => $lokasi,
+                    'luas'          => $luas,
+                    'jenis_dagangan' => $request->jenis_dagangan,
+                    'jam_buka'      => $request->jam_buka,
+                    'jam_tutup'     => $request->jam_tutup,
 
-            // file upload
-            'nib'           => $nibPath,
-            'npwp'          => $npwpPath,
-            'ktp'           => $ktpPath,
-            'kk'            => $kkPath,
-            'foto'          => $fotoPath,
+                    // file upload
+                    'nib'           => $nibPath,
+                    'npwp'          => $npwpPath,
+                    'ktp'           => $ktpPath,
+                    'kk'            => $kkPath,
+                    'foto'          => $fotoPath,
 
-            'status'      => 'draft',
-            'keterangan'  => 'Menunggu kelengkapan dokumen',
+                    'status'      => 'lengkap',
+                    'keterangan'  => 'Dokumen Berhasil Terkirim, Silahkan tunggu persetujuan dari Admin!',
 
-            'created_at'    => now(),
-            'updated_at'    => now(),
-        ]);
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
+                ]);
 
-        return redirect()->route('pedagang.permohonan.success', $permohonanId)
-            ->with('success', 'Permohonan berhasil diajukan.');
-    });
-}
+                $permohonan = DB::table('permohonan')
+                    ->join('pasar', 'pasar.id', '=', 'permohonan.pasar_id')
+                    ->where('permohonan.id', $permohonanId)
+                    ->select('permohonan.*', 'pasar.nama_pasar')
+                    ->first();
+
+                // nama file final berdasarkan NIK
+                $fileName = "surat_permohonan_{$permohonan->nik}.pdf";
+                $path = "uploads/dokumen/{$fileName}";
+
+                // Generate PDF setiap kali dengan data terbaru
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+                    'backend_pedagang.surat.permohonan',
+                    ['pedagang' => $permohonan, 'isLengkap' => false]
+                )->setPaper('A4', 'portrait');
+
+                // Simpan file baru (overwrite)
+                Storage::disk('public')->put($path, $pdf->output());
+
+                // Set permission file
+                $fullPath = storage_path('app/public/' . $path);
+                chmod($fullPath, 0644); // File readable oleh semua
+
+                // Update DB
+                DB::table('permohonan')
+                    ->where('id', $permohonanId)
+                    ->update([
+                        'dokumen_path' => $path,
+                        'updated_at' => now(),
+                    ]);
+
+                return redirect()->route('pedagang.permohonan.success', $permohonanId)
+                    ->with('success', 'Permohonan berhasil diajukan.');
+            }
+        );
+    }
 
     // halaman sukses setelah submit permohonan
     public function success($id)
@@ -290,108 +322,108 @@ class PermohonanController extends Controller
     }
 
     public function preview(Request $request)
-        {
-            try {
-                $data = $request->all();
-        
-                // Validasi minimal, tambah tipe_tempat dan ID-nya
-                $request->validate([
-                    'nik' => 'required',
-                    'nama' => 'required|string',
-                    'pasar_id' => 'required|integer',
-                    'tipe_tempat' => 'required|string|in:kios,los,pelataran', // Tambah validasi
-                    'kios_id' => 'required_if:tipe_tempat,kios', // Opsional berdasarkan tipe
-                    'los_id' => 'required_if:tipe_tempat,los',
-                    'pelataran_id' => 'required_if:tipe_tempat,pelataran',
-                    'jenis_dagangan' => 'required|string|max:255',
-                ]);
-        
-                // Ambil nama pasar
-                $pasar = DB::table('pasar')->where('id', $data['pasar_id'])->first();
-                $data['nama_pasar'] = $pasar ? $pasar->nama_pasar : '';
-        
-                // Ambil lokasi berdasarkan tipe tempat (seperti di store)
-                $lokasi = null;
-                if ($data['tipe_tempat'] == 'kios' && isset($data['kios_id'])) {
-                    $dataKios = DB::table('kios')->where('id', $data['kios_id'])->first();
-                    $lokasi = $dataKios->lokasi_kios ?? null;
-                } elseif ($data['tipe_tempat'] == 'los' && isset($data['los_id'])) {
-                    $dataLos = DB::table('loss')->where('id', $data['los_id'])->first();
-                    $lokasi = $dataLos->lokasi_los ?? null;
-                } elseif ($data['tipe_tempat'] == 'pelataran' && isset($data['pelataran_id'])) {
-                    $dataPelataran = DB::table('pelatarans')->where('id', $data['pelataran_id'])->first();
-                    $lokasi = $dataPelataran->lokasi_pelataran ?? null;
-                }
-                $data['lokasi'] = $lokasi; // Tambah lokasi ke data
-        
-                // Generate PDF dengan watermark draft
-                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
-                    'backend_pedagang.surat.permohonan',
-                    ['pedagang' => (object) $data, 'isDraft' => true] // Tambah isDraft true untuk watermark
-                )->setPaper('A4', 'portrait');
-        
-                // Nama file statis berdasarkan userId
-                $userId = Auth::id();
-                $fileName = "preview_user{$userId}.pdf";
-                $filePath = "uploads/dokumen/{$fileName}";
-        
-                // Hapus file lama jika ada
-                if (Storage::disk('public')->exists($filePath)) {
-                    Storage::disk('public')->delete($filePath);
-                }
-        
-                // Simpan file baru (overwrite)
-                Storage::disk('public')->put($filePath, $pdf->output());
-        
-                if (!Storage::disk('public')->exists($filePath)) {
-                    throw new \Exception('Gagal menyimpan file PDF.');
-                }
-        
-                // Pakai path absolut langsung
-                $fileUrl = 'https://dev-simpasar.dumaikota.go.id/storage/app/public/uploads/dokumen/' . $fileName;
-                \Log::info('Generated PDF URL: ' . $fileUrl . ' | Lokasi: ' . ($lokasi ?? 'null')); // Debug lokasi
-        
-                return response()->json([
-                    'fileUrl' => $fileUrl,
-                    'fileName' => $fileName,
-                ]);
-            } catch (\Exception $e) {
-                \Log::error('Error generating PDF: ' . $e->getMessage());
-                return response()->json(['error' => $e->getMessage()], 500);
+    {
+        try {
+            $data = $request->all();
+
+            // Validasi minimal, tambah tipe_tempat dan ID-nya
+            $request->validate([
+                'nik' => 'required',
+                'nama' => 'required|string',
+                'pasar_id' => 'required|integer',
+                'tipe_tempat' => 'required|string|in:kios,los,pelataran', // Tambah validasi
+                'kios_id' => 'required_if:tipe_tempat,kios', // Opsional berdasarkan tipe
+                'los_id' => 'required_if:tipe_tempat,los',
+                'pelataran_id' => 'required_if:tipe_tempat,pelataran',
+                'jenis_dagangan' => 'required|string|max:255',
+            ]);
+
+            // Ambil nama pasar
+            $pasar = DB::table('pasar')->where('id', $data['pasar_id'])->first();
+            $data['nama_pasar'] = $pasar ? $pasar->nama_pasar : '';
+
+            // Ambil lokasi berdasarkan tipe tempat (seperti di store)
+            $lokasi = null;
+            if ($data['tipe_tempat'] == 'kios' && isset($data['kios_id'])) {
+                $dataKios = DB::table('kios')->where('id', $data['kios_id'])->first();
+                $lokasi = $dataKios->lokasi_kios ?? null;
+            } elseif ($data['tipe_tempat'] == 'los' && isset($data['los_id'])) {
+                $dataLos = DB::table('loss')->where('id', $data['los_id'])->first();
+                $lokasi = $dataLos->lokasi_los ?? null;
+            } elseif ($data['tipe_tempat'] == 'pelataran' && isset($data['pelataran_id'])) {
+                $dataPelataran = DB::table('pelatarans')->where('id', $data['pelataran_id'])->first();
+                $lokasi = $dataPelataran->lokasi_pelataran ?? null;
             }
+            $data['lokasi'] = $lokasi; // Tambah lokasi ke data
+
+            // Generate PDF dengan watermark draft
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+                'backend_pedagang.surat.permohonan',
+                ['pedagang' => (object) $data, 'isLengkap' => true] // Tambah islengkap true untuk watermark
+            )->setPaper('A4', 'portrait');
+
+            // Nama file statis berdasarkan userId
+            $userId = Auth::id();
+            $fileName = "preview_user{$userId}.pdf";
+            $filePath = "uploads/dokumen/{$fileName}";
+
+            // Hapus file lama jika ada
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
+
+            // Simpan file baru (overwrite)
+            Storage::disk('public')->put($filePath, $pdf->output());
+
+            if (!Storage::disk('public')->exists($filePath)) {
+                throw new \Exception('Gagal menyimpan file PDF.');
+            }
+
+            // Pakai path absolut langsung
+            $fileUrl = 'https://simpasar.zoema.web.id/storage/app/public/uploads/dokumen/' . $fileName;
+            \Log::info('Generated PDF URL: ' . $fileUrl . ' | Lokasi: ' . ($lokasi ?? 'null')); // Debug lokasi
+
+            return response()->json([
+                'fileUrl' => $fileUrl,
+                'fileName' => $fileName,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error generating PDF: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    // download surat permohonan resmi (setelah data masuk DB)
+    public function download($id)
+    {
+        $permohonan = DB::table('permohonan')
+            ->join('pasar', 'pasar.id', '=', 'permohonan.pasar_id')
+            ->where('permohonan.id', $id)
+            ->select('permohonan.*', 'pasar.nama_pasar')
+            ->first();
+
+        if (!$permohonan) {
+            abort(404, 'Data permohonan tidak ditemukan');
         }
 
-        // download surat permohonan resmi (setelah data masuk DB)
-        public function download($id)
-        {
-                $permohonan = DB::table('permohonan')
-                    ->join('pasar', 'pasar.id', '=', 'permohonan.pasar_id')
-                    ->where('permohonan.id', $id)
-                    ->select('permohonan.*', 'pasar.nama_pasar')
-                    ->first();
-            
-                if (!$permohonan) {
-                    abort(404, 'Data permohonan tidak ditemukan');
-                }
-            
-                // nama file final berdasarkan NIK
-                $fileName = "surat_permohonan_{$permohonan->nik}.pdf";
-                $path = "uploads/dokumen/{$fileName}";
-            
-                // Generate PDF setiap kali dengan data terbaru
-                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
-                    'backend_pedagang.surat.permohonan',
-                    ['pedagang' => $permohonan, 'isDraft' => false]
-                )->setPaper('A4', 'portrait');
-            
-                // Simpan file baru (overwrite)
-                Storage::disk('public')->put($path, $pdf->output());
-            
-                if (!Storage::disk('public')->exists($path)) {
-                    throw new \Exception('Gagal menyimpan file PDF.');
-                }
-            
-                // Ambil file dari storage untuk di-download
-                return response()->download(storage_path("app/public/{$path}"), $fileName);
+        // nama file final berdasarkan NIK
+        $fileName = "surat_permohonan_{$permohonan->nik}.pdf";
+        $path = "uploads/dokumen/{$fileName}";
+
+        // Generate PDF setiap kali dengan data terbaru
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+            'backend_pedagang.surat.permohonan',
+            ['pedagang' => $permohonan, 'islengkap' => false]
+        )->setPaper('A4', 'portrait');
+
+        // Simpan file baru (overwrite)
+        Storage::disk('public')->put($path, $pdf->output());
+
+        if (!Storage::disk('public')->exists($path)) {
+            throw new \Exception('Gagal menyimpan file PDF.');
         }
+
+        // Ambil file dari storage untuk di-download
+        return response()->download(storage_path("app/public/{$path}"), $fileName);
+    }
 }
